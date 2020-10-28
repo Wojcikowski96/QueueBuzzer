@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:folding_cell/folding_cell.dart';
 
@@ -9,39 +11,87 @@ class Grid extends StatefulWidget {
 class _GridState extends State<Grid> {
 
   List<Widget> gridChild = [
-Container(
-
-  child: Center(
-    child: Text('Twoje menu:',
-      style: TextStyle(
-        fontSize: 26,
-        fontWeight: FontWeight.bold,
-        fontStyle: FontStyle.italic,
-
+    Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("food.jpg"),
+          fit: BoxFit.cover,
+          ),
       ),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Center(
+          child: Text('Twoje menu:',
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+
+            ),
+          ),
+      ),
+
+      // ),
     ),
-  ),
-)
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var  itemHeight = 220.0;
     return Scaffold(
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Text('Drawer Header'),
+                decoration: BoxDecoration(
+                  color: Colors.deepOrange,
+              ),
+          ),
+              ListTile(
+                title: Text('Item 1'),
+                onTap: () {
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.pop(context);
+            },
+          ),
+              ListTile(
+                title: Text('Item 2'),
+                onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                  Navigator.pop(context);
+                },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
-          leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
-
-          }),
+          // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
+          //
+          // }),
           title: Text("Nazwa restauracji"),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.search), onPressed: (){
-
+            IconButton(icon: Icon(Icons.people), onPressed: (){
+              final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
+              Scaffold.of(context).showSnackBar(snackBar);
             })
           ]
       ),
 
 
     floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.deepOrange,
         child: Icon(Icons.add),
         onPressed: () {
           setState(() {
@@ -51,8 +101,8 @@ Container(
                     innerTopWidget: InnerTopWidget(),
                     innerBottomWidget: InnerBottomWidget(),
 
-                    cellSize: Size(5000,5000),
-                    padding: EdgeInsets.all(8.0)
+                    cellSize: Size(screenWidth, itemHeight),
+                    // padding: EdgeInsets.all(8.0)
                 )
             ),);
           });
@@ -61,6 +111,7 @@ Container(
       body: Container(
         child: GridView.count(
           crossAxisCount: 1,
+          childAspectRatio: (screenWidth / itemHeight),
           children: List.generate(gridChild.length, (index) => gridChild[index]),
         ),
       ),
@@ -73,7 +124,7 @@ Container(
         alignment: Alignment.center,
         child: Row(children: <Widget>[
           Expanded(
-              flex: 1,
+              // flex: 1,
               child:Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
@@ -82,14 +133,16 @@ Container(
                 child: Container(
                     child:Row(children: <Widget>[
                       Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(1.0),
+                        child: Align(
+                          alignment: Alignment.center,
                           child: Text('25,90 zł',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               color:Colors.white,
                               fontSize: 15,
 
-                            ),),
+                            ),
+                          ),
                         ),
                       ),
                       Container(),
@@ -98,7 +151,7 @@ Container(
               )
           ),
           Expanded(
-              flex: 2,
+              // flex: 2,
               child:Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
