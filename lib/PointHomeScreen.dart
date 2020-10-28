@@ -56,7 +56,7 @@ class _GridState extends State<Grid> {
               ),
           ),
               ListTile(
-                title: Text('Item 1'),
+                title: Text('Statystyki punktu'),
                 onTap: () {
                   // Update the state of the app
                   // ...
@@ -65,7 +65,7 @@ class _GridState extends State<Grid> {
             },
           ),
               ListTile(
-                title: Text('Item 2'),
+                title: Text('Podgląd menu'),
                 onTap: () {
                 // Update the state of the app
                 // ...
@@ -73,6 +73,15 @@ class _GridState extends State<Grid> {
                   Navigator.pop(context);
                 },
             ),
+              ListTile(
+                title: Text('Ustawienia Punktu'),
+                onTap: () {
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.pop(context);
+                },
+              ),
           ],
         ),
       ),
