@@ -83,8 +83,9 @@ class _GridState extends State<Grid> {
           title: Text("Nazwa restauracji"),
           actions: <Widget>[
             IconButton(icon: Icon(Icons.people), onPressed: (){
-              final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
-              Scaffold.of(context).showSnackBar(snackBar);
+              Scaffold.of(context).showSnackBar(new SnackBar(
+                  content: Text('Yay! A SnackBar!')
+              ));
             })
           ]
       ),

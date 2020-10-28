@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: LoginPage(),
+      home: new Scaffold(body: new LoginPage()),
     );
   }
 
