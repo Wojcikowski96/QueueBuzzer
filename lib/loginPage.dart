@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'pointHomeScreen2.dart';
-class LoginPage extends StatelessWidget {
+import 'package:PointOwner/pointHomescreen.dart';
+import 'registerPage.dart';
+
+class loginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
         body: SingleChildScrollView(
             child: Container(
@@ -107,7 +110,8 @@ class LoginPage extends StatelessWidget {
                       onPressed: (){
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Grid()),
+                          MaterialPageRoute(builder: (context) => pointHomescreen()),
+                          //MaterialPageRoute(builder: (context) => Grid()),
                         );
                         },
                       child: Text("Zaloguj"),
@@ -133,10 +137,13 @@ class LoginPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     onPressed: (){
-
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => registerPage()),
+                    );
                     },
                     child: Text("Zarejestruj"),
-                    color: Colors.deepOrange,
+                    color: Colors.blueAccent,
                     textColor: Colors.white,
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     splashColor: Colors.white,

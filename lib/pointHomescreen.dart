@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:folding_cell/folding_cell.dart';
 
 class pointHomescreen extends StatelessWidget {
-
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +122,10 @@ class pointHomescreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     onPressed: (){
-
+                      /*Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => editProduct()),
+                      );*/
                     },
                     child: Text("Edytuj"),
                     color: Colors.deepOrange,
