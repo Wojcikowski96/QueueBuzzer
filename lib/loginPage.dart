@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'PointHomeScreen.dart';
+import 'registerPage.dart';
+
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -107,6 +109,7 @@ class LoginPage extends StatelessWidget {
                       onPressed: (){
                         Navigator.push(
                           context,
+                          // MaterialPageRoute(builder: (context) => PointHomeScreen()),
                           MaterialPageRoute(builder: (context) => Grid()),
                         );
                         },
@@ -133,10 +136,13 @@ class LoginPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     onPressed: (){
-
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => registerPage()),
+                    );
                     },
                     child: Text("Zarejestruj"),
-                    color: Colors.deepOrange,
+                    color: Colors.blueAccent,
                     textColor: Colors.white,
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     splashColor: Colors.white,
