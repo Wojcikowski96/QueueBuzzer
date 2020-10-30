@@ -65,11 +65,11 @@ class _GridState extends State<Grid> {
       jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
         Iterable iterable = json.decode(response.body);
-        List<ListsItem> posts = List<ListsItem>.from(iterable)
-            .map(
-                (Map model) => ListsItem.fromJson(model)
-              )
-            .toList();
+        // List<ListsItem> posts = List<ListsItem>.from(iterable)
+        //     .map(
+        //         (Map model) => ListsItem.fromJson(model)
+        //       )
+        //     .toList();
         // sharedPreferences.setString("token", jsonResponse['token']);
         //nasraj itemami
         FrontWidget( jsonResponse.name, jsonResponse.price, jsonResponse.category);
