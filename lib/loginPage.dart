@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'PointHomeScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'registerPage.dart';
 
 
 class LoginPage extends StatefulWidget {
