@@ -58,25 +58,25 @@ class _GridState extends State<Grid> {
 
 
   getPointItems() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
-    String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
-    var response = await http.get(request);
-    if (response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
-      if (jsonResponse != null) {
-        Iterable iterable = json.decode(response.body);
-        List<ListsItem> posts = List<Map>.from(iterable)
-            .map(
-                (Map model) => ListsItem.fromJson(model)
-              )
-            .toList();
-        sharedPreferences.setString("token", jsonResponse['token']);
-        List<Container> widgets = posts.map((e) => FrontWidget(e.name, e.price, e.category)).toList();
-        gridChild.addAll(widgets);
-
-      }
-    }
+    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // var jsonResponse = null;
+    // String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
+    // var response = await http.get(request);
+    // if (response.statusCode == 200) {
+    //   jsonResponse = json.decode(response.body);
+    //   if (jsonResponse != null) {
+    //     Iterable iterable = json.decode(response.body);
+    //     List<ListsItem> posts = List<Map>.from(iterable)
+    //         .map(
+    //             (Map model) => ListsItem.fromJson(model)
+    //           )
+    //         .toList();
+    //     sharedPreferences.setString("token", jsonResponse['token']);
+    //     List<Container> widgets = posts.map((e) => FrontWidget(e.name, e.price, e.category)).toList();
+    //     gridChild.addAll(widgets);
+    //
+    //   }
+    // }
   }
 
     @override
@@ -155,7 +155,7 @@ class _GridState extends State<Grid> {
             setState(() {
               gridChild.add(Container(
                   child: SimpleFoldingCell(
-                    frontWidget: FrontWidget(null, null, null),
+                    frontWidget: FrontWidget("Pizza", "20.0", "Italia"),
                     innerTopWidget: InnerTopWidget(),
                     innerBottomWidget: InnerBottomWidget(),
 
