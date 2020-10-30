@@ -197,7 +197,10 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     onPressed: (){
-
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => registerPage()),
+                      );
                     },
                     child: Text("Zarejestruj"),
                     color: Colors.deepOrange,
