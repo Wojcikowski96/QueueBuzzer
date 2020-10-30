@@ -104,10 +104,11 @@ class _GridState extends State<Grid> {
         backgroundColor: Colors.deepOrange,
         child: Icon(Icons.add),
         onPressed: () {
+          //tutaj dodac dodawanie do bazy
           setState(() {
             gridChild.add(Container(
                 child: SimpleFoldingCell(
-                  frontWidget: FrontWidget(),
+                  frontWidget: FrontWidget( null, null, null),
                   innerTopWidget: InnerTopWidget(),
                   innerBottomWidget: InnerBottomWidget(),
 
@@ -128,7 +129,7 @@ class _GridState extends State<Grid> {
     );
   }
 
-  Container FrontWidget(){
+  Container FrontWidget(String productName, String productPrice, String productCategory) {
     return Container(
         color:Colors.white12,
         alignment: Alignment.center,

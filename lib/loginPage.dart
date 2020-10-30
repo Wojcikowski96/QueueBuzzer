@@ -24,16 +24,16 @@ class _LoginPageState extends State<LoginPage> {
   signIn(String id, email) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    String pointName, avgAwaitTime, colour;
-    Map data = {
-      'id': id,
-      'emial': email,
-      // 'point': {
-      //   'name': pointName,
-      //   'avgAwaitTime': avgAwaitTime,
-      //   'colour': colour
-      // }
-    };
+    // String pointName, avgAwaitTime, colour;
+    // Map data = {
+    //   'id': id,
+    //   'emial': email,
+    //   // 'point': {
+    //   //   'name': pointName,
+    //   //   'avgAwaitTime': avgAwaitTime,
+    //   //   'colour': colour
+    //   // }
+    // };
 
     var jsonResponse = null;
     var response = await http.get("http://10.0.2.2:8080/point-owner/1");
