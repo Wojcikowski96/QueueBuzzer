@@ -16,7 +16,7 @@ class _GridState extends State<Grid> {
         image: DecorationImage(
           image: AssetImage("food.jpg"),
           fit: BoxFit.cover,
-          ),
+        ),
       ),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -29,10 +29,10 @@ class _GridState extends State<Grid> {
 
             ),
           ),
-      ),
+        ),
 
-      // ),
-    ),
+        // ),
+      ),
     ),
   ];
 
@@ -47,48 +47,48 @@ class _GridState extends State<Grid> {
         // space to fit everything.
         child: ListView(
           // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Text('Drawer Header'),
-                decoration: BoxDecoration(
-                  color: Colors.deepOrange,
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Drawer Header'),
+              decoration: BoxDecoration(
+                color: Colors.deepOrange,
               ),
-          ),
-              ListTile(
-                title: Text('Statystyki punktu'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-            },
-          ),
-              ListTile(
-                title: Text('Podgląd menu'),
-                onTap: () {
+            ),
+            ListTile(
+              title: Text('Statystyki punktu'),
+              onTap: () {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                  Navigator.pop(context);
-                },
+                Navigator.pop(context);
+              },
             ),
-              ListTile(
-                title: Text('Ustawienia Punktu'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
+            ListTile(
+              title: Text('Podgląd menu'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Ustawienia Punktu'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
           ],
         ),
       ),
       appBar: AppBar(
-          // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
-          //
-          // }),
+        // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
+        //
+        // }),
           title: Text("Nazwa restauracji"),
           actions: <Widget>[
             IconButton(icon: Icon(Icons.people), onPressed: (){
@@ -100,19 +100,19 @@ class _GridState extends State<Grid> {
       ),
 
 
-    floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.deepOrange,
         child: Icon(Icons.add),
         onPressed: () {
           setState(() {
             gridChild.add(Container(
                 child: SimpleFoldingCell(
-                    frontWidget: FrontWidget(),
-                    innerTopWidget: InnerTopWidget(),
-                    innerBottomWidget: InnerBottomWidget(),
+                  frontWidget: FrontWidget(),
+                  innerTopWidget: InnerTopWidget(),
+                  innerBottomWidget: InnerBottomWidget(),
 
-                    cellSize: Size(screenWidth, itemHeight),
-                    // padding: EdgeInsets.all(8.0)
+                  cellSize: Size(screenWidth, itemHeight),
+                  // padding: EdgeInsets.all(8.0)
                 )
             ),);
           });
@@ -134,7 +134,7 @@ class _GridState extends State<Grid> {
         alignment: Alignment.center,
         child: Row(children: <Widget>[
           Expanded(
-              // flex: 1,
+            // flex: 1,
               child:Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
@@ -161,7 +161,7 @@ class _GridState extends State<Grid> {
               )
           ),
           Expanded(
-              // flex: 2,
+            // flex: 2,
               child:Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
@@ -184,7 +184,7 @@ class _GridState extends State<Grid> {
                         height:100,
                         width:100,
                       ),
-                      
+
                       Text('<opis>'
                       ),
                       SizedBox(

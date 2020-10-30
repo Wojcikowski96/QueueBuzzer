@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:PointOwner/pointHomescreen.dart';
-import 'pointHomeScreen2.dart';
 
 class registerPage extends StatelessWidget {
   @override

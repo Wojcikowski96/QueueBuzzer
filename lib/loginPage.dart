@@ -109,8 +109,8 @@ class LoginPage extends StatelessWidget {
                       onPressed: (){
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => pointHomescreen()),
-                          //MaterialPageRoute(builder: (context) => Grid()),
+                          // MaterialPageRoute(builder: (context) => PointHomeScreen()),
+                          MaterialPageRoute(builder: (context) => Grid()),
                         );
                         },
                       child: Text("Zaloguj"),
