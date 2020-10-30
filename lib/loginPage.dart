@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:PointOwner/pointHomescreen.dart';
+import 'PointHomeScreen.dart';
 import 'registerPage.dart';
 
-class loginPage extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
     return Scaffold(
         body: SingleChildScrollView(
             child: Container(
