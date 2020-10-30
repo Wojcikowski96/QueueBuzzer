@@ -1,8 +1,60 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'PointHomeScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 import 'registerPage.dart';
 
-class LoginPage extends StatelessWidget {
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  bool _isLoading = true;
+
+
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+
+
+  signIn(String id, email) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    String pointName, avgAwaitTime, colour;
+    Map data = {
+      'id': id,
+      'emial': email,
+      // 'point': {
+      //   'name': pointName,
+      //   'avgAwaitTime': avgAwaitTime,
+      //   'colour': colour
+      // }
+    };
+
+    var jsonResponse = null;
+    var response = await http.get("http://10.0.2.2:8080/point-owner/1");
+    if(response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if(jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        sharedPreferences.setString("token", jsonResponse['token']);
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => Grid()), (Route<dynamic> route) => false);
+      }
+      print(response.body.toString());
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      print(response.body.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -43,7 +95,8 @@ class LoginPage extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(right: 10, left: 10),
                       child: TextField(
-                      decoration: InputDecoration(
+                        controller: emailController,
+                        decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(top: 20, bottom: 20),
                         prefixIcon: Padding(
                           padding: const EdgeInsets.only(left: 20, right: 20),
@@ -73,6 +126,7 @@ class LoginPage extends StatelessWidget {
                   Container(
                       margin: EdgeInsets.only(right: 10, left: 10),
                       child: TextField(
+                        controller: passwordController,
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(top: 20, bottom: 20),
                             prefixIcon: Padding(
@@ -105,14 +159,21 @@ class LoginPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
+                      //emailController.text == "" || passwordController.text == "" ? null :
+                      onPressed: () {
+                        if (!(emailController.text == "" || passwordController.text == "")) {
+                          print('onPressed started');
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          signIn(emailController.text, passwordController.text);
+                        } else {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                        }
 
-                      onPressed: (){
-                        Navigator.push(
-                          context,
-                          // MaterialPageRoute(builder: (context) => PointHomeScreen()),
-                          MaterialPageRoute(builder: (context) => Grid()),
-                        );
-                        },
+                      },
                       child: Text("Zaloguj"),
                       color: Colors.deepOrange,
                       textColor: Colors.white,
@@ -137,12 +198,12 @@ class LoginPage extends StatelessWidget {
                     ),
                     onPressed: (){
                       Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => registerPage()),
-                    );
+                          context,
+                          MaterialPageRoute(builder: (context) => registerPage()),
+                      );
                     },
                     child: Text("Zarejestruj"),
-                    color: Colors.blueAccent,
+                    color: Colors.deepOrange,
                     textColor: Colors.white,
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     splashColor: Colors.white,
