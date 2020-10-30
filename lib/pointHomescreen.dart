@@ -18,9 +18,10 @@ class ListsItem {
 
    static fromJson(json) {
     ListsItem p = new ListsItem();
-    p.name = json.name;
-    p.price = json.price;
-    p.category = json.category;
+    print(json);
+    p.name = json['name'];
+    p.price = json['price'];
+    p.category = json['category'];
     return p;
   }
 }
@@ -56,23 +57,23 @@ class _GridState extends State<Grid> {
   ];
 
 
-  getPointItems(String id) async {
-    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  getPointItems() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
-    String request = "http://10.0.2.2:8080/point/" + pointID.toString() + "/products";
+    String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
     var response = await http.get(request);
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
         Iterable iterable = json.decode(response.body);
-        // List<ListsItem> posts = List<ListsItem>.from(iterable)
-        //     .map(
-        //         (Map model) => ListsItem.fromJson(model)
-        //       )
-        //     .toList();
-        // sharedPreferences.setString("token", jsonResponse['token']);
-        //nasraj itemami
-        FrontWidget( jsonResponse.name, jsonResponse.price, jsonResponse.category);
+        List<ListsItem> posts = List<Map>.from(iterable)
+            .map(
+                (Map model) => ListsItem.fromJson(model)
+              )
+            .toList();
+        sharedPreferences.setString("token", jsonResponse['token']);
+        List<Container> widgets = posts.map((e) => FrontWidget(e.name, e.price, e.category)).toList();
+        gridChild.addAll(widgets);
 
       }
     }
@@ -84,6 +85,7 @@ class _GridState extends State<Grid> {
           .of(context)
           .size
           .width;
+      getPointItems();
       var itemHeight = 220.0;
       return Scaffold(
         drawer: Drawer(
@@ -195,7 +197,7 @@ class _GridState extends State<Grid> {
                       Container(
                         child: Align(
                           alignment: Alignment.center,
-                          child: Text('25,90 zł',
+                          child: Text(productPrice,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
@@ -222,7 +224,7 @@ class _GridState extends State<Grid> {
                       Container(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Pizza Neapolitana',
+                          child: Text(productName,
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 15,
@@ -235,7 +237,7 @@ class _GridState extends State<Grid> {
                         width: 100,
                       ),
 
-                      Text('<opis>'
+                      Text('productCategory'
                       ),
                       SizedBox(
                         child: RaisedButton(

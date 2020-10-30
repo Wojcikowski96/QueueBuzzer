@@ -36,14 +36,15 @@ class _LoginPageState extends State<LoginPage> {
     // };
 
     var jsonResponse = null;
-    var response = await http.get("http://10.0.2.2:8080/point-owner/1");
+    var response = await http.get("http://10.0.2.2:8080/point-owner/covid19@gmail.com");
     if(response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       if(jsonResponse != null) {
         setState(() {
           _isLoading = false;
         });
-        sharedPreferences.setString("token", jsonResponse['token']);
+        String s = jsonResponse['point']['id'].toString();
+        sharedPreferences.setString("token", s);
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => Grid()), (Route<dynamic> route) => false);
       }
       print(response.body.toString());
