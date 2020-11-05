@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:folding_cell/folding_cell.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Grid extends StatefulWidget {
+class PointMenu extends StatefulWidget {
   @override
-  _GridState createState() => _GridState();
+  _PointMenuState createState() => _PointMenuState();
 }
 
 // Grid(TextEditingController pointID);
@@ -16,7 +17,7 @@ class Grid extends StatefulWidget {
 class ListsItem {
   String name, price, category;
 
-   static fromJson(json) {
+  static fromJson(json) {
     ListsItem p = new ListsItem();
     print(json);
     p.name = json['name'];
@@ -26,7 +27,7 @@ class ListsItem {
   }
 }
 
-class _GridState extends State<Grid> {
+class _PointMenuState extends State<PointMenu> {
 
   String pointID = "4";
 
@@ -79,108 +80,119 @@ class _GridState extends State<Grid> {
     // }
   }
 
-    @override
-    Widget build(BuildContext context) {
-      var screenWidth = MediaQuery
-          .of(context)
-          .size
-          .width;
-      getPointItems();
-      var itemHeight = 220.0;
-      return Scaffold(
-        drawer: Drawer(
-          // Add a ListView to the drawer. This ensures the user can scroll
-          // through the options in the drawer if there isn't enough vertical
-          // space to fit everything.
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Text('Drawer Header'),
-                decoration: BoxDecoration(
-                  color: Colors.deepOrange,
-                ),
+  @override
+  Widget build(BuildContext context) {
+    var screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    getPointItems();
+    var itemHeight = 220.0;
+    return Scaffold(
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Drawer Header'),
+              decoration: BoxDecoration(
+                color: Colors.deepOrange,
               ),
-              ListTile(
-                title: Text('Statystyki punktu'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text('Podgląd menu'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text('Ustawienia Punktu'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
+            ),
+            ListTile(
+              title: Text('Strona główna punktu'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PointHomeScreen()));
+              },
+            ),
+            ListTile(
+              title: Text('Edytuj menu'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              title: Text('Podgląd menu'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Ustawienia Punktu'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+          ],
         ),
-        appBar: AppBar(
-          // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
-          //
-          // }),
-            title: Text("Nazwa restauracji"),
-            actions: <Widget>[
-              IconButton(icon: Icon(Icons.people), onPressed: () {
-                Scaffold.of(context).showSnackBar(new SnackBar(
-                    content: Text('Yay! A SnackBar!')
-                ));
-              })
-            ]
-        ),
+      ),
+      appBar: AppBar(
+        // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
+        //
+        // }),
+          title: Text("Nazwa restauracji"),
+          actions: <Widget>[
+            IconButton(icon: Icon(Icons.people), onPressed: () {
+              Scaffold.of(context).showSnackBar(new SnackBar(
+                  content: Text('Yay! A SnackBar!')
+              ));
+            })
+          ]
+      ),
 
 
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.deepOrange,
-          child: Icon(Icons.add),
-          onPressed: () {
-            //tutaj dodac dodawanie do bazy
-            setState(() {
-              gridChild.add(Container(
-                  child: SimpleFoldingCell(
-                    frontWidget: FrontWidget("Pizza", "20.0", "Italia"),
-                    innerTopWidget: InnerTopWidget(),
-                    innerBottomWidget: InnerBottomWidget(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.deepOrange,
+        child: Icon(Icons.add),
+        onPressed: () {
+          //tutaj dodac dodawanie do bazy
+          setState(() {
+            gridChild.add(Container(
+                child: SimpleFoldingCell(
+                  frontWidget: FrontWidget("Pizza", "20.0", "Italia"),
+                  innerTopWidget: InnerTopWidget(),
+                  innerBottomWidget: InnerBottomWidget(),
 
-                    cellSize: Size(screenWidth, itemHeight),
-                    // padding: EdgeInsets.all(8.0)
-                  )
-              ),);
-            });
-          },
+                  cellSize: Size(screenWidth, itemHeight),
+                  // padding: EdgeInsets.all(8.0)
+                )
+            ),);
+          });
+        },
+      ),
+      body: Container(
+        child: GridView.count(
+          crossAxisCount: 1,
+          childAspectRatio: (screenWidth / itemHeight),
+          children: List.generate(
+              gridChild.length, (index) => gridChild[index]),
         ),
-        body: Container(
-          child: GridView.count(
-            crossAxisCount: 1,
-            childAspectRatio: (screenWidth / itemHeight),
-            children: List.generate(
-                gridChild.length, (index) => gridChild[index]),
-          ),
-        ),
-      );
+      ),
+    );
 
-      // tutaj
-    }
+    // tutaj
+  }
 
   Container FrontWidget(String productName, String productPrice, String productCategory) {
-  // Container FrontWidget() {
+    // Container FrontWidget() {
     return Container(
         color: Colors.white12,
         alignment: Alignment.center,
@@ -276,4 +288,4 @@ class _GridState extends State<Grid> {
         color: Colors.white
     );
   }
-  }
+}

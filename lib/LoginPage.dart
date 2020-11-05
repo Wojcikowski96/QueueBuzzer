@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'PointHomeScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'registerPage.dart';
+import 'RegisterPage.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
         });
         String s = jsonResponse['point']['id'].toString();
         sharedPreferences.setString("token", s);
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => Grid()), (Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => PointHomeScreen()), (Route<dynamic> route) => false);
       }
       print(response.body.toString());
     } else {
