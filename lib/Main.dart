@@ -1,3 +1,4 @@
+import 'package:PointOwner/WelcomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:PointOwner/LoginPage.dart';
 
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: new Scaffold(body: new LoginPage()),
+      home: new Scaffold(body: new WelcomeScreen()),
     );
   }
 
