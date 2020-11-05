@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class editProduct extends StatelessWidget {
+class EditProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {

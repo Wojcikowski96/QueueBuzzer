@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:PointOwner/EditProduct.dart';
 import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:folding_cell/folding_cell.dart';
@@ -288,7 +289,9 @@ class _PointMenuState extends State<PointMenu> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           onPressed: () {
-
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => EditProduct()));
                           },
                           child: Text("Edytuj"),
                           color: Colors.deepOrange,

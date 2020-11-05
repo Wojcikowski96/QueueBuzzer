@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'PointHomeScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -17,24 +18,28 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isLoading = true;
 
+  static const SERVER_IP = 'http://10.0.2.2:8080';
+  final storage = FlutterSecureStorage();
+
+
 
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
 
+  Future<String> attemptLogIn(String username, String password) async {
+    var res = await http.post(
+        "$SERVER_IP/login",
+        body: {
+          "username": username,
+          "password": password
+        }
+    );
+    if(res.statusCode == 200) return res.body;
+    return null;
+  }
 
   signIn(String id, email) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    // String pointName, avgAwaitTime, colour;
-    // Map data = {
-    //   'id': id,
-    //   'emial': email,
-    //   // 'point': {
-    //   //   'name': pointName,
-    //   //   'avgAwaitTime': avgAwaitTime,
-    //   //   'colour': colour
-    //   // }
-    // };
 
     var jsonResponse = null;
     var response = await http.get("http://10.0.2.2:8080/point-owner/covid19@gmail.com");
