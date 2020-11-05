@@ -17,17 +17,36 @@ class PointMenu extends StatefulWidget {
 class ListsItem {
   String name, price, category;
 
+  ListsItem();
+
+  ListsItem.construct(String name, String price, String category) {
+    this.name = name;
+    this.price = price;
+    this.category = category;
+  }
+
+
   static fromJson(json) {
     ListsItem p = new ListsItem();
     print(json);
     p.name = json['name'];
-    p.price = json['price'];
+    p.price = json['price'].toString();
     p.category = json['category'];
     return p;
   }
 }
 
 class _PointMenuState extends State<PointMenu> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    getPointItems();
+  }
 
   String pointID = "4";
 
@@ -59,25 +78,40 @@ class _PointMenuState extends State<PointMenu> {
 
 
   getPointItems() async {
-    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    // var jsonResponse = null;
+    var screenWidth = MediaQuery.of(context).size.width;
+    var itemHeight = 220.0;
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jsonResponse = null;
     // String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
-    // var response = await http.get(request);
-    // if (response.statusCode == 200) {
-    //   jsonResponse = json.decode(response.body);
-    //   if (jsonResponse != null) {
-    //     Iterable iterable = json.decode(response.body);
-    //     List<ListsItem> posts = List<Map>.from(iterable)
-    //         .map(
-    //             (Map model) => ListsItem.fromJson(model)
-    //           )
-    //         .toList();
-    //     sharedPreferences.setString("token", jsonResponse['token']);
-    //     List<Container> widgets = posts.map((e) => FrontWidget(e.name, e.price, e.category)).toList();
-    //     gridChild.addAll(widgets);
-    //
-    //   }
-    // }
+    String request = "http://10.0.2.2:8080/point/" + "1" + "/products";
+    var response = await http.get(request);
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        Iterable iterable = json.decode(response.body);
+        List<dynamic> posts = List<Map>.from(iterable)
+            .map(
+                (Map model) => ListsItem.fromJson(model)
+              )
+            .toList();
+        List<Widget> tempGridChild = gridChild.toList();
+        for (dynamic item in posts) {
+          tempGridChild.add(Container(
+              child: SimpleFoldingCell(
+                frontWidget: FrontWidget(
+                    item.name, item.price, item.category),
+                innerTopWidget: InnerTopWidget(),
+                innerBottomWidget: InnerBottomWidget(),
+
+                cellSize: Size(screenWidth, itemHeight),
+              )
+          ),);
+        }
+        setState(() {
+          gridChild = tempGridChild;
+        });
+      }
+    }
   }
 
   @override
@@ -86,7 +120,6 @@ class _PointMenuState extends State<PointMenu> {
         .of(context)
         .size
         .width;
-    getPointItems();
     var itemHeight = 220.0;
     return Scaffold(
       drawer: Drawer(
@@ -163,7 +196,6 @@ class _PointMenuState extends State<PointMenu> {
         backgroundColor: Colors.deepOrange,
         child: Icon(Icons.add),
         onPressed: () {
-          //tutaj dodac dodawanie do bazy
           setState(() {
             gridChild.add(Container(
                 child: SimpleFoldingCell(
@@ -178,6 +210,7 @@ class _PointMenuState extends State<PointMenu> {
           });
         },
       ),
+
       body: Container(
         child: GridView.count(
           crossAxisCount: 1,
@@ -187,8 +220,6 @@ class _PointMenuState extends State<PointMenu> {
         ),
       ),
     );
-
-    // tutaj
   }
 
   Container FrontWidget(String productName, String productPrice, String productCategory) {
@@ -287,5 +318,8 @@ class _PointMenuState extends State<PointMenu> {
     return Container(
         color: Colors.white
     );
+
   }
+
+
 }
