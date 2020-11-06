@@ -27,39 +27,72 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = new TextEditingController();
 
   Future<String> attemptLogIn(String username, String password) async {
+    print('password:$password');
+    print('usrname:$username');
+    print('serverip:$SERVER_IP');
     var res = await http.post(
-        "$SERVER_IP/login",
-        body: {
+        "$SERVER_IP/auth",
+        body: jsonEncode(<String, String>{
           "username": username,
           "password": password
+        }),
+        headers: <String, String>{
+          "Content-Type": "application/json"
         }
     );
     if(res.statusCode == 200) return res.body;
     return null;
   }
 
+  Future<int> attemptSignUp(String username, String password) async {
+    var res = await http.post(
+        '$SERVER_IP/signup',
+        body: {
+          "username": username,
+          "password": password
+        }
+    );
+    return res.statusCode;
+
+  }
+
   signIn(String id, email) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    var jsonResponse = null;
-    var response = await http.get("http://10.0.2.2:8080/point-owner/covid19@gmail.com");
-    if(response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
-      if(jsonResponse != null) {
-        setState(() {
-          _isLoading = false;
-        });
-        String s = jsonResponse['point']['id'].toString();
-        sharedPreferences.setString("token", s);
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => PointHomeScreen()), (Route<dynamic> route) => false);
-      }
-      print(response.body.toString());
+    var username = emailController.text;
+    var password = passwordController.text;
+    var jwt = await attemptLogIn(username, password);
+    if(jwt != null) {
+      storage.write(key: "jwt", value: jwt);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PointHomeScreen.fromBase64(jwt)
+          )
+      );
     } else {
-      setState(() {
-        _isLoading = false;
-      });
-      print(response.body.toString());
+      displayDialog(context, "An Error Occurred", "No account was found matching that username and password");
     }
+
+    // var jsonResponse = null;
+    // var response = await http.get("http://10.0.2.2:8080/point-owner/covid19@gmail.com");
+    // if(response.statusCode == 200) {
+    //   jsonResponse = json.decode(response.body);
+    //   if(jsonResponse != null) {
+    //     setState(() {
+    //       _isLoading = false;
+    //     });
+    //     String s = jsonResponse['point']['id'].toString();
+    //     sharedPreferences.setString("token", s);
+    //     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => PointHomeScreen()), (Route<dynamic> route) => false);
+    //   }
+    //   print(response.body.toString());
+    // } else {
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    //   print(response.body.toString());
+    // }
   }
 
   @override
@@ -219,4 +252,14 @@ class _LoginPageState extends State<LoginPage> {
 
                 ]))));
   }
+
+  void displayDialog(BuildContext context, String title, String text) =>
+      showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+                title: Text(title),
+                content: Text(text)
+            ),
+      );
 }

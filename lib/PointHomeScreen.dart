@@ -10,6 +10,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PointHomeScreen extends StatefulWidget {
   @override
   _PointHomeScreenState createState() => _PointHomeScreenState();
+
+  PointHomeScreen(this.jwt, this.payload);
+
+  factory PointHomeScreen.fromBase64(String jwt) =>
+      PointHomeScreen(
+          jwt,
+          json.decode(
+              ascii.decode(
+                  base64.decode(base64.normalize(jwt.split(".")[1]))
+              )
+          )
+      );
+
+  final String jwt;
+  final Map<String, dynamic> payload;
 }
 
 class ListsItem {
