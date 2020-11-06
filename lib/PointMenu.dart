@@ -42,11 +42,9 @@ class _PointMenuState extends State<PointMenu> {
   @override
   void initState() {
     super.initState();
-  }
-
-  didChangeDependencies() {
-    super.didChangeDependencies();
-    getPointItems();
+    Future.delayed(Duration.zero, () {
+      getPointItems();
+    });
   }
 
   String pointID = "4";
