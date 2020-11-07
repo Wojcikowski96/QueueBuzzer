@@ -27,7 +27,6 @@ class ListsItem {
     this.category = category;
   }
 
-
   static fromJson(json) {
     ListsItem p = new ListsItem();
     print(json);
@@ -39,6 +38,7 @@ class ListsItem {
 }
 
 class _PointMenuState extends State<PointMenu> {
+
 
   final storage = FlutterSecureStorage();
 
@@ -63,12 +63,12 @@ class _PointMenuState extends State<PointMenu> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: Center(
-          child: Text('Twoje menu:',
+          child: Text(
+            'Twoje menu:',
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic,
-
             ),
           ),
         ),
@@ -77,7 +77,6 @@ class _PointMenuState extends State<PointMenu> {
       ),
     ),
   ];
-
 
   getPointItems() async {
     var screenWidth = MediaQuery.of(context).size.width;
@@ -92,22 +91,29 @@ class _PointMenuState extends State<PointMenu> {
       if (jsonResponse != null) {
         Iterable iterable = json.decode(response.body);
         List<dynamic> posts = List<Map>.from(iterable)
-            .map(
-                (Map model) => ListsItem.fromJson(model)
-              )
+            .map((Map model) => ListsItem.fromJson(model))
             .toList();
         List<Widget> tempGridChild = gridChild.toList();
         for (dynamic item in posts) {
-          tempGridChild.add(Container(
-              child: SimpleFoldingCell(
-                frontWidget: FrontWidget(
-                    item.name, item.price, item.category),
-                innerTopWidget: InnerTopWidget(),
-                innerBottomWidget: InnerBottomWidget(),
+          tempGridChild.add(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(child: Item(item.name, item.price, item.category),
+                  //child: SimpleFoldingCell(
+                  //frontWidget: FrontWidget(
+                  //item.name, item.price, item.category),
+                  //innerTopWidget: InnerTopWidget(item.name),
+                  //innerBottomWidget: InnerBottomWidget(item.name),
 
-                cellSize: Size(screenWidth, itemHeight),
-              )
-          ),);
+                  //cellSize: Size(screenWidth, itemHeight),
+                  //)
+                  decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+              color: Colors.white70,
+            ),
+              ),
+            ),
+          );
         }
         setState(() {
           gridChild = tempGridChild;
@@ -118,12 +124,10 @@ class _PointMenuState extends State<PointMenu> {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    var itemHeight = 220.0;
+    var screenWidth = MediaQuery.of(context).size.width;
+    var itemHeight = 243.0;
     return Scaffold(
+      backgroundColor: Colors.white54,
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
         // through the options in the drawer if there isn't enough vertical
@@ -180,85 +184,78 @@ class _PointMenuState extends State<PointMenu> {
         ),
       ),
       appBar: AppBar(
-        // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
-        //
-        // }),
+          // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
+          //
+          // }),
           title: Text("Nazwa restauracji"),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.people), onPressed: () {
-              Scaffold.of(context).showSnackBar(new SnackBar(
-                  content: Text('Yay! A SnackBar!')
-              ));
-            })
-          ]
-      ),
-
-
+            IconButton(
+                icon: Icon(Icons.people),
+                onPressed: () {
+                  Scaffold.of(context).showSnackBar(
+                      new SnackBar(content: Text('Yay! A SnackBar!')));
+                })
+          ]),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.deepOrange,
         child: Icon(Icons.add),
         onPressed: () {
           setState(() {
-            gridChild.add(Container(
-                child: SimpleFoldingCell(
-                  frontWidget: FrontWidget("Pizza", "20.0", "Italia"),
-                  innerTopWidget: InnerTopWidget(),
-                  innerBottomWidget: InnerBottomWidget(),
+            gridChild.add(
+              Container(
+                  child: SimpleFoldingCell(
+                frontWidget: FrontWidget("Pizza", "20.0", "Italia"),
+                // innerTopWidget: InnerTopWidget(),
+                innerBottomWidget: InnerBottomWidget("Pizza"),
 
-                  cellSize: Size(screenWidth, itemHeight),
-                  // padding: EdgeInsets.all(8.0)
-                )
-            ),);
+                cellSize: Size(screenWidth, itemHeight),
+                // padding: EdgeInsets.all(8.0)
+              )),
+            );
           });
         },
       ),
-
       body: Container(
         child: GridView.count(
           crossAxisCount: 1,
           childAspectRatio: (screenWidth / itemHeight),
-          children: List.generate(
-              gridChild.length, (index) => gridChild[index]),
+          children:
+              List.generate(gridChild.length, (index) => gridChild[index]),
         ),
       ),
     );
   }
 
-  Container FrontWidget(String productName, String productPrice, String productCategory) {
+  Container FrontWidget(
+      String productName, String productPrice, String productCategory) {
     // Container FrontWidget() {
+
     return Container(
-        color: Colors.white12,
         alignment: Alignment.center,
         child: Row(children: <Widget>[
           Expanded(
-            // flex: 1,
+              // flex: 1,
               child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  color: Colors.deepOrange,
+            child: Container(
+                child: Row(children: <Widget>[
+              Container(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    productPrice,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
-                child: Container(
-                    child: Row(children: <Widget>[
-                      Container(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(productPrice,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(),
-                    ])
-                ),
-              )
-          ),
+              ),
+              Container(),
+            ])),
+          )),
           Expanded(
-            // flex: 2,
+              // flex: 2,
               child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
@@ -269,21 +266,21 @@ class _PointMenuState extends State<PointMenu> {
                       Container(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(productName,
+                          child: Text(
+                            productName,
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 15,
-
-                            ),),
+                            ),
+                          ),
                         ),
                       ),
-                      Image.asset("pizza.jpg",
+                      Image.asset(
+                        "pizza.jpg",
                         height: 100,
                         width: 100,
                       ),
-
-                      Text('productCategory'
-                      ),
+                      Text('productCategory'),
                       SizedBox(
                         child: RaisedButton(
                           shape: RoundedRectangleBorder(
@@ -292,10 +289,11 @@ class _PointMenuState extends State<PointMenu> {
                           onPressed: () {
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => EditProduct()));
+                                MaterialPageRoute(
+                                    builder: (context) => EditProduct()));
                           },
                           child: Text("Edytuj"),
-                          color: Colors.deepOrange,
+                          color: Colors.blueGrey,
                           textColor: Colors.white,
                           padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                           splashColor: Colors.white,
@@ -304,26 +302,103 @@ class _PointMenuState extends State<PointMenu> {
                         height: 40,
                       ),
                     ]),
+                  )))
+        ]));
+  }
+
+  Container InnerTopWidget(String productName) {
+    return Container(
+      color: Colors.black,
+      child: Text(productName),
+    );
+  }
+
+  Container InnerBottomWidget(String productName) {
+    return Container(
+      color: Colors.red,
+      child: Text(productName),
+    );
+  }
+
+  Container Item(String productName, String price, String category) {
+    return Container(
+
+          decoration: BoxDecoration(
+            color: Colors.white,
+          borderRadius: BorderRadius.circular(15.0),
+        ),
 
 
-                  )
-              )
+        child: Column(children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    productName,
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text('Cena:', style: TextStyle(fontSize: 20)),
+                    Text(price),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text('Kategoria:', style: TextStyle(fontSize: 20)),
+                    Text(category),
+                  ],
+                ),
+                Expanded(
+                    child: Column(
+                  //crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Image.asset(
+                      "pizza.jpg",
+                      height: 110,
+                      width: 110,
+                    )
+                  ],
+                ))
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => EditProduct()));
+                  },
+                  child: Text("Edytuj"),
+                  color: Colors.white12,
+                  textColor: Colors.white,
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  splashColor: Colors.white,
+                ),
+                width: 100,
+                height: 30,
+              ),
+            ],
           )
-        ])
-    );
+        ]));
   }
-  Container InnerTopWidget() {
-    return Container(
-        color: Colors.blueGrey
-
-    );
-  }
-  Container InnerBottomWidget() {
-    return Container(
-        color: Colors.white
-    );
-
-  }
-
-
 }
