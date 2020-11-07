@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:PointOwner/LoggingInterceptor.dart';
 import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -27,9 +28,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = new TextEditingController();
 
   Future<String> attemptLogIn(String username, String password) async {
-    print('password:$password');
-    print('usrname:$username');
-    print('serverip:$SERVER_IP');
+    // print('password:$password');
+    // print('usrname:$username');
+    // print('serverip:$SERVER_IP');
     var res = await http.post(
         "$SERVER_IP/auth",
         body: jsonEncode(<String, String>{
@@ -50,49 +51,55 @@ class _LoginPageState extends State<LoginPage> {
         body: {
           "username": username,
           "password": password
-        }
+        },
     );
     return res.statusCode;
 
   }
 
-  signIn(String id, email) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  Future<int> getPointByMail(String pointEmail) async {
+    var res = await http.get(
+        "$SERVER_IP/point-owner/" + pointEmail
+    );
+    if(res.statusCode != 200) {
+      displayDialog(context, "An Error Occurred", "No account was found matching that pointEmail");
+      print(res.body);
+    } else {
+      var jsonResponse = json.decode(res.body);
+      var jsonPointEncoded = json.encode(jsonResponse["point"]);
+      var jsonPoint = json.decode(jsonPointEncoded);
+      if (jsonPoint != null) {
+        storage.write(key: "pointName", value: jsonPoint["name"]);
+        storage.write(key: "pointID", value: jsonResponse["id"].toString());
+      }
+      print(jsonPoint["name"]);
+      print(jsonPointEncoded);
+      print(res.body);
+    }
+    return res.statusCode;
+  }
 
-    var username = emailController.text;
+  signIn(String id, email) async {
+    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var pointEmail = emailController.text;
     var password = passwordController.text;
-    var jwt = await attemptLogIn(username, password);
+    var jwt = await attemptLogIn(pointEmail, password);
     if(jwt != null) {
       storage.write(key: "jwt", value: jwt);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PointHomeScreen.fromBase64(jwt)
-          )
-      );
-    } else {
-      displayDialog(context, "An Error Occurred", "No account was found matching that username and password");
-    }
 
-    // var jsonResponse = null;
-    // var response = await http.get("http://10.0.2.2:8080/point-owner/covid19@gmail.com");
-    // if(response.statusCode == 200) {
-    //   jsonResponse = json.decode(response.body);
-    //   if(jsonResponse != null) {
-    //     setState(() {
-    //       _isLoading = false;
-    //     });
-    //     String s = jsonResponse['point']['id'].toString();
-    //     sharedPreferences.setString("token", s);
-    //     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => PointHomeScreen()), (Route<dynamic> route) => false);
-    //   }
-    //   print(response.body.toString());
-    // } else {
-    //   setState(() {
-    //     _isLoading = false;
-    //   });
-    //   print(response.body.toString());
-    // }
+      int response = await getPointByMail(pointEmail);
+      if (response == 200) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PointHomeScreen.fromBase64(jwt)
+            )
+        );
+      }
+    } else {
+      displayDialog(context, "An Error Occurred", "No account was found matching that pointEmail and password");
+    }
   }
 
   @override

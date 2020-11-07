@@ -38,8 +38,6 @@ class ListsItem {
 }
 
 class _PointMenuState extends State<PointMenu> {
-
-
   final storage = FlutterSecureStorage();
 
   @override
@@ -79,9 +77,6 @@ class _PointMenuState extends State<PointMenu> {
   ];
 
   getPointItems() async {
-    var screenWidth = MediaQuery.of(context).size.width;
-    var itemHeight = 220.0;
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
     // String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
     String request = "http://10.0.2.2:8080/point/" + "1" + "/products";
@@ -98,19 +93,12 @@ class _PointMenuState extends State<PointMenu> {
           tempGridChild.add(
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(child: Item(item.name, item.price, item.category),
-                  //child: SimpleFoldingCell(
-                  //frontWidget: FrontWidget(
-                  //item.name, item.price, item.category),
-                  //innerTopWidget: InnerTopWidget(item.name),
-                  //innerBottomWidget: InnerBottomWidget(item.name),
-
-                  //cellSize: Size(screenWidth, itemHeight),
-                  //)
-                  decoration: BoxDecoration(
+              child: Container(
+                child: Item(item.name, item.price, item.category),
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
-              color: Colors.white70,
-            ),
+                  color: Colors.white70,
+                ),
               ),
             ),
           );
@@ -150,7 +138,9 @@ class _PointMenuState extends State<PointMenu> {
                 // Then close the drawer
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PointHomeScreen.fromBase64(storage.read(key: "jwt").toString())));
+                    MaterialPageRoute(
+                        builder: (context) => PointHomeScreen.fromBase64(
+                            storage.read(key: "jwt").toString())));
               },
             ),
             ListTile(
@@ -201,17 +191,14 @@ class _PointMenuState extends State<PointMenu> {
         child: Icon(Icons.add),
         onPressed: () {
           setState(() {
-            gridChild.add(
-              Container(
-                  child: SimpleFoldingCell(
-                frontWidget: FrontWidget("Pizza", "20.0", "Italia"),
-                // innerTopWidget: InnerTopWidget(),
-                innerBottomWidget: InnerBottomWidget("Pizza"),
-
-                cellSize: Size(screenWidth, itemHeight),
-                // padding: EdgeInsets.all(8.0)
-              )),
-            );
+            gridChild.add(Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                    child: Item("<Nazwa produktu>", "<cena>", "<kategoria>"),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Colors.white70,
+                    ))));
           });
         },
       ),
@@ -226,109 +213,12 @@ class _PointMenuState extends State<PointMenu> {
     );
   }
 
-  Container FrontWidget(
-      String productName, String productPrice, String productCategory) {
-    // Container FrontWidget() {
-
-    return Container(
-        alignment: Alignment.center,
-        child: Row(children: <Widget>[
-          Expanded(
-              // flex: 1,
-              child: Container(
-            child: Container(
-                child: Row(children: <Widget>[
-              Container(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    productPrice,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  ),
-                ),
-              ),
-              Container(),
-            ])),
-          )),
-          Expanded(
-              // flex: 2,
-              child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: Colors.white70,
-                  ),
-                  child: Container(
-                    child: Column(children: <Widget>[
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            productName,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Image.asset(
-                        "pizza.jpg",
-                        height: 100,
-                        width: 100,
-                      ),
-                      Text('productCategory'),
-                      SizedBox(
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditProduct()));
-                          },
-                          child: Text("Edytuj"),
-                          color: Colors.blueGrey,
-                          textColor: Colors.white,
-                          padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                          splashColor: Colors.white,
-                        ),
-                        width: 100,
-                        height: 40,
-                      ),
-                    ]),
-                  )))
-        ]));
-  }
-
-  Container InnerTopWidget(String productName) {
-    return Container(
-      color: Colors.black,
-      child: Text(productName),
-    );
-  }
-
-  Container InnerBottomWidget(String productName) {
-    return Container(
-      color: Colors.red,
-      child: Text(productName),
-    );
-  }
-
   Container Item(String productName, String price, String category) {
     return Container(
-
-          decoration: BoxDecoration(
-            color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
           borderRadius: BorderRadius.circular(15.0),
         ),
-
-
         child: Column(children: [
           Center(
             child: Padding(

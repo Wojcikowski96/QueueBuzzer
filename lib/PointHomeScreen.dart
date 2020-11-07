@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:PointOwner/PointMenu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:folding_cell/folding_cell.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,6 +43,7 @@ class ListsItem {
 
 class _PointHomeScreenState extends State<PointHomeScreen> {
 
+  var storage = FlutterSecureStorage();
   String pointID = "4";
 
   List<Widget> gridChild = [
@@ -70,27 +72,17 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
     ),
   ];
 
+  String pointName = "kiedys tu bedize nazwa restauracji";
 
-  getPointItems() async {
-    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    // var jsonResponse = null;
-    // String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
-    // var response = await http.get(request);
-    // if (response.statusCode == 200) {
-    //   jsonResponse = json.decode(response.body);
-    //   if (jsonResponse != null) {
-    //     Iterable iterable = json.decode(response.body);
-    //     List<ListsItem> posts = List<Map>.from(iterable)
-    //         .map(
-    //             (Map model) => ListsItem.fromJson(model)
-    //           )
-    //         .toList();
-    //     sharedPreferences.setString("token", jsonResponse['token']);
-    //     List<Container> widgets = posts.map((e) => FrontWidget(e.name, e.price, e.category)).toList();
-    //     gridChild.addAll(widgets);
-    //
-    //   }
-    // }
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      String tempPointName = (await storage.read(key: "pointName")).toString();
+      setState(() {
+        pointName  = tempPointName;
+      });
+    });
   }
 
     @override
@@ -99,8 +91,6 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
           .of(context)
           .size
           .width;
-      getPointItems();
-      var itemHeight = 220.0;
       return Scaffold(
         drawer: Drawer(
           // Add a ListView to the drawer. This ensures the user can scroll
@@ -161,7 +151,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
           // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
           //
           // }),
-            title: Text("Nazwa restauracji"),
+            title: Text(pointName),
             actions: <Widget>[
               IconButton(icon: Icon(Icons.people), onPressed: () {
                 Scaffold.of(context).showSnackBar(new SnackBar(
