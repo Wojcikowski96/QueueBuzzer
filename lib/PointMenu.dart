@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:PointOwner/EditProduct.dart';
 import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:folding_cell/folding_cell.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,10 @@ class ListsItem {
 }
 
 class _PointMenuState extends State<PointMenu> {
+
+
+  final storage = FlutterSecureStorage();
+
   @override
   void initState() {
     super.initState();
@@ -143,8 +148,9 @@ class _PointMenuState extends State<PointMenu> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PointHomeScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PointHomeScreen.fromBase64(storage.read(key: "jwt").toString())));
               },
             ),
             ListTile(
