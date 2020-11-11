@@ -68,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
       var jsonResponse = json.decode(res.body);
       var jsonPointEncoded = json.encode(jsonResponse["point"]);
       var jsonPoint = json.decode(jsonPointEncoded);
+
       if (jsonPoint != null) {
         storage.write(key: "pointName", value: jsonPoint["name"]);
         storage.write(key: "pointID", value: jsonResponse["id"].toString());
