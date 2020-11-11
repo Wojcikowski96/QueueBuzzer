@@ -203,6 +203,13 @@ class _PointMenuState extends State<PointMenu> {
         },
       ),
       body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("food.jpg"),
+            fit: BoxFit.cover,
+            colorFilter:  ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
+          ),
+        ),
         child: GridView.count(
           crossAxisCount: 1,
           childAspectRatio: (screenWidth / itemHeight),

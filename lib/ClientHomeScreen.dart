@@ -36,11 +36,13 @@ class ListsItem {
 }
 
 getPropertiesFromJson(json){
-  int waitTime = json['avgAwaitTime'];
-  return waitTime.toString();
+  List<String> properties = new List();
+  properties.add(json['name']);
+  properties.add(json['avgAwaitTime'].toString());
+  return properties;
 }
 
-getAvgTime() async {
+getProperties() async {
   var jsonResponse = null;
   String request = "http://10.0.2.2:8080/point/" + "1";
   var response = await http.get(request);
@@ -56,9 +58,12 @@ getAvgTime() async {
 
 class _PointMenuState extends State<PointMenu> {
 
+  String pointName = "Nazwa restauracji";
+
   @override
   void initState() {
     super.initState();
+
     Future.delayed(Duration.zero, () {
       getPointItems();
     });
@@ -124,9 +129,9 @@ class _PointMenuState extends State<PointMenu> {
                 ),),
             ),
             FutureBuilder<dynamic>(
-              future: getAvgTime(),
+              future: getProperties(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) return Text(snapshot.data,
+                if (snapshot.hasData) return Text(snapshot.data[1],
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 50
@@ -191,7 +196,21 @@ class _PointMenuState extends State<PointMenu> {
         // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
         //
         // }),
-          title: Text("Nazwa restauracji"),
+          title: FutureBuilder<dynamic>(
+            future: getProperties(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) return Center(
+                child: Text(snapshot.data[0],
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 60
+                    )),
+              );
+              else if (snapshot.hasError) return Text(snapshot.error);
+              return Text("Await for data");
+            },
+          ),
+
           actions: <Widget>[
 
           ]),
