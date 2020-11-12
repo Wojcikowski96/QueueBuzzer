@@ -67,75 +67,77 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
       body: Container(
 
-        child: Column(children: <Widget>[
-          SizedBox(
-            height: 10,
-          ),
-          Image.asset(
-            "restaurant.png",
-            width: width * 0.5,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Witam w mojej kuchni: ",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 26,
-              color: Color.fromRGBO(27, 27, 27, 1),
+        child: Center(
+          child: Column(children: <Widget>[
+            SizedBox(
+              height: 10,
             ),
-          ),
-          scanResult == '' ? Text('') : Text(scanResult),
-          /**/
-          SizedBox(
-            height: 5,
-          ),
-          Text("Skąd chcesz zamówić jedzonko?",
+            Image.asset(
+              "restaurant.png",
+              width: width * 0.5,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Witam w mojej kuchni: ",
               style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey)),
-
-          SizedBox(height: 25,),
-          SizedBox(
-            child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40),
+                fontWeight: FontWeight.bold,
+                fontSize: 26,
+                color: Color.fromRGBO(27, 27, 27, 1),
               ),
-              onPressed: scanQR,
-              child: Text("Skanuj",
-                style: TextStyle(
-                  fontSize: 35,
-                ),
-              ),
-              color: Colors.green,
-              textColor: Colors.orange,
-              padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-              splashColor: Colors.white,
             ),
-            width: 250,
-            height: 70,
-          ),
+            scanResult == '' ? Text('') : Text(scanResult),
+            /**/
+            SizedBox(
+              height: 5,
+            ),
+            Text("Skąd chcesz zamówić jedzonko?",
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey)),
 
-          Visibility(
-              visible: btnVisible,
+            SizedBox(height: 200,),
+            SizedBox(
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40),
                 ),
-                onPressed: (){},
-                child: Text("Kontynuj",
+                onPressed: scanQR,
+                child: Text("Skanuj",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 35,
                   ),
                 ),
-                color: Colors.black,
-                textColor: Colors.green,
+                color: Colors.deepOrange,
+                textColor: Colors.black,
                 padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                 splashColor: Colors.white,
-              )),
-          ]
+              ),
+              width: 250,
+              height: 70,
+            ),
+
+            Visibility(
+                visible: btnVisible,
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  onPressed: (){},
+                  child: Text("Kontynuj",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  color: Colors.black,
+                  textColor: Colors.green,
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  splashColor: Colors.white,
+                )),
+            ]
+          ),
         )
       )
     );
