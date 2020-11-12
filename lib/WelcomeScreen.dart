@@ -1,13 +1,8 @@
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:PointOwner/LoginPage.dart';
-import 'package:PointOwner/PointHomeScreen.dart';
-import 'package:PointOwner/PointMenu.dart';
 import 'package:flutter/material.dart';
-import 'package:folding_cell/folding_cell.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -29,10 +24,21 @@ class ListsItem {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
 
+  String scanResult = '';
+  bool btnVisible = false;
+
+  //function that launches the scanner
+  Future scanQR() async {
+    String cameraScanResult = await scanner.scan();
+    setState(() {
+      scanResult = cameraScanResult;
+      btnVisible = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
@@ -73,13 +79,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             height: 10,
           ),
           Text(
-            "Sieeeemanko witam w mojej kuchni:",
+            "Witam w mojej kuchni: ",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 26,
               color: Color.fromRGBO(27, 27, 27, 1),
             ),
           ),
+          scanResult == '' ? Text('') : Text(scanResult),
+          /**/
           SizedBox(
             height: 5,
           ),
@@ -89,10 +97,47 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   fontWeight: FontWeight.w500,
                   color: Colors.grey)),
 
+          SizedBox(height: 25,),
+          SizedBox(
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40),
+              ),
+              onPressed: scanQR,
+              child: Text("Skanuj",
+                style: TextStyle(
+                  fontSize: 35,
+                ),
+              ),
+              color: Colors.green,
+              textColor: Colors.orange,
+              padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+              splashColor: Colors.white,
+            ),
+            width: 250,
+            height: 70,
+          ),
+
+          Visibility(
+              visible: btnVisible,
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                onPressed: (){},
+                child: Text("Kontynuj",
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                color: Colors.black,
+                textColor: Colors.green,
+                padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                splashColor: Colors.white,
+              )),
           ]
         )
       )
     );
-
   }
 }
