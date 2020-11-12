@@ -88,7 +88,6 @@ class _LoginPageState extends State<LoginPage> {
     var jwt = await attemptLogIn(pointEmail, password);
     if(jwt != null) {
       storage.write(key: "jwt", value: jwt);
-
       int response = await getPointByMail(pointEmail);
       if (response == 200) {
         Navigator.push(

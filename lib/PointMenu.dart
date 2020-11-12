@@ -288,7 +288,12 @@ class _PointMenuState extends State<PointMenu> {
                   ),
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => EditProduct()));
+                        MaterialPageRoute(builder: (context) => EditProduct({
+                          "name":productName,
+                          "price":price.toString(),
+                          "category":category,
+                        }
+                        )));
                   },
                   child: Text("Edytuj"),
                   color: Colors.white12,
