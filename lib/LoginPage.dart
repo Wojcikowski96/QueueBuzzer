@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (jsonPoint != null) {
         storage.write(key: "pointName", value: jsonPoint["name"]);
-        storage.write(key: "pointID", value: jsonResponse["id"].toString());
+        storage.write(key: "pointID", value: jsonPoint["id"].toString());
       }
       print(jsonPoint["name"]);
       print(jsonPointEncoded);
