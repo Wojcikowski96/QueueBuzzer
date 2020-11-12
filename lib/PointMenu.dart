@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:PointOwner/AddProduct.dart';
 import 'package:PointOwner/EditProduct.dart';
 import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/material.dart';
@@ -78,8 +79,9 @@ class _PointMenuState extends State<PointMenu> {
 
   getPointItems() async {
     var jsonResponse = null;
+    var pointID = (await storage.read(key: "pointID")).toString();
     // String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
-    String request = "http://10.0.2.2:8080/point/" + "1" + "/products";
+    String request = "http://10.0.2.2:8080/point/" + pointID + "/products";
     var response = await http.get(request);
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
@@ -183,23 +185,26 @@ class _PointMenuState extends State<PointMenu> {
                 icon: Icon(Icons.people),
                 onPressed: () {
                   Scaffold.of(context).showSnackBar(
-                      new SnackBar(content: Text('Yay! A SnackBar!')));
+                      new SnackBar(content: Text('Tu chyba nic jednak nie bedzie')));
                 })
           ]),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.deepOrange,
         child: Icon(Icons.add),
         onPressed: () {
-          setState(() {
-            gridChild.add(Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                    child: Item("<Nazwa produktu>", "<cena>", "<kategoria>"),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: Colors.white70,
-                    ))));
-          });
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddProduct()));
+          // setState(() {
+          //   // gridChild.add(Padding(
+          //   //     padding: const EdgeInsets.all(8.0),
+          //   //     child: Container(
+          //   //         child: Item("<Nazwa produktu>", "<cena>", "<kategoria>"),
+          //   //         decoration: BoxDecoration(
+          //   //           borderRadius: BorderRadius.circular(15.0),
+          //   //           color: Colors.white70,
+          //   //         ))));
+          // });
         },
       ),
       body: Container(
