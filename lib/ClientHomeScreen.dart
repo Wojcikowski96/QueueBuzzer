@@ -1,13 +1,9 @@
 import 'dart:convert';
 import 'dart:ui';
-
-import 'package:PointOwner/EditProduct.dart';
-import 'package:PointOwner/PointHomeScreen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:folding_cell/folding_cell.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+
+
+import 'package:flutter/material.dart';
 
 class PointMenu extends StatefulWidget {
   @override
@@ -18,13 +14,14 @@ class PointMenu extends StatefulWidget {
 
 class ListsItem {
   String name, price, category;
-
+  bool avability;
   ListsItem();
 
-  ListsItem.construct(String name, String price, String category) {
+  ListsItem.construct(String name, String price, String category, bool avability) {
     this.name = name;
     this.price = price;
     this.category = category;
+    this.avability = avability;
   }
 
   static fromJson(json) {
@@ -33,16 +30,40 @@ class ListsItem {
     p.name = json['name'];
     p.price = json['price'].toString();
     p.category = json['category'];
+    p.avability = json['avaliability'];
     return p;
   }
 }
 
+getPropertiesFromJson(json){
+  List<String> properties = new List();
+  properties.add(json['name']);
+  properties.add(json['avgAwaitTime'].toString());
+  return properties;
+}
+
+getProperties() async {
+  var jsonResponse = null;
+  String request = "http://10.0.2.2:8080/point/" + "1";
+  var response = await http.get(request);
+  if (response.statusCode == 200) {
+    jsonResponse = json.decode(response.body);
+
+    if (jsonResponse != null) {
+      var decoded = json.decode(response.body);
+      return getPropertiesFromJson(decoded);
+    }
+  }
+}
+
 class _PointMenuState extends State<PointMenu> {
-  final storage = FlutterSecureStorage();
+
+  String pointName = "Nazwa restauracji";
 
   @override
   void initState() {
     super.initState();
+
     Future.delayed(Duration.zero, () {
       getPointItems();
     });
@@ -50,33 +71,85 @@ class _PointMenuState extends State<PointMenu> {
 
   String pointID = "4";
 
+
   List<Widget> gridChild = [
+
     Container(
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage("food.jpg"),
           fit: BoxFit.cover,
+          colorFilter:  ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
         ),
       ),
+
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: Center(
-          child: Text(
-            'Twoje menu:',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ),
+        child: Column(
+          children: [
+            Center(child: Text('Menu restauracji:',
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.white,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),)),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(15.0),
 
+              ),
+              child: Text('Osób w kolejce: ',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),),
+            ),
+            Container(
+              child: Text('<Null>',
+                style: TextStyle(
+                    fontSize: 50,
+                    color: Colors.white
+                ),),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(15.0),
+
+              ),
+              child: Text('Średni czas oczekiwania: ',
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white
+                ),),
+            ),
+            FutureBuilder<dynamic>(
+              future: getProperties(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) return Text(snapshot.data[1],
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 50
+                    ));
+                else if (snapshot.hasError) return Text(snapshot.error);
+                return Text("Await for data");
+              },
+            )
+          ],
+        ),
         // ),
       ),
     ),
+
   ];
 
   getPointItems() async {
+
     var jsonResponse = null;
     // String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
     String request = "http://10.0.2.2:8080/point/" + "1" + "/products";
@@ -94,7 +167,7 @@ class _PointMenuState extends State<PointMenu> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                child: Item(item.name, item.price, item.category),
+                child: Item(item.name, item.price, item.category, item.avability),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   color: Colors.white70,
@@ -110,99 +183,40 @@ class _PointMenuState extends State<PointMenu> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-    var itemHeight = 243.0;
+    var itemHeight = 270.0;
     return Scaffold(
-      backgroundColor: Colors.white54,
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text('Drawer Header'),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange,
-              ),
-            ),
-            ListTile(
-              title: Text('Strona główna punktu'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PointHomeScreen.fromBase64(
-                            storage.read(key: "jwt").toString())));
-              },
-            ),
-            ListTile(
-              title: Text('Edytuj menu'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.of(context).pop();
-              },
-            ),
-            ListTile(
-              title: Text('Podgląd menu'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Ustawienia Punktu'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+      backgroundColor: Colors.grey,
+
       appBar: AppBar(
-          // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
-          //
-          // }),
-          title: Text("Nazwa restauracji"),
+        // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
+        //
+        // }),
+          title: FutureBuilder<dynamic>(
+            future: getProperties(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) return Center(
+                child: Text(snapshot.data[0],
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 60
+                    )),
+              );
+              else if (snapshot.hasError) return Text(snapshot.error);
+              return Text("Await for data");
+            },
+          ),
+
           actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.people),
-                onPressed: () {
-                  Scaffold.of(context).showSnackBar(
-                      new SnackBar(content: Text('Yay! A SnackBar!')));
-                })
+
           ]),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepOrange,
-        child: Icon(Icons.add),
-        onPressed: () {
-          setState(() {
-            gridChild.add(Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                    child: Item("<Nazwa produktu>", "<cena>", "<kategoria>"),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: Colors.white70,
-                    ))));
-          });
-        },
-      ),
+
       body: Container(
+
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("food.jpg"),
@@ -210,17 +224,20 @@ class _PointMenuState extends State<PointMenu> {
             colorFilter:  ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
           ),
         ),
+
         child: GridView.count(
           crossAxisCount: 1,
           childAspectRatio: (screenWidth / itemHeight),
           children:
-              List.generate(gridChild.length, (index) => gridChild[index]),
+          List.generate(gridChild.length, (index) => gridChild[index]),
         ),
+
       ),
+
     );
   }
 
-  Container Item(String productName, String price, String category) {
+  Container Item(String productName, String price, String category, bool avability) {
     return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -257,19 +274,27 @@ class _PointMenuState extends State<PointMenu> {
                     ),
                     Text('Kategoria:', style: TextStyle(fontSize: 20)),
                     Text(category),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text('Dostępny:', style: TextStyle(fontSize: 20)),
+                    Text(avability.toString()),
+
+
                   ],
                 ),
                 Expanded(
                     child: Column(
-                  //crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Image.asset(
-                      "pizza.jpg",
-                      height: 110,
-                      width: 110,
-                    )
-                  ],
-                ))
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "pizza.jpg",
+                          height: 150,
+                          width: 150,
+                        )
+                      ],
+                    ))
               ],
             ),
           ),
@@ -282,10 +307,9 @@ class _PointMenuState extends State<PointMenu> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => EditProduct()));
+
                   },
-                  child: Text("Edytuj"),
+                  child: Text("Zamawiam"),
                   color: Colors.white12,
                   textColor: Colors.white,
                   padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -297,5 +321,12 @@ class _PointMenuState extends State<PointMenu> {
             ],
           )
         ]));
+
+  }
+  String getNumOfPeople(){
+    return '5';
+  }
+  String avgWaitTime(String waittime){
+    return waittime;
   }
 }
