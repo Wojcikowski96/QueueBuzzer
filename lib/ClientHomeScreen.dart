@@ -11,6 +11,8 @@ class ClientHomeScreen extends StatefulWidget {
   _ClientHomeScreenState createState() => _ClientHomeScreenState();
 }
 
+
+var storage = FlutterSecureStorage();
 // Grid(TextEditingController pointID);
 
 class ListsItem {
@@ -45,9 +47,8 @@ getPropertiesFromJson(json){
 
 getProperties() async {
   var jsonResponse = null;
-  var storage = FlutterSecureStorage();
   var pointID = (await storage.read(key: "pointID")).toString();
-  String request = "http://10.0.2.2:8080/point/" + "1";
+  String request = "http://10.0.2.2:8080/point/" + pointID;
   var response = await http.get(request);
   if (response.statusCode == 200) {
     jsonResponse = json.decode(response.body);
@@ -67,8 +68,12 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
   void initState() {
     super.initState();
 
-    Future.delayed(Duration.zero, () {
+    Future.delayed(Duration.zero, () async {
       getPointItems();
+      String tempPointName = (await storage.read(key: "pointName")).toString();
+      setState(() {
+        pointName  = tempPointName;
+      });
     });
   }
 
@@ -157,8 +162,8 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
   getPointItems() async {
 
     var jsonResponse = null;
-    // String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
-    String request = "http://10.0.2.2:8080/point/" + "1" + "/products";
+    var pointID = (await storage.read(key: "pointID")).toString();
+    String request = "http://10.0.2.2:8080/point/" + pointID + "/products";
     var response = await http.get(request);
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
@@ -202,19 +207,24 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
         // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
         //
         // }),
-          title: FutureBuilder<dynamic>(
-            future: getProperties(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData)
-                child: Text(snapshot.data[0],
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25
-                    ));
-              else if (snapshot.hasError) return Text(snapshot.error);
-              return Text("Await for data");
-            },
-          ),
+        title: Text(pointName),
+        //   title: FutureBuilder<dynamic>(
+        //     future: getProperties(),
+        //     builder: (context, snapshot) {
+        //       if (snapshot.hasData) {
+        //         child: Text(snapshot.data[0],
+        //               style: TextStyle(
+        //                 color: Colors.white,
+        //                 fontSize: 25
+        //             ));
+        //       } else {
+        //         if (snapshot.hasError) {
+        //           return Text(snapshot.error);
+        //         }
+        //       }
+        //       return Text("Await for data");
+        //     },
+        //   ),
 
           actions: <Widget>[
 
