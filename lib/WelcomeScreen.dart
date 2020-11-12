@@ -2,7 +2,10 @@ import 'dart:ui';
 
 import 'package:PointOwner/LoginPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
+
+import 'ClientHomeScreen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -23,6 +26,8 @@ class ListsItem {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+
+  final storage = FlutterSecureStorage();
 
   String scanResult = '';
   bool btnVisible = false;
@@ -125,14 +130,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40),
                   ),
-                  onPressed: (){},
+                  onPressed: () async {
+                    await storage.write(key: "pointID", value: scanResult);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ClientHomeScreen()));
+                  },
                   child: Text("Kontynuj",
                     style: TextStyle(
                       fontSize: 16,
                     ),
                   ),
-                  color: Colors.black,
-                  textColor: Colors.green,
+                  color: Colors.deepOrange,
+                  textColor: Colors.black,
                   padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                   splashColor: Colors.white,
                 )),

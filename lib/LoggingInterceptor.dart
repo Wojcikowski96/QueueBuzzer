@@ -6,7 +6,7 @@ class LoggingInterceptor implements InterceptorContract {
   @override
   Future<RequestData> interceptRequest({RequestData data}) async {
     try {
-      String jwt = await storage.read(key: "jwt").toString();
+      String jwt = (await storage.read(key: "jwt")).toString();
       data.headers["Authorization"] = "Bearer $jwt";
     } catch (e) {
       print(e);

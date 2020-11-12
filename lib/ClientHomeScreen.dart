@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 
 import 'package:flutter/material.dart';
 
-class PointMenu extends StatefulWidget {
+class ClientHomeScreen extends StatefulWidget {
   @override
-  _PointMenuState createState() => _PointMenuState();
+  _ClientHomeScreenState createState() => _ClientHomeScreenState();
 }
 
 // Grid(TextEditingController pointID);
@@ -44,6 +45,8 @@ getPropertiesFromJson(json){
 
 getProperties() async {
   var jsonResponse = null;
+  var storage = FlutterSecureStorage();
+  var pointID = (await storage.read(key: "pointID")).toString();
   String request = "http://10.0.2.2:8080/point/" + "1";
   var response = await http.get(request);
   if (response.statusCode == 200) {
@@ -56,7 +59,7 @@ getProperties() async {
   }
 }
 
-class _PointMenuState extends State<PointMenu> {
+class _ClientHomeScreenState extends State<ClientHomeScreen> {
 
   String pointName = "Nazwa restauracji";
 
@@ -94,6 +97,9 @@ class _PointMenuState extends State<PointMenu> {
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.bold,
               ),)),
+            SizedBox(
+              height: 20,
+            ),
             Container(
               decoration: BoxDecoration(
                 color: Colors.transparent,
@@ -107,9 +113,9 @@ class _PointMenuState extends State<PointMenu> {
                 ),),
             ),
             Container(
-              child: Text('<Null>',
+              child: Text('5',
                 style: TextStyle(
-                    fontSize: 50,
+                    fontSize: 30,
                     color: Colors.white
                 ),),
             ),
@@ -134,7 +140,7 @@ class _PointMenuState extends State<PointMenu> {
                 if (snapshot.hasData) return Text(snapshot.data[1],
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 50
+                        fontSize: 30
                     ));
                 else if (snapshot.hasError) return Text(snapshot.error);
                 return Text("Await for data");
@@ -199,13 +205,12 @@ class _PointMenuState extends State<PointMenu> {
           title: FutureBuilder<dynamic>(
             future: getProperties(),
             builder: (context, snapshot) {
-              if (snapshot.hasData) return Center(
+              if (snapshot.hasData)
                 child: Text(snapshot.data[0],
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 60
-                    )),
-              );
+                        fontSize: 25
+                    ));
               else if (snapshot.hasError) return Text(snapshot.error);
               return Text("Await for data");
             },
