@@ -6,9 +6,7 @@ import 'package:PointOwner/EditProduct.dart';
 import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:folding_cell/folding_cell.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PointMenu extends StatefulWidget {
   @override

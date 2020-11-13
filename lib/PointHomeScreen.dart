@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:PointOwner/PointMenu.dart';
+import 'package:PointOwner/qrGenerate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:folding_cell/folding_cell.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PointHomeScreen extends StatefulWidget {
   @override
@@ -87,10 +85,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
 
     @override
     Widget build(BuildContext context) {
-      var screenWidth = MediaQuery
-          .of(context)
-          .size
-          .width;
+
       return Scaffold(
         drawer: Drawer(
           // Add a ListView to the drawer. This ensures the user can scroll
@@ -142,6 +137,17 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
                   // ...
                   // Then close the drawer
                   Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Generator QR'),
+                onTap: () {
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => GeneratePage()));
                 },
               ),
             ],
