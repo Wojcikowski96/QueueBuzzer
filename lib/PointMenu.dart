@@ -287,9 +287,9 @@ class _PointMenuState extends State<PointMenu> {
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => EditProduct({
-                          "name":productName,
-                          "price":price.toString(),
-                          "category":category,
+                          "name": productName,
+                          "price": price.toString(),
+                          "category": category,
                         }
                         )));
                   },
