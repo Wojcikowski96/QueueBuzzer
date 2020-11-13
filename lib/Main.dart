@@ -1,6 +1,5 @@
 import 'package:PointOwner/WelcomeScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:PointOwner/LoginPage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() => runApp(MyApp());

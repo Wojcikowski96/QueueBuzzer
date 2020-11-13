@@ -14,21 +14,25 @@ class EditProduct extends StatelessWidget {
     "category":"Category"
   };
 
-  EditProduct( Map <String,String> pMap){
-    paramMap = pMap;
-  }
-
-
   final TextEditingController productName = new TextEditingController();
   final TextEditingController productCategory = new TextEditingController();
   final TextEditingController productPrice = new TextEditingController();
+
+
+  EditProduct( Map <String,String> pMap){
+    paramMap = pMap;
+    productName.text = paramMap["name"];
+    productCategory.text = paramMap["category"];
+    productPrice.text = paramMap["price"];
+  }
+
 
   Future<String> patchProduct() async {
     var storage = FlutterSecureStorage();
     var pointID = (await storage.read(key: "pointID")).toString();
     print(pointID);
     var res = await http.patch(
-        "$SERVER_IP/product",
+        "$SERVER_IP/product",//dodac /ID produktu
         body: jsonEncode(<String, dynamic>{
           "category": productCategory.text,
           "name": productName.text,
@@ -92,7 +96,7 @@ class EditProduct extends StatelessWidget {
                       margin: EdgeInsets.only(right: 10, left: 10),
                       child: TextFormField(
                         controller: productName,
-                        initialValue: paramMap["name"],
+                        // initialValue: paramMap["name"],
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(top: 20, bottom: 20),
                             prefixIcon: Padding(
@@ -101,7 +105,7 @@ class EditProduct extends StatelessWidget {
                             ),
                             filled: true,
                             fillColor: Colors.grey.withOpacity(0.7),
-                            hintText: "Nazwa produktu",
+                            // hintText: "Nazwa produktu",
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide(
@@ -125,7 +129,7 @@ class EditProduct extends StatelessWidget {
                       margin: EdgeInsets.only(right: 10, left: 10),
                       child: TextFormField(
                         controller: productCategory,
-                        initialValue: paramMap["category"],
+                        // initialValue: paramMap["category"],
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(top: 20, bottom: 20),
                             prefixIcon: Padding(
@@ -157,7 +161,7 @@ class EditProduct extends StatelessWidget {
                       margin: EdgeInsets.only(right: 10, left: 10),
                       child: TextFormField(
                         controller: productPrice,
-                        initialValue: paramMap["price"],
+                        // initialValue: paramMap["price"],
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(top: 20, bottom: 20),
                             prefixIcon: Padding(
