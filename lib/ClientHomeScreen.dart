@@ -194,8 +194,6 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
