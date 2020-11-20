@@ -56,6 +56,7 @@ class _PointMenuState extends State<PointMenu> {
   List<List<Widget>> gridChildren = new List();
 
   getPointItems() async {
+
     List<String> categories = new List();
 
     var jsonResponse = null;
@@ -81,17 +82,6 @@ class _PointMenuState extends State<PointMenu> {
 
         for (String category in tempUniqueCategories) {
           List<Widget> tempGridChild = gridChild.toList();
-          tempGridChild.add(Center(
-            child: Text(
-              'Twoje menu: ' + category,
-              style: TextStyle(
-                fontSize: 40,
-                color: Colors.white,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ));
           for (dynamic item in posts) {
             if (category == item.category.toString()) {
               tempGridChild.add(
@@ -222,20 +212,25 @@ class _PointMenuState extends State<PointMenu> {
                 Colors.black.withOpacity(0.5), BlendMode.darken),
           ),
         ),
-        child: PageView.builder(
-          itemCount: uniqueCategories.length,
-          scrollDirection: Axis.horizontal,
-          reverse: false,
-          onPageChanged: getPageNum,
-          itemBuilder: (BuildContext context, int index) {
-            return new GridView.count(
-              crossAxisCount: 1,
-              childAspectRatio: (screenWidth / itemHeight),
-              children: List.generate(gridChildren[index].length,
-                  (index2) => gridChildren[index][index2]),
-            );
-          },
-        ),
+        child: Column(children: [
+          scrollingCategories(uniqueCategories[categoryNumber]),
+          Expanded(
+            child: PageView.builder(
+              itemCount: uniqueCategories.length,
+              scrollDirection: Axis.horizontal,
+              reverse: false,
+              onPageChanged: getPageNum,
+              itemBuilder: (BuildContext context, int index) {
+                return new GridView.count(
+                  crossAxisCount: 1,
+                  childAspectRatio: (screenWidth / itemHeight),
+                  children: List.generate(gridChildren[index].length,
+                          (index2) => gridChildren[index][index2]),
+                );
+              },
+            ),
+          ),
+        ]),
       ),
     );
   }
@@ -324,11 +319,16 @@ class _PointMenuState extends State<PointMenu> {
           )
         ]));
   }
+
+  Container scrollingCategories(String category) {
+    return Container(
+      child: Text(
+        category + ':',
+        style: TextStyle(fontSize: 40, color: Colors.white),
+      ),
+    );
+  }
   getPageNum(int page) {
-    setState(() {
-      categoryNumber=page;
-    });
-    print('Bieżąca strona');
-    print(page);
+    categoryNumber=page;
   }
 }
