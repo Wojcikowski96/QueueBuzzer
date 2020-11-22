@@ -47,35 +47,18 @@ class _PointMenuState extends State<PointMenu> {
     });
   }
 
+  static int categoryNumber=0;
+
   String pointID = "4";
+  List<String> uniqueCategories = new List();
+  List<Widget> gridChild = [];
 
-  List<Widget> gridChild = [
-    Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("food.jpg"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: Center(
-          child: Text(
-            'Twoje menu:',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ),
-
-        // ),
-      ),
-    ),
-  ];
+  List<List<Widget>> gridChildren = new List();
 
   getPointItems() async {
+
+    List<String> categories = new List();
+
     var jsonResponse = null;
     var pointID = (await storage.read(key: "pointID")).toString();
     // String request = "http://10.0.2.2:8080/point/" + sharedPreferences.getString('token') + "/products";
@@ -88,23 +71,39 @@ class _PointMenuState extends State<PointMenu> {
         List<dynamic> posts = List<Map>.from(iterable)
             .map((Map model) => ListsItem.fromJson(model))
             .toList();
-        List<Widget> tempGridChild = gridChild.toList();
+
+        List<List<Widget>> tempGridChildren = gridChildren.toList();
+
         for (dynamic item in posts) {
-          tempGridChild.add(
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                child: Item(item.name, item.price, item.category),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  color: Colors.white70,
-                ),
-              ),
-            ),
-          );
+          categories.add(item.category.toString());
         }
+
+        List<String> tempUniqueCategories = categories.toSet().toList();
+
+        for (String category in tempUniqueCategories) {
+          List<Widget> tempGridChild = gridChild.toList();
+          for (dynamic item in posts) {
+            if (category == item.category.toString()) {
+              tempGridChild.add(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    child: Item(item.name, item.price, item.category),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Colors.white70,
+                    ),
+                  ),
+                ),
+              );
+            }
+          }
+          tempGridChildren.add(tempGridChild);
+        }
+
         setState(() {
-          gridChild = tempGridChild;
+          gridChildren = tempGridChildren;
+          uniqueCategories = tempUniqueCategories;
         });
       }
     }
@@ -182,8 +181,8 @@ class _PointMenuState extends State<PointMenu> {
             IconButton(
                 icon: Icon(Icons.people),
                 onPressed: () {
-                  Scaffold.of(context).showSnackBar(
-                      new SnackBar(content: Text('Tu chyba nic jednak nie bedzie')));
+                  Scaffold.of(context).showSnackBar(new SnackBar(
+                      content: Text('Tu chyba nic jednak nie bedzie')));
                 })
           ]),
       floatingActionButton: FloatingActionButton(
@@ -191,8 +190,7 @@ class _PointMenuState extends State<PointMenu> {
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddProduct()));
+              context, MaterialPageRoute(builder: (context) => AddProduct()));
           // setState(() {
           //   // gridChild.add(Padding(
           //   //     padding: const EdgeInsets.all(8.0),
@@ -210,15 +208,29 @@ class _PointMenuState extends State<PointMenu> {
           image: DecorationImage(
             image: AssetImage("food.jpg"),
             fit: BoxFit.cover,
-            colorFilter:  ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5), BlendMode.darken),
           ),
         ),
-        child: GridView.count(
-          crossAxisCount: 1,
-          childAspectRatio: (screenWidth / itemHeight),
-          children:
-              List.generate(gridChild.length, (index) => gridChild[index]),
-        ),
+        child: Column(children: [
+          scrollingCategories(uniqueCategories[categoryNumber]),
+          Expanded(
+            child: PageView.builder(
+              itemCount: uniqueCategories.length,
+              scrollDirection: Axis.horizontal,
+              reverse: false,
+              onPageChanged: getPageNum,
+              itemBuilder: (BuildContext context, int index) {
+                return new GridView.count(
+                  crossAxisCount: 1,
+                  childAspectRatio: (screenWidth / itemHeight),
+                  children: List.generate(gridChildren[index].length,
+                          (index2) => gridChildren[index][index2]),
+                );
+              },
+            ),
+          ),
+        ]),
       ),
     );
   }
@@ -285,13 +297,14 @@ class _PointMenuState extends State<PointMenu> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => EditProduct({
-                          "name": productName,
-                          "price": price.toString(),
-                          "category": category,
-                        }
-                        )));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditProduct({
+                                  "name": productName,
+                                  "price": price.toString(),
+                                  "category": category,
+                                })));
                   },
                   child: Text("Edytuj"),
                   color: Colors.white12,
@@ -305,5 +318,17 @@ class _PointMenuState extends State<PointMenu> {
             ],
           )
         ]));
+  }
+
+  Container scrollingCategories(String category) {
+    return Container(
+      child: Text(
+        category + ':',
+        style: TextStyle(fontSize: 40, color: Colors.white),
+      ),
+    );
+  }
+  getPageNum(int page) {
+    categoryNumber=page;
   }
 }
