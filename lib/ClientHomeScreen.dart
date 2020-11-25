@@ -148,7 +148,21 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
           //
           // }),
           title: Text(pointName),
-          actions: <Widget>[]),
+          actions: <Widget>[
+            SizedBox(
+              child: RaisedButton.icon(
+                  color: Colors.deepOrange,
+                  icon: Icon(Icons.shopping_basket_outlined),
+                  label: Text("Status zamówienia"),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ClientOrderStatus()));
+                  }
+              ),
+            )
+          ]
+      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
