@@ -3,13 +3,36 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
 
-class GeneratePage extends StatefulWidget {
+import 'Point.dart';
+
+class GenerateQr extends StatefulWidget {
+
+  Point point;
+
+  GenerateQr(Point p) {
+    this.point = p;
+  }
+
   @override
-  State<StatefulWidget> createState() => GeneratePageState();
+  State<StatefulWidget> createState() => _GenerateQrState.withPoint(point);
 }
 
-class GeneratePageState extends State<GeneratePage> {
-  String qrData = "";  // already generated qr code when the page opens
+class _GenerateQrState extends State<GenerateQr> {
+  Point point;
+  final TextEditingController qrdataFeed = new TextEditingController();
+  String qrData = "";
+
+
+  factory _GenerateQrState.withPoint(Point p) {
+    return _GenerateQrState().withPoint(p);
+  }
+  _GenerateQrState withPoint(Point p) {
+    this.point = p;
+    qrData = point.pointID.toString();
+    qrdataFeed.text = point.pointID.toString();
+    return this;
+  }
+  _GenerateQrState(); // already generated qr code when the page opens
 
   @override
   Widget build(BuildContext context) {
@@ -74,5 +97,4 @@ class GeneratePageState extends State<GeneratePage> {
     );
   }
 
-  final qrdataFeed = TextEditingController();
 }

@@ -6,30 +6,18 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
 import 'ClientHomeScreen.dart';
+import 'Point.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class ListsItem {
-  String name, price, category;
-
-  static fromJson(json) {
-    ListsItem p = new ListsItem();
-    print(json);
-    p.name = json['name'];
-    p.price = json['price'];
-    p.category = json['category'];
-    return p;
-  }
-}
-
 class _WelcomeScreenState extends State<WelcomeScreen> {
 
   final storage = FlutterSecureStorage();
 
-  String scanResult = '';
+  String scanResult = "";
   bool btnVisible = false;
 
   //function that launches the scanner
@@ -134,7 +122,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     await storage.write(key: "pointID", value: scanResult);
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ClientHomeScreen()));
+                        MaterialPageRoute(builder: (context) => ClientHomeScreen(Point.withId(int.parse(scanResult)))));
                   },
                   child: Text("Kontynuj",
                     style: TextStyle(
