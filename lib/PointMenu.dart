@@ -47,13 +47,13 @@ class _PointMenuState extends State<PointMenu> {
     });
   }
 
-  static int categoryNumber=0;
+  int categoryNumber=0;
 
   String pointID = "4";
-  List<String> uniqueCategories = new List();
+  List<String> uniqueCategories = ['placeholder'];
   List<Widget> gridChild = [];
 
-  List<List<Widget>> gridChildren = new List();
+  List<List<Widget>> gridChildren = [[Container()]];
 
   getPointItems() async {
 
@@ -72,6 +72,7 @@ class _PointMenuState extends State<PointMenu> {
             .map((Map model) => ListsItem.fromJson(model))
             .toList();
 
+        gridChildren.removeAt(0);
         List<List<Widget>> tempGridChildren = gridChildren.toList();
 
         for (dynamic item in posts) {
@@ -104,7 +105,9 @@ class _PointMenuState extends State<PointMenu> {
         setState(() {
           gridChildren = tempGridChildren;
           uniqueCategories = tempUniqueCategories;
+
         });
+        print(uniqueCategories);
       }
     }
   }
@@ -329,6 +332,11 @@ class _PointMenuState extends State<PointMenu> {
     );
   }
   getPageNum(int page) {
-    categoryNumber=page;
+    setState(() {
+      categoryNumber=page;
+    });
+    print("Bieżąca strona");
+    print(categoryNumber);
+    print(uniqueCategories[categoryNumber]);
   }
 }

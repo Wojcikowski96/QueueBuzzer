@@ -77,9 +77,9 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
   }
 
   String pointID = "4";
-  List<String> uniqueCategories = new List();
+  List<String> uniqueCategories = ['placeholder'];
   List<Widget> gridChild = [];
-  List<List<Widget>> gridChildren = new List();
+  List<List<Widget>> gridChildren = [[Container()]];
 
   getPointItems() async {
     List<String> categories = new List();
@@ -94,6 +94,9 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
         List<dynamic> posts = List<Map>.from(iterable)
             .map((Map model) => ListsItem.fromJson(model))
             .toList();
+
+        gridChildren.removeAt(0);
+
         List<List<Widget>> tempGridChildren = gridChildren.toList();
 
         for (dynamic item in posts) {
