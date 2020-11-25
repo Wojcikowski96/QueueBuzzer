@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:PointOwner/ClientHomeScreen.dart';
 import 'package:PointOwner/PointMenu.dart';
 import 'package:PointOwner/qrGenerate.dart';
 import 'package:flutter/material.dart';
@@ -100,12 +101,18 @@ class _ClientOrderStatusState extends State<ClientOrderStatus> {
 
           title: Text(pointName),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.people), onPressed: () {
-              Scaffold.of(context).showSnackBar(new SnackBar(
-                  content: Text('Yay! A SnackBar!')
-              ));
-            })
-          ]
+        SizedBox(
+        child: RaisedButton.icon(
+            color: Colors.deepOrange,
+            icon: Icon(Icons.restaurant_menu),
+            label: Text("Menu restauracji"),
+              onPressed: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ClientHomeScreen()));
+                }
+            )
+        )]
       ),
 
 
