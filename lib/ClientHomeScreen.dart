@@ -6,37 +6,24 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
+import 'ListsItem.dart';
+import 'Point.dart';
+
 class ClientHomeScreen extends StatefulWidget {
+
+  Point point;
+
+  ClientHomeScreen(Point p) {
+    this.point = p;
+  }
+
   @override
-  _ClientHomeScreenState createState() => _ClientHomeScreenState();
+  _ClientHomeScreenState createState() => _ClientHomeScreenState.withPoint(point);
 }
 
 var storage = FlutterSecureStorage();
 // Grid(TextEditingController pointID);
 
-class ListsItem {
-  String name, price, category;
-  bool avability;
-  ListsItem();
-
-  ListsItem.construct(
-      String name, String price, String category, bool avability) {
-    this.name = name;
-    this.price = price;
-    this.category = category;
-    this.avability = avability;
-  }
-
-  static fromJson(json) {
-    ListsItem p = new ListsItem();
-    print(json);
-    p.name = json['name'];
-    p.price = json['price'].toString();
-    p.category = json['category'];
-    p.avability = json['avaliability'];
-    return p;
-  }
-}
 
 getPropertiesFromJson(json) {
   List<String> properties = new List();
@@ -63,6 +50,17 @@ getProperties() async {
 class _ClientHomeScreenState extends State<ClientHomeScreen> {
   String pointName = "Nazwa restauracji";
   int categoryNumber=0;
+
+  Point point;
+
+  factory _ClientHomeScreenState.withPoint(Point p) {
+    return _ClientHomeScreenState()._(p);
+  }
+  _ClientHomeScreenState _(Point p) {
+    this.point = p;
+    return this;
+  }
+  _ClientHomeScreenState();
 
   @override
   void initState() {
@@ -93,7 +91,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
       if (jsonResponse != null) {
         Iterable iterable = json.decode(response.body);
         List<dynamic> posts = List<Map>.from(iterable)
-            .map((Map model) => ListsItem.fromJson(model))
+            .map((Map model) => ListsItem.productFromJson(model))
             .toList();
 
         gridChildren.removeAt(0);
@@ -116,7 +114,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     child: Item(
-                        item.name, item.price, item.category, item.avability),
+                        item.name, item.price, item.category, item.avaliability),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       color: Colors.white70,
@@ -157,7 +155,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   onPressed: () {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ClientOrderStatus()));
+                        MaterialPageRoute(builder: (context) => ClientOrderStatus(point)));
                   }
               ),
             )
@@ -268,7 +266,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
 
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ClientOrderStatus()));
+                        MaterialPageRoute(builder: (context) => ClientOrderStatus(point)));
                   },
                   child: Text("Zamawiam"),
                   color: Colors.white12,

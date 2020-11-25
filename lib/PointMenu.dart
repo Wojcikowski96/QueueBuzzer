@@ -8,36 +8,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
+import 'ListsItem.dart';
+import 'Point.dart';
+
 class PointMenu extends StatefulWidget {
+
+  Point point;
+
+  PointMenu(Point p) {
+    this.point = p;
+  }
   @override
-  _PointMenuState createState() => _PointMenuState();
+  _PointMenuState createState() => _PointMenuState.withPoint(point);
 }
 
 // Grid(TextEditingController pointID);
 
-class ListsItem {
-  String name, price, category;
-
-  ListsItem();
-
-  ListsItem.construct(String name, String price, String category) {
-    this.name = name;
-    this.price = price;
-    this.category = category;
-  }
-
-  static fromJson(json) {
-    ListsItem p = new ListsItem();
-    print(json);
-    p.name = json['name'];
-    p.price = json['price'].toString();
-    p.category = json['category'];
-    return p;
-  }
-}
-
 class _PointMenuState extends State<PointMenu> {
   final storage = FlutterSecureStorage();
+  Point point;
+
+  factory _PointMenuState.withPoint(Point p) {
+    return _PointMenuState().withPoint(p);
+  }
+  _PointMenuState withPoint(Point p) {
+    this.point = p;
+    return this;
+  }
+  _PointMenuState();
 
   @override
   void initState() {
@@ -56,6 +54,7 @@ class _PointMenuState extends State<PointMenu> {
   List<List<Widget>> gridChildren = [[Container()]];
 
   getPointItems() async {
+    //TODO:Skorzystac z metody Poit.getPointInfo()
 
     List<String> categories = new List();
 
@@ -142,7 +141,8 @@ class _PointMenuState extends State<PointMenu> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => PointHomeScreen.fromBase64(
-                            storage.read(key: "jwt").toString())));
+                            storage.read(key: "jwt").toString(),
+                            this.point)));
               },
             ),
             ListTile(
@@ -193,7 +193,7 @@ class _PointMenuState extends State<PointMenu> {
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddProduct()));
+              context, MaterialPageRoute(builder: (context) => AddProduct(point)));
           // setState(() {
           //   // gridChild.add(Padding(
           //   //     padding: const EdgeInsets.all(8.0),

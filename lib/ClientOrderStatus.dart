@@ -7,14 +7,34 @@ import 'package:PointOwner/qrGenerate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'Point.dart';
+
 class ClientOrderStatus extends StatefulWidget {
+
+  Point point;
+
+  ClientOrderStatus(Point p) {
+    this.point = p;
+  }
+
   @override
-  _ClientOrderStatusState createState() => _ClientOrderStatusState();
+  _ClientOrderStatusState createState() => _ClientOrderStatusState.withPoint(point);
 
 }
 
 
 class _ClientOrderStatusState extends State<ClientOrderStatus> {
+
+  Point point;
+
+  factory _ClientOrderStatusState.withPoint(Point p) {
+    return _ClientOrderStatusState()._(p);
+  }
+  _ClientOrderStatusState _(Point p) {
+    this.point = p;
+    return this;
+  }
+  _ClientOrderStatusState();
 
   var storage = FlutterSecureStorage();
   String pointID = "4";
@@ -67,7 +87,7 @@ class _ClientOrderStatusState extends State<ClientOrderStatus> {
                 // Then close the drawer
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PointMenu()));
+                    MaterialPageRoute(builder: (context) => PointMenu(this.point)));
               },
             ),
             ListTile(
@@ -109,7 +129,7 @@ class _ClientOrderStatusState extends State<ClientOrderStatus> {
               onPressed: () {
                   Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ClientHomeScreen()));
+                  MaterialPageRoute(builder: (context) => ClientHomeScreen(point)));
                 }
             )
         )]

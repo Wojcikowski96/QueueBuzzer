@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:PointOwner/LoggingInterceptor.dart';
+import 'package:PointOwner/Point.dart';
 import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -21,6 +22,8 @@ class _LoginPageState extends State<LoginPage> {
 
   static const SERVER_IP = 'http://10.0.2.2:8080';
   final storage = FlutterSecureStorage();
+
+  Point point;
 
 
 
@@ -72,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
       if (jsonPoint != null) {
         storage.write(key: "pointName", value: jsonPoint["name"]);
         storage.write(key: "pointID", value: jsonPoint["id"].toString());
+        point = new Point.withIdAndName(jsonPoint["id"], jsonPoint["name"]);
       }
       print(jsonPoint["name"]);
       print(jsonPointEncoded);
@@ -81,8 +85,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   signIn(String id, email) async {
-    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
     var pointEmail = emailController.text;
     var password = passwordController.text;
     var jwt = await attemptLogIn(pointEmail, password);
@@ -93,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => PointHomeScreen.fromBase64(jwt)
+                builder: (context) => PointHomeScreen.fromBase64(jwt, point)
             )
         );
       }

@@ -6,40 +6,44 @@ import 'package:PointOwner/qrGenerate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'Point.dart';
+
 class PointHomeScreen extends StatefulWidget {
+  Point point;
+
   @override
-  _PointHomeScreenState createState() => _PointHomeScreenState();
+  _PointHomeScreenState createState() => _PointHomeScreenState.withPoint(point);
 
-  PointHomeScreen(this.jwt, this.payload);
+  PointHomeScreen(this.jwt, this.payload, this.point);
 
-  factory PointHomeScreen.fromBase64(String jwt) =>
-      PointHomeScreen(
-          jwt,
-          json.decode(
-              ascii.decode(
-                  base64.decode(base64.normalize(jwt.split(".")[1]))
-              )
-          )
-      );
+  factory PointHomeScreen.fromBase64(String jwt, Point p) {
+    p.jwt = jwt;
+    p.payload = json.decode(
+                      ascii.decode(
+                          base64.decode(base64.normalize(jwt.split(".")[1]))
+                      ));
+
+    return PointHomeScreen(p.jwt, p.payload, p);
+  }
 
   final String jwt;
   final Map<String, dynamic> payload;
 }
 
-class ListsItem {
-  String name, price, category;
-
-   static fromJson(json) {
-    ListsItem p = new ListsItem();
-    print(json);
-    p.name = json['name'];
-    p.price = json['price'];
-    p.category = json['category'];
-    return p;
-  }
-}
-
 class _PointHomeScreenState extends State<PointHomeScreen> {
+
+  Point point;
+
+  factory _PointHomeScreenState.withPoint(Point p) {
+    return _PointHomeScreenState().withPoint(p);
+  }
+
+  _PointHomeScreenState withPoint(Point p) {
+    this.point = p;
+    return this;
+  }
+
+  _PointHomeScreenState();
 
   var storage = FlutterSecureStorage();
   String pointID = "4";
@@ -76,7 +80,8 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      String tempPointName = (await storage.read(key: "pointName")).toString();
+      // String tempPointName = (await storage.read(key: "pointName")).toString();
+      String tempPointName = point.pointsName;
       setState(() {
         pointName  = tempPointName;
       });
@@ -118,7 +123,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
                   // Then close the drawer
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PointMenu()));
+                      MaterialPageRoute(builder: (context) => PointMenu(point)));
                 },
               ),
               ListTile(
@@ -147,7 +152,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
                   // Then close the drawer
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => GeneratePage()));
+                      MaterialPageRoute(builder: (context) => GenerateQr(point)));
                 },
               ),
             ],
@@ -199,102 +204,4 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
 
       // tutaj
     }
-
-  // Container FrontWidget(String productName, String productPrice, String productCategory) {
-  // // Container FrontWidget() {
-  //   return Container(
-  //       color: Colors.white12,
-  //       alignment: Alignment.center,
-  //       child: Row(children: <Widget>[
-  //         Expanded(
-  //           // flex: 1,
-  //             child: Container(
-  //               decoration: BoxDecoration(
-  //                 borderRadius: BorderRadius.circular(15.0),
-  //                 color: Colors.deepOrange,
-  //               ),
-  //               child: Container(
-  //                   child: Row(children: <Widget>[
-  //                     Container(
-  //                       child: Align(
-  //                         alignment: Alignment.center,
-  //                         child: Text(productPrice,
-  //                           textAlign: TextAlign.center,
-  //                           style: TextStyle(
-  //                             color: Colors.white,
-  //                             fontSize: 15,
-  //
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     Container(),
-  //                   ])
-  //               ),
-  //             )
-  //         ),
-  //         Expanded(
-  //           // flex: 2,
-  //             child: Container(
-  //                 decoration: BoxDecoration(
-  //                   borderRadius: BorderRadius.circular(15.0),
-  //                   color: Colors.white70,
-  //                 ),
-  //                 child: Container(
-  //                   child: Column(children: <Widget>[
-  //                     Container(
-  //                       child: Padding(
-  //                         padding: const EdgeInsets.all(8.0),
-  //                         child: Text(productName,
-  //                           style: TextStyle(
-  //                             color: Colors.black,
-  //                             fontSize: 15,
-  //
-  //                           ),),
-  //                       ),
-  //                     ),
-  //                     Image.asset("pizza.jpg",
-  //                       height: 100,
-  //                       width: 100,
-  //                     ),
-  //
-  //                     Text('productCategory'
-  //                     ),
-  //                     SizedBox(
-  //                       child: RaisedButton(
-  //                         shape: RoundedRectangleBorder(
-  //                           borderRadius: BorderRadius.circular(20),
-  //                         ),
-  //                         onPressed: () {
-  //
-  //                         },
-  //                         child: Text("Edytuj"),
-  //                         color: Colors.deepOrange,
-  //                         textColor: Colors.white,
-  //                         padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-  //                         splashColor: Colors.white,
-  //                       ),
-  //                       width: 100,
-  //                       height: 40,
-  //                     ),
-  //                   ]),
-  //
-  //
-  //                 )
-  //             )
-  //         )
-  //       ])
-  //   );
-  // }
-  // Container InnerTopWidget() {
-  //   return Container(
-  //       color: Colors.blueGrey
-  //
-  //   );
-  // }
-  // Container InnerBottomWidget() {
-  //   return Container(
-  //       color: Colors.white
-  //   );
-  // }
   }

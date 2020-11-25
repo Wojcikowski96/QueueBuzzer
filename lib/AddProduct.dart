@@ -4,15 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
+import 'Point.dart';
 import 'PointMenu.dart';
 
 
 class AddProduct extends StatefulWidget {
+
+  Point point;
+
+  AddProduct(Point p) {
+    this.point = p;
+  }
   @override
-  _AddProductPageState createState() => _AddProductPageState();
+  _AddProductPageState createState() => _AddProductPageState.withPoint(this.point);
 }
 
 class _AddProductPageState extends State<AddProduct> {
+
+  Point point;
+
+  factory _AddProductPageState.withPoint(Point p) {
+    return _AddProductPageState()._(p);
+  }
+  _AddProductPageState _(Point p) {
+    this.point = p;
+    return this;
+  }
+  _AddProductPageState();
 
 
   final TextEditingController productName = new TextEditingController();
@@ -242,7 +260,7 @@ class _AddProductPageState extends State<AddProduct> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => PointMenu()
+                                    builder: (context) => PointMenu(this.point)
                                 )
                             );
                           }
