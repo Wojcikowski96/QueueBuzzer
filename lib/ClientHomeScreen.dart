@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:PointOwner/ClientOrderStatus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -249,7 +250,12 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ClientOrderStatus()));
+                  },
                   child: Text("Zamawiam"),
                   color: Colors.white12,
                   textColor: Colors.white,
