@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:PointOwner/ClientHomeScreen.dart';
+import 'package:PointOwner/ConsumerHomeScreen.dart';
 import 'package:PointOwner/PointMenu.dart';
 import 'package:PointOwner/qrGenerate.dart';
 import 'package:flutter/material.dart';
@@ -9,32 +9,32 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'Point.dart';
 
-class ClientOrderStatus extends StatefulWidget {
+class ConsumerOrderStatus extends StatefulWidget {
 
   Point point;
 
-  ClientOrderStatus(Point p) {
+  ConsumerOrderStatus(Point p) {
     this.point = p;
   }
 
   @override
-  _ClientOrderStatusState createState() => _ClientOrderStatusState.withPoint(point);
+  _ConsumerOrderStatusState createState() => _ConsumerOrderStatusState.withPoint(point);
 
 }
 
 
-class _ClientOrderStatusState extends State<ClientOrderStatus> {
+class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
   Point point;
 
-  factory _ClientOrderStatusState.withPoint(Point p) {
-    return _ClientOrderStatusState()._(p);
+  factory _ConsumerOrderStatusState.withPoint(Point p) {
+    return _ConsumerOrderStatusState()._(p);
   }
-  _ClientOrderStatusState _(Point p) {
+  _ConsumerOrderStatusState _(Point p) {
     this.point = p;
     return this;
   }
-  _ClientOrderStatusState();
+  _ConsumerOrderStatusState();
 
   var storage = FlutterSecureStorage();
   String pointID = "4";
@@ -129,7 +129,7 @@ class _ClientOrderStatusState extends State<ClientOrderStatus> {
               onPressed: () {
                   Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ClientHomeScreen(point)));
+                  MaterialPageRoute(builder: (context) => ConsumerHomeScreen(point)));
                 }
             )
         )]

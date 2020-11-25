@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
-import 'package:PointOwner/ClientOrderStatus.dart';
+import 'package:PointOwner/ConsumerOrderStatus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,16 +9,16 @@ import 'package:flutter/material.dart';
 import 'ListsItem.dart';
 import 'Point.dart';
 
-class ClientHomeScreen extends StatefulWidget {
+class ConsumerHomeScreen extends StatefulWidget {
 
   Point point;
 
-  ClientHomeScreen(Point p) {
+  ConsumerHomeScreen(Point p) {
     this.point = p;
   }
 
   @override
-  _ClientHomeScreenState createState() => _ClientHomeScreenState.withPoint(point);
+  _ConsumerHomeScreenState createState() => _ConsumerHomeScreenState.withPoint(point);
 }
 
 var storage = FlutterSecureStorage();
@@ -47,20 +47,20 @@ getProperties() async {
   }
 }
 
-class _ClientHomeScreenState extends State<ClientHomeScreen> {
+class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   String pointName = "Nazwa restauracji";
   int categoryNumber=0;
 
   Point point;
 
-  factory _ClientHomeScreenState.withPoint(Point p) {
-    return _ClientHomeScreenState()._(p);
+  factory _ConsumerHomeScreenState.withPoint(Point p) {
+    return _ConsumerHomeScreenState()._(p);
   }
-  _ClientHomeScreenState _(Point p) {
+  _ConsumerHomeScreenState _(Point p) {
     this.point = p;
     return this;
   }
-  _ClientHomeScreenState();
+  _ConsumerHomeScreenState();
 
   @override
   void initState() {
@@ -155,7 +155,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   onPressed: () {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ClientOrderStatus(point)));
+                        MaterialPageRoute(builder: (context) => ConsumerOrderStatus(point)));
                   }
               ),
             )
@@ -266,7 +266,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
 
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ClientOrderStatus(point)));
+                        MaterialPageRoute(builder: (context) => ConsumerOrderStatus(point)));
                   },
                   child: Text("Zamawiam"),
                   color: Colors.white12,

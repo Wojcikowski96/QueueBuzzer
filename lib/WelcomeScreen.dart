@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
-import 'ClientHomeScreen.dart';
+import 'ConsumerHomeScreen.dart';
 import 'Point.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -122,7 +122,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     await storage.write(key: "pointID", value: scanResult);
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ClientHomeScreen(Point.withId(int.parse(scanResult)))));
+                        MaterialPageRoute(builder: (context) => ConsumerHomeScreen(Point.withId(int.parse(scanResult)))));
                   },
                   child: Text("Kontynuj",
                     style: TextStyle(
