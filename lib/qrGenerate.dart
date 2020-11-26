@@ -65,17 +65,11 @@ class _GenerateQrState extends State<GenerateQr> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 40.0, color: Colors.redAccent),
             ),
-            /*TextField(
-              controller: qrdataFeed,
-              decoration: InputDecoration(
-                hintText: "Punkt: " + qrdataFeed.text,
-              ),
-            ),*/
             Padding(
               padding: EdgeInsets.fromLTRB(40, 20, 40, 0),
               child: FlatButton(
                 padding: EdgeInsets.all(15.0),
-                onPressed: () async {
+                /*onPressed: () async {
 
                   if (qrdataFeed.text.isEmpty) {        //a little validation for the textfield
                     setState(() {
@@ -87,7 +81,7 @@ class _GenerateQrState extends State<GenerateQr> {
                     });
                   }
 
-                },
+                },*/
                 child: Text(
                   "Druk",
                   style: TextStyle(
