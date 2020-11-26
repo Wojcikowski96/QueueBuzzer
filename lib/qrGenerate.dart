@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:ui';
@@ -29,7 +30,7 @@ class _GenerateQrState extends State<GenerateQr> {
   _GenerateQrState withPoint(Point p) {
     this.point = p;
     qrData = point.pointID.toString();
-    qrdataFeed.text = point.pointID.toString();
+    qrdataFeed.text = point.pointsName;
     return this;
   }
   _GenerateQrState(); // already generated qr code when the page opens
@@ -55,15 +56,21 @@ class _GenerateQrState extends State<GenerateQr> {
               height: 40.0,
             ),
             Text(
-              "New QR Edit Text",
-              style: TextStyle(fontSize: 20.0),
+              "Punkt: ",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 30.0, color: Colors.blueAccent),
             ),
-            TextField(
+            Text(
+              qrdataFeed.text,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 40.0, color: Colors.redAccent),
+            ),
+            /*TextField(
               controller: qrdataFeed,
               decoration: InputDecoration(
-                hintText: "Input ID",
+                hintText: "Punkt: " + qrdataFeed.text,
               ),
-            ),
+            ),*/
             Padding(
               padding: EdgeInsets.fromLTRB(40, 20, 40, 0),
               child: FlatButton(
@@ -82,7 +89,7 @@ class _GenerateQrState extends State<GenerateQr> {
 
                 },
                 child: Text(
-                  "Generate QR",
+                  "Druk",
                   style: TextStyle(
                       color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
