@@ -530,7 +530,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     var res = await http.post(
         "$SERVER_IP/consumer-order",
         body: jsonEncode(<String, dynamic>{
-          "consumerId": 2,
+          "consumerId": 1,
           "pointId": point.pointID,
           "productsIds":  getProductIdsFromBasket(),
           "stateName": "ACCEPTED",
