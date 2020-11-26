@@ -60,6 +60,8 @@ flutter:
     - editProduct.png
     - food.jpg
     - basket.png
+    - basket2.png
+    - basket3.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

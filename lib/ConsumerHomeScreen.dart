@@ -6,19 +6,28 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
+import 'Consumer.dart';
 import 'ListsItem.dart';
 import 'Point.dart';
 
 class ConsumerHomeScreen extends StatefulWidget {
   Point point;
+  Consumer consumer;
 
   ConsumerHomeScreen(Point p) {
     this.point = p;
   }
 
+  ConsumerHomeScreen.withConsumer(this.point, this.consumer);
+
   @override
-  _ConsumerHomeScreenState createState() =>
-      _ConsumerHomeScreenState.withPoint(point);
+  _ConsumerHomeScreenState createState() {
+    if (consumer != null) {
+      return _ConsumerHomeScreenState.withPointAndConsumer(point, consumer);
+    } else {
+      return _ConsumerHomeScreenState.withPoint(point);
+    }
+  }
 }
 
 var storage = FlutterSecureStorage();
@@ -52,12 +61,25 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   int totalPrice = 0;
 
   Point point;
+  Consumer consumer;
 
   factory _ConsumerHomeScreenState.withPoint(Point p) {
     return _ConsumerHomeScreenState()._(p);
   }
+
+  factory _ConsumerHomeScreenState.withPointAndConsumer(Point p, Consumer c) {
+    return _ConsumerHomeScreenState().setPointAndConsumer(p, c);
+  }
+
   _ConsumerHomeScreenState _(Point p) {
     this.point = p;
+    this.consumer = Consumer();
+    return this;
+  }
+
+  _ConsumerHomeScreenState setPointAndConsumer(Point p, Consumer c) {
+    this.point = p;
+    this.consumer = c;
     return this;
   }
 
@@ -82,62 +104,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   List<List<Widget>> gridChildren = [
     [Container()]
   ];
-  List<Widget> basketItems = [Container()];
-
-  getPointItems() async {
-    List<String> categories = new List();
-    var jsonResponse = null;
-    var pointID = (await storage.read(key: "pointID")).toString();
-    String request = "http://10.0.2.2:8080/point/" + pointID + "/products";
-    var response = await http.get(request);
-    if (response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
-      if (jsonResponse != null) {
-        Iterable iterable = json.decode(response.body);
-        List<dynamic> posts = List<Map>.from(iterable)
-            .map((Map model) => ListsItem.productFromJson(model))
-            .toList();
-
-        gridChildren.removeAt(0);
-
-        List<List<Widget>> tempGridChildren = gridChildren.toList();
-
-        for (dynamic item in posts) {
-          categories.add(item.category.toString());
-        }
-
-        List<String> tempUniqueCategories = categories.toSet().toList();
-
-        for (String category in tempUniqueCategories) {
-          List<Widget> tempGridChild = gridChild.toList();
-          //tempGridChild.add(scrollingCategories(category));
-          for (dynamic item in posts) {
-            if (category == item.category.toString()) {
-              tempGridChild.add(
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    child: Item(item.name, item.price, item.category,
-                        item.avaliability),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: Colors.white70,
-                    ),
-                  ),
-                ),
-              );
-            }
-          }
-          tempGridChildren.add(tempGridChild);
-        }
-
-        setState(() {
-          gridChildren = tempGridChildren;
-          uniqueCategories = tempUniqueCategories;
-        });
-      }
-    }
-  }
+  List<Widget> basketItems = [];
 
   @override
   Widget build(BuildContext context) {
@@ -149,12 +116,21 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
           //
           // }),
+          leading: Builder(
+              builder: (ctx) => IconButton(
+              icon: Icon(Icons.shopping_basket_outlined),
+              onPressed: () => Scaffold.of(ctx).openDrawer(),
+              // onPressed: () {
+              //   Scaffold.of(ctx).showSnackBar(SnackBar(content: Text('Profile Save'),),);
+              // }
+          )
+          ),
           title: Text(pointName),
           actions: <Widget>[
             SizedBox(
               child: RaisedButton.icon(
                   color: Colors.deepOrange,
-                  icon: Icon(Icons.shopping_basket_outlined),
+                  icon: Icon(Icons.autorenew_outlined),
                   label: Text("Status zamówienia"),
                   onPressed: () {
                     Navigator.push(
@@ -168,27 +144,34 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
         child: Column(
           children: [
             DrawerHeader(
-              child: Text(
-                'Zawartość koszyka:',
-                style: TextStyle(fontSize: 30, color: Colors.white),
-              ),
-              decoration: BoxDecoration(
+              // padding: EdgeInsets.fromLTRB(16.0, 100.0, 16.0, 8.0),
+              padding: EdgeInsets.all(10.0),
+              child: Image(
                 color: Colors.deepOrange,
-                image: DecorationImage(image: AssetImage('basket.png')),
+                image: AssetImage('basket2.png'),
+                // DecorationImage(image: ),
+                // style: TextStyle(fontSize: 30, color: Colors.white),
               ),
             ),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 1,
-                childAspectRatio: (screenWidth / itemHeight * 3.2),
-                children: List.generate(
-                    basketItems.length, (index) => basketItems[index]),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 1,
+                  childAspectRatio: (screenWidth / itemHeight * 3.2),
+                  children: List.generate(
+                      basketItems.length,
+                          (index) => basketItems[index]),
+                ),
               ),
             ),
             RaisedButton(
                 child: Text('Zamów'),
                 color: Colors.deepOrange,
-                onPressed: () {})
+                onPressed: () {
+                  placeOrder();
+                })
           ],
         ),
       ),
@@ -226,7 +209,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   }
 
   Container Item(
-      String productName, String price, String category, bool availability) {
+      String productName, String price, String category, bool availability, int productID) {
     return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -300,7 +283,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                         MaterialPageRoute(
                             builder: (context) => ConsumerOrderStatus(point)));
                      */
-                    addToBasket(productName, price);
+                    addToBasket(productName, price, productID);
                   },
                   child: Text("Do koszyka"),
                   color: Colors.white12,
@@ -396,7 +379,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     );
   }
 
-  Container basketItem(String name, String price) {
+  Container basketItem(String name, String price, int productID) {
     return new Container(
       height: 30,
       color: Colors.grey,
@@ -426,17 +409,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                     color: Colors.white,
                     icon:Center(child: Icon(Icons.delete, size: 30.0)),
                    onPressed: (){
-
+                        removeFromBasket(ListsItem.constructSimple(name, price, productID));
                    },
-
-                   // child: Center(
-                        //child: Text('X',
-                            //style: TextStyle(fontSize: 20, color: Colors.white),
-                            //textAlign: TextAlign.center)),
-                    //shape: RoundedRectangleBorder(
-                        // set the value to a very big number like 100, 1000...
-                        //borderRadius: BorderRadius.circular(100)),
-                    //onPressed: () {}),
               ),
               ),
 
@@ -444,11 +418,32 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
         ),
       ),
     );
+
+
   }
 
-  addToBasket(String name, String price) {
-    List<Widget> tempBasketItems = basketItems;
-    tempBasketItems.add(basketItem(name, price));
+  addToBasket(String name, String price, int productID) {
+    consumer.addToBasket(ListsItem.constructSimple(name, price, productID));
+
+    List<Widget> tempBasketItems = new List<Widget>();
+    consumer.basket.forEach((element) {
+      tempBasketItems.add(basketItem(element.name, element.price, element.productID));
+    });
+
+    setState(() {
+      basketItems = tempBasketItems;
+    });
+  }
+
+  removeFromBasket(ListsItem item) {
+    consumer.removeFromBasket(item);
+
+    List<Widget> tempBasketItems = new List<Widget>();
+    consumer.basket.forEach((element) {
+      tempBasketItems.add(basketItem(element.name, element.price, element.productID));
+    });
+
+    print(consumer.basket);
     setState(() {
       basketItems = tempBasketItems;
     });
@@ -468,5 +463,90 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     });
     print('Bieżąca strona');
     print(page);
+  }
+
+  getPointItems() async {
+    List<String> categories = new List();
+    var jsonResponse = null;
+    var pointID = (await storage.read(key: "pointID")).toString();
+    String request = "http://10.0.2.2:8080/point/" + pointID + "/products";
+    var response = await http.get(request);
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        Iterable iterable = json.decode(response.body);
+        List<dynamic> posts = List<Map>.from(iterable)
+            .map((Map model) => ListsItem.productFromJson(model))
+            .toList();
+
+        gridChildren.removeAt(0);
+
+        List<List<Widget>> tempGridChildren = gridChildren.toList();
+
+        for (dynamic item in posts) {
+          categories.add(item.category.toString());
+        }
+
+        List<String> tempUniqueCategories = categories.toSet().toList();
+
+        for (String category in tempUniqueCategories) {
+          List<Widget> tempGridChild = gridChild.toList();
+          //tempGridChild.add(scrollingCategories(category));
+          for (dynamic item in posts) {
+            if (category == item.category.toString()) {
+              tempGridChild.add(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    child: Item(item.name, item.price, item.category,
+                        item.avaliability, item.productID),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Colors.white70,
+                    ),
+                  ),
+                ),
+              );
+            }
+          }
+          tempGridChildren.add(tempGridChild);
+        }
+
+        setState(() {
+          gridChildren = tempGridChildren;
+          uniqueCategories = tempUniqueCategories;
+        });
+      }
+    }
+  }
+  Future<void> placeOrder() async {
+    const SERVER_IP = 'http://10.0.2.2:8080';
+    Map <String,String> paramMap= {
+      "name":"Name",
+      "price":"0.0",
+      "category":"Category"
+    };
+
+    var res = await http.post(
+        "$SERVER_IP/consumer-order",
+        body: jsonEncode(<String, dynamic>{
+          "consumerId": 2,
+          "pointId": point.pointID,
+          "productsIds":  getProductIdsFromBasket(),
+          "stateName": "ACCEPTED",
+        }),
+        headers: <String, String>{
+          "Content-Type": "application/json"
+        }
+    );
+
+  }
+
+  List<int> getProductIdsFromBasket() {
+    List<int> ids = new List<int>();
+    consumer.basket.forEach((element) {
+      ids.add(element.productID);
+    });
+    return ids;
   }
 }

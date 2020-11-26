@@ -17,7 +17,7 @@ class Point {
   Point.withIdAndName(this.pointID, this.pointsName);
 
   Point.withId(this.pointID) {
-    getPointInfo();
+    // getPointInfo();
   }
 
   Future<List<String>> getPointInfo() async {
@@ -39,7 +39,8 @@ class Point {
         pointsProducts = new List<ListsItem>();
         for (dynamic item in posts) {
           categories.add(item.category.toString());
-          pointsProducts.add(ListsItem.construct(item.name, item.price, item.category, item.avaliability));
+          //cos nie dizala przy item.id
+          pointsProducts.add(ListsItem.construct(item.name, item.price, item.category, item.avaliability, item.productID));
         }
         uniqueCategories = categories;
       }
