@@ -10,7 +10,6 @@ import 'ListsItem.dart';
 import 'Point.dart';
 
 class ConsumerHomeScreen extends StatefulWidget {
-
   Point point;
 
   ConsumerHomeScreen(Point p) {
@@ -18,12 +17,12 @@ class ConsumerHomeScreen extends StatefulWidget {
   }
 
   @override
-  _ConsumerHomeScreenState createState() => _ConsumerHomeScreenState.withPoint(point);
+  _ConsumerHomeScreenState createState() =>
+      _ConsumerHomeScreenState.withPoint(point);
 }
 
 var storage = FlutterSecureStorage();
 // Grid(TextEditingController pointID);
-
 
 getPropertiesFromJson(json) {
   List<String> properties = new List();
@@ -49,7 +48,8 @@ getProperties() async {
 
 class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   String pointName = "Nazwa restauracji";
-  int categoryNumber=0;
+  int categoryNumber = 0;
+  int totalPrice = 0;
 
   Point point;
 
@@ -60,6 +60,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     this.point = p;
     return this;
   }
+
   _ConsumerHomeScreenState();
 
   @override
@@ -78,7 +79,10 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   String pointID = "4";
   List<String> uniqueCategories = ['placeholder'];
   List<Widget> gridChild = [];
-  List<List<Widget>> gridChildren = [[Container()]];
+  List<List<Widget>> gridChildren = [
+    [Container()]
+  ];
+  List<Widget> basketItems = [Container()];
 
   getPointItems() async {
     List<String> categories = new List();
@@ -113,8 +117,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    child: Item(
-                        item.name, item.price, item.category, item.avaliability),
+                    child: Item(item.name, item.price, item.category,
+                        item.avaliability),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       color: Colors.white70,
@@ -155,11 +159,38 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                   onPressed: () {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ConsumerOrderStatus(point)));
-                  }
-              ),
+                        MaterialPageRoute(
+                            builder: (context) => ConsumerOrderStatus(point)));
+                  }),
             )
-          ]
+          ]),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(
+              child: Text(
+                'Zawartość koszyka:',
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.deepOrange,
+                image: DecorationImage(image: AssetImage('basket.png')),
+              ),
+            ),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 1,
+                childAspectRatio: (screenWidth / itemHeight * 3.2),
+                children: List.generate(
+                    basketItems.length, (index) => basketItems[index]),
+              ),
+            ),
+            RaisedButton(
+                child: Text('Zamów'),
+                color: Colors.deepOrange,
+                onPressed: () {})
+          ],
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -195,7 +226,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   }
 
   Container Item(
-      String productName, String price, String category, bool avability) {
+      String productName, String price, String category, bool availability) {
     return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -236,7 +267,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                       height: 10,
                     ),
                     Text('Dostępny:', style: TextStyle(fontSize: 20)),
-                    Text(avability.toString()),
+                    Text(availability.toString()),
                   ],
                 ),
                 Expanded(
@@ -263,12 +294,15 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   onPressed: () {
-
+                    /*
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ConsumerOrderStatus(point)));
+                        MaterialPageRoute(
+                            builder: (context) => ConsumerOrderStatus(point)));
+                     */
+                    addToBasket(productName, price);
                   },
-                  child: Text("Zamawiam"),
+                  child: Text("Do koszyka"),
                   color: Colors.white12,
                   textColor: Colors.white,
                   padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -284,7 +318,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
   Container appHeader() {
     return Container(
-
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: Column(
@@ -363,6 +396,64 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     );
   }
 
+  Container basketItem(String name, String price) {
+    return new Container(
+      height: 30,
+      color: Colors.grey,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(
+              name,
+              style: TextStyle(fontSize: 20, color: Colors.white),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Text(price,
+                  style: TextStyle(fontSize: 30, color: Colors.white),
+                  textAlign: TextAlign.right),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+
+              SizedBox(
+                width:50,
+                child: IconButton(
+                    color: Colors.white,
+                    icon:Center(child: Icon(Icons.delete, size: 30.0)),
+                   onPressed: (){
+
+                   },
+
+                   // child: Center(
+                        //child: Text('X',
+                            //style: TextStyle(fontSize: 20, color: Colors.white),
+                            //textAlign: TextAlign.center)),
+                    //shape: RoundedRectangleBorder(
+                        // set the value to a very big number like 100, 1000...
+                        //borderRadius: BorderRadius.circular(100)),
+                    //onPressed: () {}),
+              ),
+              ),
+
+          ],
+        ),
+      ),
+    );
+  }
+
+  addToBasket(String name, String price) {
+    List<Widget> tempBasketItems = basketItems;
+    tempBasketItems.add(basketItem(name, price));
+    setState(() {
+      basketItems = tempBasketItems;
+    });
+  }
+
   String getNumOfPeople() {
     return '5';
   }
@@ -373,7 +464,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
   getPageNum(int page) {
     setState(() {
-      categoryNumber=page;
+      categoryNumber = page;
     });
     print('Bieżąca strona');
     print(page);
