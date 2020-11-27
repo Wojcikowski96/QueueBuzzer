@@ -456,7 +456,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           .add(basketItem(element.name, element.price, element.productID));
     });
 
-    print(consumer.basket);
     setState(() {
       basketItems = tempBasketItems;
     });
@@ -474,8 +473,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     setState(() {
       categoryNumber = page;
     });
-    print('Bieżąca strona');
-    print(page);
   }
 
   getPointItems() async {
@@ -567,4 +564,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     totalPrice = totalPrice - double.parse(price);
     if (totalPrice<0) totalPrice=-1*totalPrice;
   }
+
+
 }

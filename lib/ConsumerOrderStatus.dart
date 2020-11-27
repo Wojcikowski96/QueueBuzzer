@@ -6,12 +6,14 @@ import 'package:PointOwner/PointMenu.dart';
 import 'package:PointOwner/qrGenerate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:http/http.dart' as http;
+import 'ListsItem.dart';
 import 'Point.dart';
 
 class ConsumerOrderStatus extends StatefulWidget {
 
   Point point;
+
 
   ConsumerOrderStatus(Point p) {
     this.point = p;
@@ -22,10 +24,41 @@ class ConsumerOrderStatus extends StatefulWidget {
 
 }
 
+getOrderPropertiesFromJson(json) {
+  List<dynamic> orders = List<Map>.from(json)
+      .map((Map model) => ListsItem.fromJson(model))
+      .toList();
+  List<String> properties = new List();
+  for (int i = 0; i<orders.length; i++){
+    if (json[i]['queueNumber']>0) {
+      properties.add(json[i]['state']);
+      properties.add(json[i]['queueNumber'].toString());
+    }
+  }
+  print("Properties zamówienia");
+  print(properties);
+  return properties;
+}
+
+getOrderProperties() async {
+  var jsonResponse = null;
+  String request = "http://10.0.2.2:8080/consumer-order";
+  var response = await http.get(request);
+  if (response.statusCode == 200) {
+    jsonResponse = json.decode(response.body);
+
+
+    if (jsonResponse != null) {
+      var decoded = json.decode(response.body);
+      return getOrderPropertiesFromJson(decoded);
+    }
+  }
+}
 
 class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
   Point point;
+  MaterialColor color = Colors.grey;
 
   factory _ConsumerOrderStatusState.withPoint(Point p) {
     return _ConsumerOrderStatusState()._(p);
@@ -38,16 +71,21 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
   var storage = FlutterSecureStorage();
   String pointID = "4";
-
+  String queueNumber = "0";
   String pointName = "kiedys tu bedize nazwa restauracji";
+
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
       String tempPointName = (await storage.read(key: "pointName")).toString();
+      List<String> tempProperties = await getOrderProperties();
+      print('tempProperties');
+      print(tempProperties);
       setState(() {
         pointName  = tempPointName;
+        queueNumber=tempProperties[1];
       });
     });
   }
@@ -139,12 +177,14 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
       body: ListView(
           children: [
+            Center(child: Text('Twój numer',style: TextStyle(fontSize: 40),)),
+            number(Colors.deepOrange, queueNumber),
             Center(child: Text('Złożone',style: TextStyle(fontSize: 40),)),
-            Taken(Colors.deepOrange),
+            Taken(color),
             Center(child: Text('W przygotowaniu',style: TextStyle(fontSize: 40),)),
-            InProgress('grey'),
+            InProgress(color),
             Center(child: Text('Do odbioru',style: TextStyle(fontSize: 40),)),
-            ToPickup('grey'),
+            ToPickup(color),
           ],
       ),
     );
@@ -163,31 +203,48 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
     );
   }
-  Container InProgress(String color){
+  Container InProgress(MaterialColor color){
     return new Container(
       width: 150,
       height: 150,
       child: Center(child: Text('2',style: TextStyle(fontSize: 90,color: Colors.white),)),
       decoration: new BoxDecoration(
-        color: Colors.deepOrange,
+        color: color,
         shape: BoxShape.circle,
       ),
 
     );
   }
 
-  Container ToPickup(String color){
+  Container ToPickup(MaterialColor color){
     return new Container(
       width: 150,
       height: 150,
       child: Center(child: Text('3',style: TextStyle(fontSize: 90,color: Colors.white),)),
       decoration: new BoxDecoration(
-        color: Colors.deepOrange,
+        color: color,
         shape: BoxShape.circle,
       ),
 
     );
   }
+
+  Container number(MaterialColor color, String number){
+    return new Container(
+      width: 250,
+      height: 250,
+      child: Center(child: Text(number,style: TextStyle(fontSize: 90,color: Colors.white),)),
+      decoration: new BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+      ),
+
+    );
+
+  }
+
+
+
 
 
 }
