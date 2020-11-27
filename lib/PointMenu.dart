@@ -4,6 +4,8 @@ import 'dart:ui';
 import 'package:PointOwner/AddProduct.dart';
 import 'package:PointOwner/EditProduct.dart';
 import 'package:PointOwner/PointHomeScreen.dart';
+import 'package:PointOwner/PointOwnerOrderStatus.dart';
+import 'package:PointOwner/qrGenerate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -170,6 +172,28 @@ class _PointMenuState extends State<PointMenu> {
                 // ...
                 // Then close the drawer
                 Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Generator QR'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GenerateQr(point)));
+              },
+            ),
+            ListTile(
+              title: Text('Order Status'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PointOwnerOrderStatus(point)));
               },
             ),
           ],
