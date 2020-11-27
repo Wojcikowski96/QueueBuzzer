@@ -58,7 +58,7 @@ getProperties() async {
 class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   String pointName = "Nazwa restauracji";
   int categoryNumber = 0;
-  int totalPrice = 0;
+  double totalPrice = 0.0;
 
   Point point;
   Consumer consumer;
@@ -118,13 +118,12 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           // }),
           leading: Builder(
               builder: (ctx) => IconButton(
-              icon: Icon(Icons.shopping_basket_outlined),
-              onPressed: () => Scaffold.of(ctx).openDrawer(),
-              // onPressed: () {
-              //   Scaffold.of(ctx).showSnackBar(SnackBar(content: Text('Profile Save'),),);
-              // }
-          )
-          ),
+                    icon: Icon(Icons.shopping_basket_outlined),
+                    onPressed: () => Scaffold.of(ctx).openDrawer(),
+                    // onPressed: () {
+                    //   Scaffold.of(ctx).showSnackBar(SnackBar(content: Text('Profile Save'),),);
+                    // }
+                  )),
           title: Text(pointName),
           actions: <Widget>[
             SizedBox(
@@ -161,9 +160,25 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                   crossAxisCount: 1,
                   childAspectRatio: (screenWidth / itemHeight * 3.2),
                   children: List.generate(
-                      basketItems.length,
-                          (index) => basketItems[index]),
+                      basketItems.length, (index) => basketItems[index]),
                 ),
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Text(
+                    'Łączna kwota:',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    totalPrice.toStringAsFixed(2) + ' PLN',
+                    style: TextStyle(fontSize: 30),
+                  )
+                ],
               ),
             ),
             RaisedButton(
@@ -208,8 +223,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     );
   }
 
-  Container Item(
-      String productName, String price, String category, bool availability, int productID) {
+  Container Item(String productName, String price, String category,
+      bool availability, int productID) {
     return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -284,6 +299,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                             builder: (context) => ConsumerOrderStatus(point)));
                      */
                     addToBasket(productName, price, productID);
+                    increaseTotalPrice(price);
                   },
                   child: Text("Do koszyka"),
                   color: Colors.white12,
@@ -381,45 +397,40 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
   Container basketItem(String name, String price, int productID) {
     return new Container(
-      height: 30,
       color: Colors.grey,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            Text(
-              name,
-              style: TextStyle(fontSize: 20, color: Colors.white),
-            ),
-            SizedBox(
-              width: 10,
+            Expanded(
+              flex: 9,
+              child: Text(
+                name,
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
             ),
             Expanded(
+              flex: 5,
               child: Text(price,
                   style: TextStyle(fontSize: 30, color: Colors.white),
                   textAlign: TextAlign.right),
             ),
-            SizedBox(
-              width: 20,
+            Expanded(
+              flex: 2,
+              child: IconButton(
+                color: Colors.white,
+                icon: Center(child: Icon(Icons.delete, size: 30.0)),
+                onPressed: () {
+                  removeFromBasket(
+                      ListsItem.constructSimple(name, price, productID));
+                  decreaseTotalPrice(price);
+                },
+              ),
             ),
-
-              SizedBox(
-                width:50,
-                child: IconButton(
-                    color: Colors.white,
-                    icon:Center(child: Icon(Icons.delete, size: 30.0)),
-                   onPressed: (){
-                        removeFromBasket(ListsItem.constructSimple(name, price, productID));
-                   },
-              ),
-              ),
-
           ],
         ),
       ),
     );
-
-
   }
 
   addToBasket(String name, String price, int productID) {
@@ -427,7 +438,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
     List<Widget> tempBasketItems = new List<Widget>();
     consumer.basket.forEach((element) {
-      tempBasketItems.add(basketItem(element.name, element.price, element.productID));
+      tempBasketItems
+          .add(basketItem(element.name, element.price, element.productID));
     });
 
     setState(() {
@@ -440,7 +452,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
     List<Widget> tempBasketItems = new List<Widget>();
     consumer.basket.forEach((element) {
-      tempBasketItems.add(basketItem(element.name, element.price, element.productID));
+      tempBasketItems
+          .add(basketItem(element.name, element.price, element.productID));
     });
 
     print(consumer.basket);
@@ -519,27 +532,23 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
       }
     }
   }
+
   Future<void> placeOrder() async {
     const SERVER_IP = 'http://10.0.2.2:8080';
-    Map <String,String> paramMap= {
-      "name":"Name",
-      "price":"0.0",
-      "category":"Category"
+    Map<String, String> paramMap = {
+      "name": "Name",
+      "price": "0.0",
+      "category": "Category"
     };
 
-    var res = await http.post(
-        "$SERVER_IP/consumer-order",
+    var res = await http.post("$SERVER_IP/consumer-order",
         body: jsonEncode(<String, dynamic>{
           "consumerId": 1,
           "pointId": point.pointID,
-          "productsIds":  getProductIdsFromBasket(),
+          "productsIds": getProductIdsFromBasket(),
           "stateName": "ACCEPTED",
         }),
-        headers: <String, String>{
-          "Content-Type": "application/json"
-        }
-    );
-
+        headers: <String, String>{"Content-Type": "application/json"});
   }
 
   List<int> getProductIdsFromBasket() {
@@ -548,5 +557,14 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
       ids.add(element.productID);
     });
     return ids;
+  }
+
+  increaseTotalPrice(String price) {
+    totalPrice = totalPrice + double.parse(price);
+  }
+
+  decreaseTotalPrice(String price) {
+    totalPrice = totalPrice - double.parse(price);
+    if (totalPrice<0) totalPrice=-1*totalPrice;
   }
 }
