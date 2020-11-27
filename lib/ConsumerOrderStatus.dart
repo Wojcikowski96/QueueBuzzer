@@ -30,13 +30,11 @@ getOrderPropertiesFromJson(json) {
       .toList();
   List<String> properties = new List();
   for (int i = 0; i<orders.length; i++){
-    if (json[i]['queueNumber']>0) {
+    if (json[i]['queueNumber'] > 0) {
       properties.add(json[i]['state']);
       properties.add(json[i]['queueNumber'].toString());
     }
   }
-  print("Properties zamówienia");
-  print(properties);
   return properties;
 }
 
@@ -59,6 +57,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
   Point point;
   MaterialColor color = Colors.grey;
+  MaterialColor colorStatus = Colors.grey;
 
   factory _ConsumerOrderStatusState.withPoint(Point p) {
     return _ConsumerOrderStatusState()._(p);
@@ -73,6 +72,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
   String pointID = "4";
   String queueNumber = "0";
   String pointName = "kiedys tu bedize nazwa restauracji";
+  String status = 'nothing';
 
 
   @override
@@ -81,11 +81,13 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
     Future.delayed(Duration.zero, () async {
       String tempPointName = (await storage.read(key: "pointName")).toString();
       List<String> tempProperties = await getOrderProperties();
-      print('tempProperties');
-      print(tempProperties);
       setState(() {
         pointName  = tempPointName;
-        queueNumber=tempProperties[1];
+        queueNumber = tempProperties[1];
+        status = tempProperties[0];
+        if(status == "ACCEPTED"){
+          colorStatus = Colors.deepOrange;
+        }
       });
     });
   }
@@ -180,7 +182,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
             Center(child: Text('Twój numer',style: TextStyle(fontSize: 40),)),
             number(Colors.deepOrange, queueNumber),
             Center(child: Text('Złożone',style: TextStyle(fontSize: 40),)),
-            Taken(color),
+            Taken(colorStatus),
             Center(child: Text('W przygotowaniu',style: TextStyle(fontSize: 40),)),
             InProgress(color),
             Center(child: Text('Do odbioru',style: TextStyle(fontSize: 40),)),
@@ -192,6 +194,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
     // tutaj
   }
   Container Taken(MaterialColor color){
+
     return new Container(
       width: 150,
       height: 150,

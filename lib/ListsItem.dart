@@ -17,7 +17,6 @@ class ListsItem {
 
   static productFromJson(json) {
     ListsItem p = ListsItem();
-    print(json);
     p.name = json['name'];
     p.price = json['price'].toString();
     p.category = json['category'];
@@ -28,7 +27,6 @@ class ListsItem {
 
   static fromJson(json) {
     ListsItem p = new ListsItem();
-    print(json);
     p.name = json['name'];
     p.price = json['price'].toString();
     p.category = json['category'];
