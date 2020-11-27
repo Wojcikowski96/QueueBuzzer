@@ -1,5 +1,5 @@
 class ListsItem {
-  String name, price, category;
+  String name, price, category, description;
   bool avaliability;
   int productID;
 
@@ -22,6 +22,7 @@ class ListsItem {
     p.category = json['category'];
     p.avaliability = json['avaliability'];
     p.productID = json['id'];
+    p.description = json['description'];
     return p;
   }
 
@@ -35,7 +36,7 @@ class ListsItem {
 
   @override
   String toString() {
-    return 'ListsItem{name: $name, price: $price, category: $category, avaliability: $avaliability}';
+    return 'ListsItem{name: $name, price: $price, category: $category, avaliability: $avaliability, description: $description}';
   }
 
   @override

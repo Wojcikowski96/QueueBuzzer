@@ -224,7 +224,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   }
 
   Container Item(String productName, String price, String category,
-      bool availability, int productID) {
+      bool availability, int productID, String description) {
     return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -302,6 +302,25 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                     increaseTotalPrice(price);
                   },
                   child: Text("Do koszyka"),
+                  color: Colors.white12,
+                  textColor: Colors.white,
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  splashColor: Colors.white,
+                ),
+                width: 100,
+                height: 30,
+              ),
+              SizedBox(
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  onPressed: () {
+                    displayDialog(context, description);
+                    addToBasket(productName, price, productID);
+                    increaseTotalPrice(price);
+                  },
+                  child: Text("Szczegóły"),
                   color: Colors.white12,
                   textColor: Colors.white,
                   padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -509,7 +528,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     child: Item(item.name, item.price, item.category,
-                        item.avaliability, item.productID),
+                        item.avaliability, item.productID, item.description),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       color: Colors.white70,
@@ -564,6 +583,14 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     totalPrice = totalPrice - double.parse(price);
     if (totalPrice<0) totalPrice=-1*totalPrice;
   }
-
+  void displayDialog(BuildContext context, String text) =>
+      showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+                title: Text("Opis potrawy:"),
+                content: Text(text)
+            ),
+      );
 
 }
