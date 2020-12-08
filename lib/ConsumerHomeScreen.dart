@@ -60,6 +60,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   int categoryNumber = 0;
   double totalPrice = 0.0;
 
+
   Point point;
   Consumer consumer;
 
@@ -117,12 +118,16 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           //
           // }),
           leading: Builder(
-              builder: (ctx) => IconButton(
-                    icon: Icon(Icons.shopping_basket_outlined),
-                    onPressed: () => Scaffold.of(ctx).openDrawer(),
-                    // onPressed: () {
-                    //   Scaffold.of(ctx).showSnackBar(SnackBar(content: Text('Profile Save'),),);
-                    // }
+              builder: (ctx) => Stack(
+                alignment: Alignment.bottomRight,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.shopping_basket_outlined),
+                        onPressed: () => Scaffold.of(ctx).openDrawer(),
+                      ),
+                      productsNumIcon(getProductIdsFromBasket().length)
+
+                    ],
                   )),
           title: Text(pointName),
           actions: <Widget>[
@@ -317,8 +322,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                   ),
                   onPressed: () {
                     displayDialog(context, description);
-                    addToBasket(productName, price, productID);
-                    increaseTotalPrice(price);
                   },
                   child: Text("Szczegóły"),
                   color: Colors.white12,
@@ -443,6 +446,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                   removeFromBasket(
                       ListsItem.constructSimple(name, price, productID));
                   decreaseTotalPrice(price);
+
                 },
               ),
             ),
@@ -581,16 +585,44 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
   decreaseTotalPrice(String price) {
     totalPrice = totalPrice - double.parse(price);
-    if (totalPrice<0) totalPrice=-1*totalPrice;
+    if (totalPrice < 0) totalPrice = -1 * totalPrice;
   }
-  void displayDialog(BuildContext context, String text) =>
-      showDialog(
+  Opacity productsNumIcon(int productsLength){
+
+    if(productsLength != 0){
+      return Opacity(
+        opacity: 1.0,
+        child: Container(
+            height: 18,
+            width: 18,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle
+            ),
+            child: Center(child: Text(getProductIdsFromBasket().length.toString(), style: TextStyle(fontSize: 15, color: Colors.deepOrange),)),
+        )
+      );
+    }else{
+      return Opacity(
+          opacity: 0.0,
+          child: Container(
+            height: 18,
+            width: 18,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle
+            ),
+            child: Center(child: Text(getProductIdsFromBasket().length.toString(), style: TextStyle(fontSize: 15, color: Colors.deepOrange),)),
+          )
+      );
+    }
+
+  }
+
+
+  void displayDialog(BuildContext context, String text) => showDialog(
         context: context,
         builder: (context) =>
-            AlertDialog(
-                title: Text("Opis potrawy:"),
-                content: Text(text)
-            ),
+            AlertDialog(title: Text("Opis potrawy:"), content: Text(text)),
       );
-
 }
