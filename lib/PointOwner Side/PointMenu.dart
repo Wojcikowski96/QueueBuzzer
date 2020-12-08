@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:PointOwner/AddProduct.dart';
-import 'package:PointOwner/EditProduct.dart';
-import 'package:PointOwner/PointHomeScreen.dart';
-import 'package:PointOwner/PointOwnerOrderStatus.dart';
-import 'package:PointOwner/qrGenerate.dart';
+import 'package:PointOwner/PointOwner%20Side/qrGenerate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-import 'ListsItem.dart';
-import 'Point.dart';
+import '../Entities/ListsItem.dart';
+import '../Entities/Point.dart';
+import 'AddProduct.dart';
+import 'EditProduct.dart';
+import 'PointHomeScreen.dart';
+import 'PointOwnerOrderStatus.dart';
 
 class PointMenu extends StatefulWidget {
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-import 'Point.dart';
+import '../Entities/Point.dart';
 import 'PointMenu.dart';
 
 

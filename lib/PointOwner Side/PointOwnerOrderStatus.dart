@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:PointOwner/PointHomeScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-import 'ListsOrder.dart';
-import 'Point.dart';
+import '../Entities/ListsOrder.dart';
+import '../Entities/Point.dart';
+import 'PointHomeScreen.dart';
 
 class PointOwnerOrderStatus extends StatefulWidget {
 

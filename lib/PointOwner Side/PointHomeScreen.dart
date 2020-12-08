@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:PointOwner/PointMenu.dart';
-import 'package:PointOwner/PointOwnerOrderStatus.dart';
-import 'package:PointOwner/qrGenerate.dart';
+import 'package:PointOwner/PointOwner%20Side/qrGenerate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'Point.dart';
+import '../Entities/Point.dart';
+import 'PointMenu.dart';
+import 'PointOwnerOrderStatus.dart';
 
 class PointHomeScreen extends StatefulWidget {
   Point point;

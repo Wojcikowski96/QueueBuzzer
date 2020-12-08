@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:ui';
-import 'package:PointOwner/ConsumerOrderStatus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
-import 'Consumer.dart';
-import 'ListsItem.dart';
-import 'Point.dart';
+import '../Entities/Consumer.dart';
+import '../Entities/ListsItem.dart';
+import '../Entities/Point.dart';
+import 'ConsumerOrderStatus.dart';
 
 class ConsumerHomeScreen extends StatefulWidget {
   Point point;
@@ -63,6 +63,15 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   Point point;
   Consumer consumer;
 
+  String pointID = "4";
+  List<String> uniqueCategories = ['placeholder'];
+  List<Widget> gridChild = [];
+  List<List<Widget>> gridChildren = [
+    [Container()]
+  ];
+  List<Widget> basketItems = new List<Widget>();
+
+
   factory _ConsumerHomeScreenState.withPoint(Point p) {
     return _ConsumerHomeScreenState()._(p);
   }
@@ -98,13 +107,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     });
   }
 
-  String pointID = "4";
-  List<String> uniqueCategories = ['placeholder'];
-  List<Widget> gridChild = [];
-  List<List<Widget>> gridChildren = [
-    [Container()]
-  ];
-  List<Widget> basketItems = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +236,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
         child: Column(children: [
           Center(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
               child: Row(
                 children: [
                   Text(

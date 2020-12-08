@@ -1,12 +1,12 @@
 import 'dart:ui';
 
-import 'package:PointOwner/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
-import 'ConsumerHomeScreen.dart';
-import 'Point.dart';
+import 'Authorization/LoginPage.dart';
+import 'Consumer Side/ConsumerHomeScreen.dart';
+import 'Entities/Point.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override

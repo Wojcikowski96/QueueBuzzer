@@ -1,10 +1,10 @@
+import 'package:PointOwner/Entities/Point.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
 
-import 'Point.dart';
 
 class GenerateQr extends StatefulWidget {
 
