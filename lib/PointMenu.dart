@@ -90,7 +90,7 @@ class _PointMenuState extends State<PointMenu> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    child: Item(item.name, item.price, item.category),
+                    child: Item(item.name, item.price, item.category, item.img),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       color: Colors.white70,
@@ -111,6 +111,10 @@ class _PointMenuState extends State<PointMenu> {
         print(uniqueCategories);
       }
     }
+  }
+
+  Image getImage(String imgUrl) {
+    return imgUrl == null ? Image.asset("pizza.jpg", height: 110, width: 110) : Image.network(imgUrl.replaceAll("localhost", "10.0.2.2"), height: 110, width: 110);
   }
 
   @override
@@ -262,7 +266,7 @@ class _PointMenuState extends State<PointMenu> {
     );
   }
 
-  Container Item(String productName, String price, String category) {
+  Container Item(String productName, String price, String category, String imgUrl) {
     return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -305,11 +309,7 @@ class _PointMenuState extends State<PointMenu> {
                     child: Column(
                   //crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Image.asset(
-                      "pizza.jpg",
-                      height: 110,
-                      width: 110,
-                    )
+                    getImage(imgUrl)
                   ],
                 ))
               ],

@@ -2,6 +2,7 @@ class ListsItem {
   String name, price, category, description;
   bool avaliability;
   int productID;
+  String img;
 
   ListsItem();
 
@@ -31,6 +32,7 @@ class ListsItem {
     p.name = json['name'];
     p.price = json['price'].toString();
     p.category = json['category'];
+    p.img = json['img'];
     return p;
   }
 
