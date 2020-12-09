@@ -14,7 +14,6 @@ class ConsumerOrderStatus extends StatefulWidget {
 
   Point point;
 
-
   ConsumerOrderStatus(Point p) {
     this.point = p;
   }
