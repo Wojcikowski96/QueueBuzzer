@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "585719208733",
+    "firebase_url": "https://queuebuzzer-b73c6.firebaseio.com",
+    "project_id": "queuebuzzer-b73c6",
+    "storage_bucket": "queuebuzzer-b73c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585719208733:android:2f01bd2ef3c1cf8e4d5ff4",
+        "android_client_info": {
+          "package_name": "com.example.flutter_xd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585719208733-ivmrnabtona0a1ikp9vkbnrdbt9sijhc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGhoLJ8TJgpJ3nT_VmuiXKBSKSIBacQRI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585719208733-ivmrnabtona0a1ikp9vkbnrdbt9sijhc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
