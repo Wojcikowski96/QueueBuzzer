@@ -555,11 +555,11 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
   Future<void> placeOrder() async {
     const SERVER_IP = 'http://10.0.2.2:8080';
-    Map<String, String> paramMap = {
-      "name": "Name",
-      "price": "0.0",
-      "category": "Category"
-    };
+    // Map<String, String> paramMap = {
+    //   "name": "Name",
+    //   "price": "0.0",
+    //   "category": "Category"
+    // };
 
     var res = await http.post("$SERVER_IP/consumer-order",
         body: jsonEncode(<String, dynamic>{
@@ -568,7 +568,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           "productsIds": getProductIdsFromBasket(),
           "stateName": "ACCEPTED",
         }),
-        headers: <String, String>{"Content-Type": "application/json"});
+        headers: <String, String>{"Content-Type": "application/json"}
+        );
   }
 
   List<int> getProductIdsFromBasket() {
