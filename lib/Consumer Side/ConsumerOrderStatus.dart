@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
@@ -67,19 +68,19 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
     return this;
   }
   _ConsumerOrderStatusState();
-
-  var storage = FlutterSecureStorage();
+  final storageIn = FlutterSecureStorage();
+  var storageOut = FlutterSecureStorage();
   String pointID = "4";
   String queueNumber = "0";
   String pointName = "kiedys tu bedize nazwa restauracji";
   String status = 'nothing';
-
+  Timer timer;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      String tempPointName = (await storage.read(key: "pointName")).toString();
+      String tempPointName = (await storageOut.read(key: "pointName")).toString();
       List<String> tempProperties = await getOrderProperties();
       setState(() {
         pointName  = tempPointName;
@@ -87,6 +88,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
         status = tempProperties[0];
         if(status == "ACCEPTED"){
           colorStatus = Colors.deepOrange;
+
         }
       });
     });
@@ -94,6 +96,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
   @override
   Widget build(BuildContext context) {
+
 
     return Scaffold(
       drawer: Drawer(
@@ -191,6 +194,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
             ToPickup(color),
           ],
       ),
+
     );
 
     // tutaj

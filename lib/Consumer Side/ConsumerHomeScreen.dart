@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -59,7 +60,9 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   String pointName = "Nazwa restauracji";
   int categoryNumber = 0;
   double totalPrice = 0.0;
-
+  List<String> orderProperties = ["lol"];
+  Timer timer;
+  var storageOut = FlutterSecureStorage();
 
   Point point;
   Consumer consumer;
@@ -88,6 +91,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
   @override
   void initState() {
+    print("Order properties w init "+orderProperties[0]);
     super.initState();
 
     Future.delayed(Duration.zero, () async {
@@ -95,7 +99,9 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
       String tempPointName = (await storage.read(key: "pointName")).toString();
       setState(() {
         pointName = tempPointName;
+
       });
+      print('Init state');
     });
   }
 
@@ -108,9 +114,16 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   List<Widget> basketItems = [];
 
   @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var itemHeight = 270.0;
+
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
@@ -135,7 +148,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
               child: RaisedButton.icon(
                   color: Colors.deepOrange,
                   icon: Icon(Icons.autorenew_outlined),
-                  label: Text("Status zamówienia"),
+                  label: Text(orderProperties[0]),
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -191,6 +204,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 color: Colors.deepOrange,
                 onPressed: () {
                   placeOrder();
+                  timer = Timer.periodic(Duration(seconds: 1), (Timer t) => getOrderProperties());
                 })
           ],
         ),
@@ -552,6 +566,38 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
       }
     }
   }
+  getOrderPropertiesFromJson(json) {
+    List<dynamic> orders = List<Map>.from(json)
+        .map((Map model) => ListsItem.fromJson(model))
+        .toList();
+    List<String> properties = new List();
+    for (int i = 0; i<orders.length; i++){
+      if (json[i]['queueNumber'] > 0) {
+        properties.add(json[i]['state']);
+        properties.add(json[i]['queueNumber'].toString());
+      }
+    }
+    return properties;
+  }
+
+  getOrderProperties() async {
+    var jsonResponse = null;
+    String request = "http://10.0.2.2:8080/consumer-order";
+    var response = await http.get(request);
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+
+      if (jsonResponse != null) {
+        var decoded = json.decode(response.body);
+        setState(() {
+          orderProperties = getOrderPropertiesFromJson(decoded);
+          print("Order properties w getOrderProperties "+orderProperties.toString());
+        });
+      }
+    }
+  }
+
+
 
   Future<void> placeOrder() async {
     const SERVER_IP = 'http://10.0.2.2:8080';
