@@ -54,8 +54,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                tempListOrdersReady = new List(),
                tempListOrdersDone = new List();
 
-
-
   getPointItems() async {
 
     var jsonResponse = null;
@@ -79,34 +77,33 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
             {
               tempListOrdersAccepted.add(Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Item(item.nrOrder.toString(), item.stateOrder.toString()),
+                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString()),
               ));
             }
           else if (item.stateOrder.toString() == "IN_PROGRESS")
             {
               tempListOrdersInProgress.add(Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Item(item.nrOrder.toString(), item.stateOrder.toString()),
+                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString()),
               ));
             }
           else if (item.stateOrder.toString() == "READY")
           {
             tempListOrdersReady.add(Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Item(item.nrOrder.toString(), item.stateOrder.toString()),
+              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString()),
             ));
           }
           else if (item.stateOrder.toString() == "DONE")
           {
             tempListOrdersDone.add(Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Item(item.nrOrder.toString(), item.stateOrder.toString()),
+              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString()),
             ));
           }
         }
 
         setState(() {
-          //listOrders = tempListOrders;
           listOrdersAccepted = tempListOrdersAccepted;
           listOrdersInProgress = tempListOrdersInProgress;
           listOrdersReady = tempListOrdersReady;
@@ -114,6 +111,16 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
         });
       }
     }
+  }
+
+  Future<void> lvlUpOrder(int idOrder, String newStateOrder) async {
+    const SERVER_IP = 'http://10.0.2.2:8080';
+
+    await http.patch("$SERVER_IP/consumer-order/" + idOrder.toString(),
+        body: jsonEncode(<String, dynamic>{
+          "stateName": newStateOrder,
+        }),
+        headers: <String, String>{"Content-Type": "application/json"});
   }
 
   @override
@@ -200,14 +207,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                     ),
                   ),
 
-                  floatingActionButton: FloatingActionButton(
-                    backgroundColor: Colors.green,
-                    child: Icon(Icons.arrow_upward_rounded),
-                    onPressed: () {
-                      /*Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => AddProduct(point)));*/
-                    },
-                  ),
                   body: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -294,14 +293,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                     ),
                   ),
 
-                  floatingActionButton: FloatingActionButton(
-                    backgroundColor: Colors.green,
-                    child: Icon(Icons.arrow_upward_rounded),
-                    onPressed: () {
-                      /*Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => AddProduct(point)));*/
-                    },
-                  ),
                   body: Container(//////////***********
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -388,14 +379,14 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                     ),
                   ),
 
-                  floatingActionButton: FloatingActionButton(
+                  /*floatingActionButton: FloatingActionButton(
                     backgroundColor: Colors.green,
                     child: Icon(Icons.arrow_upward_rounded),
                     onPressed: () {
                       /*Navigator.push(
                   context, MaterialPageRoute(builder: (context) => AddProduct(point)));*/
                     },
-                  ),
+                  ),*/
                   body: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -514,7 +505,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
     );
   }
 
-  Container Item(String nrOrder, String stateOrder) {
+  Container Item(int idOrder, String nrOrder, String stateOrder) {
     int stateColorId = 0;
 
     if (stateOrder == "ACCEPTED")
@@ -585,6 +576,23 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                           ),
                         ),
                       ),
+
+                      FloatingActionButton(
+                        backgroundColor: Colors.green,
+                        child: Icon(Icons.arrow_upward_rounded),
+                        onPressed: () {print('ooo');
+                        String newStateOrder = '';
+                        if (stateOrder == "ACCEPTED")
+                          newStateOrder = 'PROGRESS';
+                        else if (stateOrder == "IN_PROGRESS")
+                          newStateOrder = 'READY';
+                        else if (stateOrder == "READY")
+                          newStateOrder ='DONE';
+
+                        lvlUpOrder(idOrder, newStateOrder);
+                        },
+                      ),
+
                     ],
                   ),
                 ),
