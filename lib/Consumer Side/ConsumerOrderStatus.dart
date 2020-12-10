@@ -58,7 +58,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
   Point point;
   MaterialColor color = Colors.grey;
-  MaterialColor colorStatus = Colors.grey;
+  Color colorStatus = Colors.grey;
 
   factory _ConsumerOrderStatusState.withPoint(Point p) {
     return _ConsumerOrderStatusState()._(p);
@@ -87,7 +87,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
         queueNumber = tempProperties[1];
         status = tempProperties[0];
         if(status == "ACCEPTED"){
-          colorStatus = Colors.deepOrange;
+          colorStatus = Color(point.color);
 
         }
       });
@@ -110,7 +110,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
             DrawerHeader(
               child: Text('Drawer Header'),
               decoration: BoxDecoration(
-                color: Colors.deepOrange,
+                color: Color(this.point.color),
               ),
             ),
             ListTile(
@@ -163,12 +163,12 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
         ),
       ),
       appBar: AppBar(
-
+          backgroundColor: Color(this.point.color),
           title: Text(pointName),
           actions: <Widget>[
         SizedBox(
         child: RaisedButton.icon(
-            color: Colors.deepOrange,
+            color: Color(this.point.color),
             icon: Icon(Icons.restaurant_menu),
             label: Text("Menu restauracji"),
               onPressed: () {
@@ -185,7 +185,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
       body: ListView(
           children: [
             Center(child: Text('Twój numer',style: TextStyle(fontSize: 40),)),
-            number(Colors.deepOrange, queueNumber),
+            number(Color(this.point.color), queueNumber),
             Center(child: Text('Złożone',style: TextStyle(fontSize: 40),)),
             Taken(colorStatus),
             Center(child: Text('W przygotowaniu',style: TextStyle(fontSize: 40),)),
@@ -238,7 +238,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
     );
   }
 
-  Container number(MaterialColor color, String number){
+  Container number(Color color, String number){
     return new Container(
       width: 250,
       height: 250,

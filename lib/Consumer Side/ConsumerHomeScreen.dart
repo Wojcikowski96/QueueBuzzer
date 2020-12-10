@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -63,13 +64,21 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   List<String> orderProperties = [""];
   Timer timer;
   var storageOut = FlutterSecureStorage();
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  String token;
 
 
   Point point;
   Consumer consumer;
 
+
+
   factory _ConsumerHomeScreenState.withPoint(Point p) {
     return _ConsumerHomeScreenState()._(p);
+  }
+
+  Future<String> loadToken() async {
+    return await firebaseMessaging.getToken();
   }
 
   factory _ConsumerHomeScreenState.withPointAndConsumer(Point p, Consumer c) {
@@ -95,15 +104,37 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     print("Order properties w init " + orderProperties[0]);
     super.initState();
 
+    loadToken().then((value) {
+      this.token = value;
+      print(value.toString());
+    });
+    getPointInfo();
+
     Future.delayed(Duration.zero, () async {
       getPointItems();
       String tempPointName = (await storage.read(key: "pointName")).toString();
       setState(() {
         pointName = tempPointName;
-
       });
       print('Init state');
     });
+  }
+
+  getPointInfo() async {
+    var pointID = (await storage.read(key: "pointID")).toString();
+    String request = "http://10.0.2.2:8080/point/" + pointID;
+    var response = await http.get(request);
+     var jsonMap =  jsonDecode(response.body) as Map<String, dynamic>;
+     this.point.imgUrl =  jsonMap['logoImg'];
+     var hexString = jsonMap['colour'];
+     final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    this.point.color = int.parse(buffer.toString(), radix: 16);
+  }
+
+  Image getImage(String imgUrl) {
+    return imgUrl == null ? Image.asset("pizza.jpg", height: 110, width: 110) : Image.network(imgUrl.replaceAll("localhost", "10.0.2.2"), height: 110, width: 110);
   }
 
   String pointID = "4";
@@ -128,6 +159,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
+        backgroundColor: Color(this.point.color),
         // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
         //
         // }),
@@ -147,7 +179,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           actions: <Widget>[
             SizedBox(
               child: RaisedButton.icon(
-                  color: Colors.deepOrange,
+                  color: Color(this.point.color),
                   icon: Icon(Icons.autorenew_outlined, color: Colors.white),
                   label: Text(orderProperties[0], style: TextStyle(color: Colors.white)),
                   onPressed: () {
@@ -164,12 +196,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
             DrawerHeader(
               // padding: EdgeInsets.fromLTRB(16.0, 100.0, 16.0, 8.0),
               padding: EdgeInsets.all(10.0),
-              child: Image(
-                color: Colors.deepOrange,
-                image: AssetImage('basket2.png'),
-                // DecorationImage(image: ),
-                // style: TextStyle(fontSize: 30, color: Colors.white),
-              ),
+              child: this.point.imgUrl == null ? Image(color: Color(this.point.color), image: AssetImage('basket2.png')) : Image.network(this.point.imgUrl.replaceAll("localhost", "10.0.2.2"), height: 110, width: 110)
             ),
             Expanded(
               child: Align(
@@ -202,7 +229,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
             ),
             RaisedButton(
                 child: Text('Zamów'),
-                color: Colors.deepOrange,
+                color: Color(this.point.color),
                 onPressed: () {
                   placeOrder();
                   timer = Timer.periodic(Duration(seconds: 1), (Timer t) => getOrderProperties());
@@ -248,7 +275,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   }
 
   Container Item(String productName, String price, String category,
-      bool availability, int productID, String description) {
+      bool availability, int productID, String description, String imgUrl) {
     return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -297,11 +324,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          "pizza.jpg",
-                          height: 150,
-                          width: 150,
-                        )
+                          getImage(imgUrl),
                       ],
                     ))
               ],
@@ -551,7 +574,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     child: Item(item.name, item.price, item.category,
-                        item.avaliability, item.productID, item.description),
+                        item.avaliability, item.productID, item.description, item.img),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       color: Colors.white70,
@@ -618,6 +641,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           "pointId": point.pointID,
           "productsIds": getProductIdsFromBasket(),
           "stateName": "ACCEPTED",
+          "fireBaseToken": this.token,
+
         }),
         headers: <String, String>{"Content-Type": "application/json"}
         );
@@ -651,7 +676,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 color: Colors.white,
                 shape: BoxShape.circle
             ),
-            child: Center(child: Text(getProductIdsFromBasket().length.toString(), style: TextStyle(fontSize: 15, color: Colors.deepOrange),)),
+            child: Center(child: Text(getProductIdsFromBasket().length.toString(), style: TextStyle(fontSize: 15, color: Color(this.point.color)),)),
           )
       );
     }else{
@@ -664,7 +689,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 color: Colors.white,
                 shape: BoxShape.circle
             ),
-            child: Center(child: Text(getProductIdsFromBasket().length.toString(), style: TextStyle(fontSize: 15, color: Colors.deepOrange),)),
+            child: Center(child: Text(getProductIdsFromBasket().length.toString(), style: TextStyle(fontSize: 15, color: Color(this.point.color)),)),
           )
       );
     }

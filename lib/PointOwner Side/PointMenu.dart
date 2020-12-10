@@ -134,7 +134,7 @@ class _PointMenuState extends State<PointMenu> {
             DrawerHeader(
               child: Text('Drawer Header'),
               decoration: BoxDecoration(
-                color: Colors.deepOrange,
+                color: Color(this.point.color),
               ),
             ),
             ListTile(
@@ -207,6 +207,7 @@ class _PointMenuState extends State<PointMenu> {
           // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
           //
           // }),
+        backgroundColor: Color(this.point.color),
           title: Text("Nazwa restauracji"),
           actions: <Widget>[
             IconButton(
@@ -217,7 +218,7 @@ class _PointMenuState extends State<PointMenu> {
                 })
           ]),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepOrange,
+        backgroundColor: Color(this.point.color),
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(

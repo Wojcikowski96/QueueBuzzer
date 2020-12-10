@@ -104,7 +104,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
               DrawerHeader(
                 child: Text('Drawer Header'),
                 decoration: BoxDecoration(
-                  color: Colors.deepOrange,
+                  color: Color(this.point.color),
                 ),
               ),
               ListTile(
@@ -174,6 +174,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
           // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
           //
           // }),
+          backgroundColor: Color(this.point.color),
             title: Text(pointName),
             actions: <Widget>[
               IconButton(icon: Icon(Icons.people), onPressed: () {

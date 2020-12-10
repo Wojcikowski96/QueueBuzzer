@@ -8,6 +8,8 @@ class Point {
   int pointID;
   String deviceID;
   String pointsName;
+  int color = 0xFFFF5722;
+  String imgUrl = null;
   List<ListsItem> pointsProducts;
   List<ListsItem> queue;
   String jwt;
@@ -15,7 +17,12 @@ class Point {
 
   Point();
 
-  Point.withIdAndName(this.pointID, this.pointsName);
+  Point.withIdAndName(this.pointID, this.pointsName, color, this.imgUrl) {
+    final buffer = StringBuffer();
+    if (color.length == 6 || color.length == 7) buffer.write('ff');
+    buffer.write(color.replaceFirst('#', ''));
+    this.color = int.parse(buffer.toString(), radix: 16);
+  }
 
   Point.withId(this.pointID) {
     // getPointInfo();

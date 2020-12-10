@@ -24,6 +24,7 @@ class ListsItem {
     p.avaliability = json['avaliability'];
     p.productID = json['id'];
     p.description = json['description'];
+    p.img = json['img'];
     return p;
   }
 
