@@ -191,6 +191,10 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 color: Colors.deepOrange,
                 onPressed: () {
                   placeOrder();
+                  Navigator.pop(context);
+                  // Scaffold.of(context).showSnackBar(new SnackBar(
+                  //     content: Text('Złożyłeś zamówienie!')
+                  // ));
                 })
           ],
         ),
