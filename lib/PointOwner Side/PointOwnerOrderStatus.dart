@@ -37,7 +37,8 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
+
+    Future.delayed(Duration.zero, () async {
       getPointItems();
     });
   }
@@ -113,7 +114,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
     }
   }
 
-  Future<void> lvlUpOrder(int idOrder, String newStateOrder) async {
+  void lvlUpOrder(int idOrder, String newStateOrder) async {
     const SERVER_IP = 'http://10.0.2.2:8080';
 
     await http.patch("$SERVER_IP/consumer-order/" + idOrder.toString(),
@@ -121,6 +122,12 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
           "stateName": newStateOrder,
         }),
         headers: <String, String>{"Content-Type": "application/json"});
+
+    listOrdersInProgress.clear();
+    listOrdersAccepted.clear();
+    listOrdersReady.clear();
+    listOrdersDone.clear();
+    getPointItems();
   }
 
   @override
@@ -217,7 +224,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                       ),
                     ),
                     child: Column(children: [
-
                       Expanded(
                         child: new GridView.count(
                           crossAxisCount: 1,
@@ -581,15 +587,49 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                         backgroundColor: Colors.green,
                         child: Icon(Icons.arrow_upward_rounded),
                         onPressed: () {print('ooo');
-                        String newStateOrder = '';
-                        if (stateOrder == "ACCEPTED")
-                          newStateOrder = 'PROGRESS';
-                        else if (stateOrder == "IN_PROGRESS")
-                          newStateOrder = 'READY';
-                        else if (stateOrder == "READY")
-                          newStateOrder ='DONE';
+                          String newStateOrder = '';
+                          if (stateOrder == "ACCEPTED")
+                            newStateOrder = 'IN_PROGRESS';
+                          else if (stateOrder == "IN_PROGRESS")
+                            newStateOrder = 'READY';
+                          else if (stateOrder == "READY")
+                            newStateOrder ='DONE';
 
-                        lvlUpOrder(idOrder, newStateOrder);
+                          lvlUpOrder(idOrder, newStateOrder);
+                          
+                          /*setState(() {
+                            if (stateOrder == "ACCEPTED") {
+                              listOrdersInProgress.add(
+                                  Padding(padding: const EdgeInsets.all(8.0),
+                                    child: Item(idOrder, nrOrder.toString(),
+                                        newStateOrder.toString()),
+                                  ));
+                              //listOrdersAccepted.toList().removeWhere((element) => (element.key != nrOrder));
+                              listOrdersAccepted.removeWhere((
+                                  element) => (element.key == Key("nrOrder_$nrOrder")));
+                            }
+                            else if (stateOrder == "IN_PROGRESS") {
+                              listOrdersReady.add(
+                                  Padding(padding: const EdgeInsets.all(8.0),
+                                    child: Item(idOrder, nrOrder.toString(),
+                                        newStateOrder.toString()),
+                                  ));
+                              //listOrdersInProgress.toList().removeWhere((element) => (element.key != nrOrder));
+                              listOrdersInProgress.removeWhere((
+                                  element) => (element.key == Key("nrOrder_$nrOrder")));
+                            }
+                            else if (stateOrder == "READY") {
+                              listOrdersDone.add(
+                                  Padding(padding: const EdgeInsets.all(8.0),
+                                    child: Item(idOrder, nrOrder.toString(),
+                                        newStateOrder.toString()),
+                                  ));
+                              //listOrdersReady.toList().removeWhere((element) => (element.key != nrOrder));
+                              listOrdersReady.removeWhere((element) =>
+                              (element.key == Key("nrOrder_$nrOrder")));
+                            }
+                          });*/
+                        
                         },
                       ),
 
