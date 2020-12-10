@@ -60,7 +60,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   String pointName = "Nazwa restauracji";
   int categoryNumber = 0;
   double totalPrice = 0.0;
-  List<String> orderProperties = ["lol"];
+  List<String> orderProperties = [""];
   Timer timer;
   var storageOut = FlutterSecureStorage();
 
@@ -135,7 +135,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 alignment: Alignment.bottomRight,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.shopping_basket_outlined),
+                    icon: Icon(Icons.shopping_basket_outlined,color: Colors.white,),
                     onPressed: () => Scaffold.of(ctx).openDrawer(),
                   ),
                   productsNumIcon(getProductIdsFromBasket().length)
@@ -147,8 +147,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
             SizedBox(
               child: RaisedButton.icon(
                   color: Colors.deepOrange,
-                  icon: Icon(Icons.autorenew_outlined),
-                  label: Text(orderProperties[0]),
+                  icon: Icon(Icons.autorenew_outlined, color: Colors.white,),
+                  label: Text(orderProperties[0], style: TextStyle(color: Colors.white),),
                   onPressed: () {
                     Navigator.push(
                         context,
