@@ -190,7 +190,7 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
         itemBuilder: (BuildContext context, int index) {
           return Container(
             decoration: BoxDecoration(
-              color: Colors.amber[100 + (index*100%1000)],
+              color: Colors.amber[index*100%1000 + 100],
               borderRadius: BorderRadius.circular(15.0),
             ),
             child: ListTile(
