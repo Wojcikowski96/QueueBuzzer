@@ -91,7 +91,6 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
 
     @override
     Widget build(BuildContext context) {
-
       return Scaffold(
         drawer: Drawer(
           // Add a ListView to the drawer. This ensures the user can scroll

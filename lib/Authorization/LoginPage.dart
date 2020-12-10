@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:PointOwner/Consumer%20Side/ConsumerHomeScreen.dart';
+import 'package:PointOwner/PointOwner%20Side/PointOwnerOrderStatus.dart';
+
 import '../Entities/Point.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -48,9 +51,8 @@ class _LoginPageState extends State<LoginPage> {
       var userType = jsonDecode(res.body)["userType"];
       print(userType);
       if (res.statusCode == 200) {
-        if ((widget.isConsumer == true && userType == "consumer") ||
+        if ((widget.isConsumer == true && userType == "Consumer") ||
             (widget.isConsumer == false && userType == "PointOwner")) {
-          print("aaa");
           return jsonDecode(res.body)["jwt"];
         }
       }
@@ -104,13 +106,29 @@ class _LoginPageState extends State<LoginPage> {
     if(jwt != null) {
       storage.write(key: "jwt", value: jwt);
       int response = await getPointByMail(pointEmail);
+      point.jwt = jwt;
+      point.payload = json.decode(
+          ascii.decode(
+              base64.decode(base64.normalize(jwt.split(".")[1]))
+          ));
       if (response == 200) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PointHomeScreen.fromBase64(jwt, point)
-            )
-        );
+        if(widget.isConsumer){
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>ConsumerHomeScreen(point)
+              )
+          );
+
+        }else{
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>PointOwnerOrderStatus(point)
+              )
+          );
+        }
+
       }
     } else {
       displayDialog(context, "An Error Occurred", "No account was found matching that Email and password");

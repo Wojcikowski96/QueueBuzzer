@@ -146,18 +146,7 @@ class _PointMenuState extends State<PointMenu> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PointHomeScreen.fromBase64(
-                            storage.read(key: "jwt").toString(),
-                            this.point)));
-              },
-            ),
-            ListTile(
-              title: Text('Edytuj menu'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.of(context).pop();
+                        builder: (context) => PointOwnerOrderStatus(this.point)));
               },
             ),
             ListTile(
@@ -189,17 +178,6 @@ class _PointMenuState extends State<PointMenu> {
                     MaterialPageRoute(builder: (context) => GenerateQr(point)));
               },
             ),
-            ListTile(
-              title: Text('Order Status'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PointOwnerOrderStatus(point)));
-              },
-            ),
           ],
         ),
       ),
@@ -208,7 +186,7 @@ class _PointMenuState extends State<PointMenu> {
           //
           // }),
         backgroundColor: Color(this.point.color),
-          title: Text("Nazwa restauracji"),
+          title: Text(point.pointsName),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.people),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:PointOwner/PointOwner%20Side/qrGenerate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,14 +10,25 @@ import 'package:http/http.dart' as http;
 import '../Entities/ListsOrder.dart';
 import '../Entities/Point.dart';
 import 'PointHomeScreen.dart';
+import 'PointMenu.dart';
 
 class PointOwnerOrderStatus extends StatefulWidget {
 
   Point point;
-
+  // final String jwt;
+  // final Map<String, dynamic> payload;
   PointOwnerOrderStatus(Point p) {
     this.point = p;
   }
+  // factory PointOwnerOrderStatus.fromBase64(String jwt, Point p) {
+  //   p.jwt = jwt;
+  //   p.payload = json.decode(
+  //       ascii.decode(
+  //           base64.decode(base64.normalize(jwt.split(".")[1]))
+  //       ));
+  //
+  //   return PointOwnerOrderStatus(this.jwt, this.payload, this.point);
+  // }
   @override
   _PointOwnerOrderStatusState createState() => _PointOwnerOrderStatusState.withPoint(point);
 }
@@ -37,12 +49,10 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(Duration.zero, () async {
+    Future.delayed(Duration.zero, () {
       getPointItems();
     });
   }
-
   String pointID = "2";
 
   List<Widget> listOrdersAccepted = new List(),
@@ -72,36 +82,37 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
             .toList();
 
         //gridChildren.removeAt(0);
-
+        int heroIndex = 0;
         for (dynamic item in posts) {
           if (item.stateOrder.toString() == "ACCEPTED")
             {
               tempListOrdersAccepted.add(Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString()),
+                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(), heroIndex),
               ));
             }
           else if (item.stateOrder.toString() == "IN_PROGRESS")
             {
               tempListOrdersInProgress.add(Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString()),
+                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(), heroIndex),
               ));
             }
           else if (item.stateOrder.toString() == "READY")
           {
             tempListOrdersReady.add(Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString()),
+              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(),heroIndex),
             ));
           }
           else if (item.stateOrder.toString() == "DONE")
           {
             tempListOrdersDone.add(Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString()),
+              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(),heroIndex),
             ));
           }
+          heroIndex++;
         }
 
         setState(() {
@@ -114,7 +125,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
     }
   }
 
-  void lvlUpOrder(int idOrder, String newStateOrder) async {
+  Future<void> lvlUpOrder(int idOrder, String newStateOrder) async {
     const SERVER_IP = 'http://10.0.2.2:8080';
 
     await http.patch("$SERVER_IP/consumer-order/" + idOrder.toString(),
@@ -122,12 +133,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
           "stateName": newStateOrder,
         }),
         headers: <String, String>{"Content-Type": "application/json"});
-
-    listOrdersInProgress.clear();
-    listOrdersAccepted.clear();
-    listOrdersReady.clear();
-    listOrdersDone.clear();
-    getPointItems();
   }
 
   @override
@@ -139,8 +144,66 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
       home: DefaultTabController(
           length: 4,
           child: Scaffold(
+            drawer: Drawer(
+              // Add a ListView to the drawer. This ensures the user can scroll
+              // through the options in the drawer if there isn't enough vertical
+              // space to fit everything.
+              child: ListView(
+                // Important: Remove any padding from the ListView.
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    child: Text('Drawer Header'),
+                    decoration: BoxDecoration(
+                      color: Colors.deepOrange,
+                    ),
+                  ),
+                  ListTile(
+                    title: Text('Edytuj menu'),
+                    onTap: () {
+                      // Update the state of the app
+                      // ...
+                      // Then close the drawer
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PointMenu(point)));
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Podgląd menu'),
+                    onTap: () {
+                      // Update the state of the app
+                      // ...
+                      // Then close the drawer
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Ustawienia Punktu'),
+                    onTap: () {
+                      // Update the state of the app
+                      // ...
+                      // Then close the drawer
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Generator QR'),
+                    onTap: () {
+                      // Update the state of the app
+                      // ...
+                      // Then close the drawer
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => GenerateQr(point)));
+                    },
+                  ),
+                ],
+              ),
+            ),
             backgroundColor: Colors.white54,
             appBar: AppBar(
+              title: Text(point.pointsName),
               bottom: TabBar(
                 tabs: [
                   Tab(text: "Accepted"),
@@ -155,65 +218,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
               children: [
                 Scaffold(
                   backgroundColor: Colors.white54,
-                  drawer: Drawer(
-                    // Add a ListView to the drawer. This ensures the user can scroll
-                    // through the options in the drawer if there isn't enough vertical
-                    // space to fit everything.
-                    child: ListView(
-                      // Important: Remove any padding from the ListView.
-                      padding: EdgeInsets.zero,
-                      children: <Widget>[
-                        DrawerHeader(
-                          child: Text('Drawer Header'),
-                          decoration: BoxDecoration(
-                            color: Colors.deepOrange,
-                          ),
-                        ),
-                        ListTile(
-                          title: Text('Strona główna punktu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PointHomeScreen.fromBase64(
-                                        storage.read(key: "jwt").toString(),
-                                        this.point)));
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Edytuj menu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Podgląd menu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Ustawienia Punktu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-
                   body: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -224,6 +228,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                       ),
                     ),
                     child: Column(children: [
+
                       Expanded(
                         child: new GridView.count(
                           crossAxisCount: 1,
@@ -240,65 +245,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
 
                 Scaffold(
                   backgroundColor: Colors.white54,
-                  drawer: Drawer(
-                    // Add a ListView to the drawer. This ensures the user can scroll
-                    // through the options in the drawer if there isn't enough vertical
-                    // space to fit everything.
-                    child: ListView(
-                      // Important: Remove any padding from the ListView.
-                      padding: EdgeInsets.zero,
-                      children: <Widget>[
-                        DrawerHeader(
-                          child: Text('Drawer Header'),
-                          decoration: BoxDecoration(
-                            color: Colors.deepOrange,
-                          ),
-                        ),
-                        ListTile(
-                          title: Text('Strona główna punktu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PointHomeScreen.fromBase64(
-                                        storage.read(key: "jwt").toString(),
-                                        this.point)));
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Edytuj menu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Podgląd menu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Ustawienia Punktu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-
                   body: Container(//////////***********
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -326,65 +272,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
 
                 Scaffold(
                   backgroundColor: Colors.white54,
-                  drawer: Drawer(
-                    // Add a ListView to the drawer. This ensures the user can scroll
-                    // through the options in the drawer if there isn't enough vertical
-                    // space to fit everything.
-                    child: ListView(
-                      // Important: Remove any padding from the ListView.
-                      padding: EdgeInsets.zero,
-                      children: <Widget>[
-                        DrawerHeader(
-                          child: Text('Drawer Header'),
-                          decoration: BoxDecoration(
-                            color: Colors.deepOrange,
-                          ),
-                        ),
-                        ListTile(
-                          title: Text('Strona główna punktu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PointHomeScreen.fromBase64(
-                                        storage.read(key: "jwt").toString(),
-                                        this.point)));
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Edytuj menu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Podgląd menu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Ustawienia Punktu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-
                   /*floatingActionButton: FloatingActionButton(
                     backgroundColor: Colors.green,
                     child: Icon(Icons.arrow_upward_rounded),
@@ -420,65 +307,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
 
                 Scaffold(
                   backgroundColor: Colors.white54,
-                  drawer: Drawer(
-                    // Add a ListView to the drawer. This ensures the user can scroll
-                    // through the options in the drawer if there isn't enough vertical
-                    // space to fit everything.
-                    child: ListView(
-                      // Important: Remove any padding from the ListView.
-                      padding: EdgeInsets.zero,
-                      children: <Widget>[
-                        DrawerHeader(
-                          child: Text('Drawer Header'),
-                          decoration: BoxDecoration(
-                            color: Colors.deepOrange,
-                          ),
-                        ),
-                        ListTile(
-                          title: Text('Strona główna punktu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PointHomeScreen.fromBase64(
-                                        storage.read(key: "jwt").toString(),
-                                        this.point)));
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Edytuj menu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Podgląd menu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Ustawienia Punktu'),
-                          onTap: () {
-                            // Update the state of the app
-                            // ...
-                            // Then close the drawer
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-
                   body: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -511,7 +339,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
     );
   }
 
-  Container Item(int idOrder, String nrOrder, String stateOrder) {
+  Container Item(int idOrder, String nrOrder, String stateOrder, int heroIndex) {
     int stateColorId = 0;
 
     if (stateOrder == "ACCEPTED")
@@ -584,52 +412,21 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                       ),
 
                       FloatingActionButton(
+
+                        heroTag: "but$heroIndex",
                         backgroundColor: Colors.green,
                         child: Icon(Icons.arrow_upward_rounded),
                         onPressed: () {print('ooo');
-                          String newStateOrder = '';
-                          if (stateOrder == "ACCEPTED")
-                            newStateOrder = 'IN_PROGRESS';
-                          else if (stateOrder == "IN_PROGRESS")
-                            newStateOrder = 'READY';
-                          else if (stateOrder == "READY")
-                            newStateOrder ='DONE';
+                        String newStateOrder = '';
+                        print(idOrder);
+                        if (stateOrder == "ACCEPTED")
+                          newStateOrder = 'PROGRESS';
+                        else if (stateOrder == "IN_PROGRESS")
+                          newStateOrder = 'READY';
+                        else if (stateOrder == "READY")
+                          newStateOrder ='DONE';
 
-                          lvlUpOrder(idOrder, newStateOrder);
-                          
-                          /*setState(() {
-                            if (stateOrder == "ACCEPTED") {
-                              listOrdersInProgress.add(
-                                  Padding(padding: const EdgeInsets.all(8.0),
-                                    child: Item(idOrder, nrOrder.toString(),
-                                        newStateOrder.toString()),
-                                  ));
-                              //listOrdersAccepted.toList().removeWhere((element) => (element.key != nrOrder));
-                              listOrdersAccepted.removeWhere((
-                                  element) => (element.key == Key("nrOrder_$nrOrder")));
-                            }
-                            else if (stateOrder == "IN_PROGRESS") {
-                              listOrdersReady.add(
-                                  Padding(padding: const EdgeInsets.all(8.0),
-                                    child: Item(idOrder, nrOrder.toString(),
-                                        newStateOrder.toString()),
-                                  ));
-                              //listOrdersInProgress.toList().removeWhere((element) => (element.key != nrOrder));
-                              listOrdersInProgress.removeWhere((
-                                  element) => (element.key == Key("nrOrder_$nrOrder")));
-                            }
-                            else if (stateOrder == "READY") {
-                              listOrdersDone.add(
-                                  Padding(padding: const EdgeInsets.all(8.0),
-                                    child: Item(idOrder, nrOrder.toString(),
-                                        newStateOrder.toString()),
-                                  ));
-                              //listOrdersReady.toList().removeWhere((element) => (element.key != nrOrder));
-                              listOrdersReady.removeWhere((element) =>
-                              (element.key == Key("nrOrder_$nrOrder")));
-                            }
-                          });*/
-                        
+                        lvlUpOrder(idOrder, newStateOrder);
                         },
                       ),
 
