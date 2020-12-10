@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
+import 'package:PointOwner/Consumer%20Side/ConsumerOrderWizard.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -69,14 +70,14 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   Consumer consumer;
 
   factory _ConsumerHomeScreenState.withPoint(Point p) {
-    return _ConsumerHomeScreenState()._(p);
+    return _ConsumerHomeScreenState().setPoint(p);
   }
 
   factory _ConsumerHomeScreenState.withPointAndConsumer(Point p, Consumer c) {
     return _ConsumerHomeScreenState().setPointAndConsumer(p, c);
   }
 
-  _ConsumerHomeScreenState _(Point p) {
+  _ConsumerHomeScreenState setPoint(Point p) {
     this.point = p;
     this.consumer = Consumer();
     return this;
@@ -92,8 +93,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
   @override
   void initState() {
-    print("Order properties w init " + orderProperties[0]);
     super.initState();
+    print("Order properties w init " + orderProperties[0]);
 
     Future.delayed(Duration.zero, () async {
       getPointItems();
@@ -204,9 +205,13 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 child: Text('Zamów'),
                 color: Colors.deepOrange,
                 onPressed: () {
-                  placeOrder();
-                  timer = Timer.periodic(Duration(seconds: 1), (Timer t) => getOrderProperties());
-                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ConsumerOrderWizard.withConsumer(point, consumer)));
+                  // placeOrder();
+                  // timer = Timer.periodic(Duration(seconds: 5), (Timer t) => getOrderProperties());
+                  // Navigator.pop(context);
                   // Scaffold.of(context).showSnackBar(new SnackBar(
                   //     content: Text('Złożyłeś zamówienie!')
                   // ));
@@ -316,12 +321,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   onPressed: () {
-                    /*
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ConsumerOrderStatus(point)));
-                     */
                     addToBasket(productName, price, productID);
                     increaseTotalPrice(price);
                   },
