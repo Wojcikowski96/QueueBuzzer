@@ -51,7 +51,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ));
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()));
+                      MaterialPageRoute(builder: (context) => LoginPage(false)));
               }
               ),
               )
@@ -91,7 +91,27 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     fontWeight: FontWeight.w500,
                     color: Colors.grey)),
 
-            SizedBox(height: 200,),
+            SizedBox(height: 130,),
+            SizedBox(
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                onPressed: ()=>LoginPage(true),
+                child: Text("Zaloguj się",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                color: Colors.deepOrange,
+                textColor: Colors.black,
+                padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                splashColor: Colors.white,
+              ),
+              width: 150,
+              height: 40,
+            ),
+            SizedBox(height: 20,),
             SizedBox(
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
@@ -140,4 +160,5 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       )
     );
   }
+
 }

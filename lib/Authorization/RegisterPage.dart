@@ -1,11 +1,48 @@
+import 'dart:convert';
+import 'package:PointOwner/WelcomeScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
+import 'LoginPage.dart';
 class registerPage extends StatelessWidget {
+  bool isConsumer;
+  registerPage(this.isConsumer);
+  TextEditingController emailTextEditController = new TextEditingController();
+  TextEditingController passwordTextEditController = new TextEditingController();
+  final GlobalKey<FormState> inputKey = GlobalKey<FormState>();
+  static const SERVER_IP = 'http://10.0.2.2:8080';
+  postPointOwner(String email, String password) async {
+    var res = await http.post(
+        "$SERVER_IP/point-owner",
+        body: jsonEncode(<String, String>{
+          "emial": email,
+          "password": password
+        }),
+        headers: <String, String>{
+          "Content-Type": "application/json"
+        }
+    );
+    return res.statusCode;
+  }
+  postConsumer(String email, String password) async {
+    var res = await http.post(
+        "$SERVER_IP/consumer",
+        body: jsonEncode(<String, String>{
+          "emial": email,
+          "password": password
+        }),
+        headers: <String, String>{
+          "Content-Type": "application/json"
+        }
+    );
+    return res.statusCode;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
     return Scaffold(
         body: SingleChildScrollView(
             child: Container(
@@ -43,8 +80,17 @@ class registerPage extends StatelessWidget {
                   SizedBox(height: 25,),
                   Container(
                       margin: EdgeInsets.only(right: 10, left: 10),
-                      child: TextField(
+                      child: TextFormField(
+                        key: inputKey,
+                        validator: (input){
+                          if(input.isEmpty){
+                            return "Empty";
+                          }
+                          return null;
+                        },
+                        controller: emailTextEditController,
                         decoration: InputDecoration(
+
                             contentPadding: EdgeInsets.only(top: 20, bottom: 20),
                             prefixIcon: Padding(
                               padding: const EdgeInsets.only(left: 20, right: 20),
@@ -52,7 +98,7 @@ class registerPage extends StatelessWidget {
                             ),
                             filled: true,
                             fillColor: Colors.grey.withOpacity(0.7),
-                            hintText: "Nazwa punktu",
+                            hintText: "Email użytkownika",
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide(
@@ -73,7 +119,15 @@ class registerPage extends StatelessWidget {
                   SizedBox(height: 25,),
                   Container(
                       margin: EdgeInsets.only(right: 10, left: 10),
-                      child: TextField(
+                      child: TextFormField(
+                        key: inputKey,
+                        validator:(input){
+                          if(input.isEmpty){
+                            return "Empty";
+                          }
+                          return null;
+                        },
+                        controller: passwordTextEditController,
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(top: 20, bottom: 20),
                             prefixIcon: Padding(
@@ -103,7 +157,17 @@ class registerPage extends StatelessWidget {
                   SizedBox(height: 25,),
                   Container(
                       margin: EdgeInsets.only(right: 10, left: 10),
-                      child: TextField(
+                      child: TextFormField(
+                        key: inputKey,
+                        validator: (input){
+                          if(input.isEmpty){
+                            return "Empty";
+
+                          }else if(input != passwordTextEditController.text){
+                            return "Not Match";
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(top: 20, bottom: 20),
                             prefixIcon: Padding(
@@ -139,7 +203,37 @@ class registerPage extends StatelessWidget {
                       ),
 
                       onPressed: (){
-
+                        if(inputKey.currentState.validate() == "Empty"){
+                          displayDialog(context,  "An Error Occurred", "Please fill up every text field");
+                        }else if(inputKey.currentState.validate() == "Not Match"){
+                          displayDialog(context,  "An Error Occurred", "The passwords do not match");
+                        }else{
+                          if(isConsumer){
+                            //consumerPostRequest
+                            if(postConsumer(emailTextEditController.text, passwordTextEditController.text) == 200){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage(isConsumer)
+                                  )
+                              );
+                            }else{
+                              displayDialog(context,  "An Error Occurred", "An account with this name already exists");
+                            }
+                          }else{
+                            //pointOwnerPostRequest
+                            if(postPointOwner(emailTextEditController.text, passwordTextEditController.text) == 200){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage(isConsumer)
+                                  )
+                              );
+                            }else{
+                              displayDialog(context,  "An Error Occurred", "An account with this email already exists");
+                            }
+                          }
+                        }
                       },
                       child: Text("Zarejestruj"),
                       color: Colors.blueAccent,
@@ -176,4 +270,13 @@ class registerPage extends StatelessWidget {
 
                 ]))));
   }
+  void displayDialog(BuildContext context, String title, String text) =>
+      showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+                title: Text(title),
+                content: Text(text)
+            ),
+      );
 }

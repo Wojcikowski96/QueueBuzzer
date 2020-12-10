@@ -9,8 +9,11 @@ import 'RegisterPage.dart';
 
 
 class LoginPage extends StatefulWidget {
+  bool isConsumer;
   @override
   _LoginPageState createState() => _LoginPageState();
+  LoginPage(this.isConsumer);
+
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -41,10 +44,16 @@ class _LoginPageState extends State<LoginPage> {
           "Content-Type": "application/json"
         }
     );
-    if(res.statusCode == 200) return res.body;
-    return null;
-  }
 
+    var userType = jsonDecode(res.body)["userType"];
+    if (res.statusCode == 200) {
+      if ((widget.isConsumer == true && userType == "consumer") ||
+          (widget.isConsumer == false && userType == "pointOwner")) {
+        return jsonDecode(res.body)["jwt"];
+      }
+      return null;
+    }
+  }
   Future<int> attemptSignUp(String username, String password) async {
     var res = await http.post(
         '$SERVER_IP/signup',
@@ -97,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } else {
-      displayDialog(context, "An Error Occurred", "No account was found matching that pointEmail and password");
+      displayDialog(context, "An Error Occurred", "No account was found matching that Email and password");
     }
   }
 
@@ -172,6 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                       margin: EdgeInsets.only(right: 10, left: 10),
                       child: TextField(
+                        obscureText: true,
                         controller: passwordController,
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(top: 20, bottom: 20),
@@ -245,7 +255,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: (){
                       Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => registerPage()),
+                          MaterialPageRoute(builder: (context) => registerPage(widget.isConsumer)),
                       );
                     },
                     child: Text("Zarejestruj"),
