@@ -60,6 +60,9 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   String pointName = "Nazwa restauracji";
   int categoryNumber = 0;
   double totalPrice = 0.0;
+  List<String> orderProperties = [""];
+  Timer timer;
+  var storageOut = FlutterSecureStorage();
 
 
   Point point;
@@ -89,7 +92,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
   @override
   void initState() {
-    print("Order properties w init "+orderProperties[0]);
+    print("Order properties w init " + orderProperties[0]);
     super.initState();
 
     Future.delayed(Duration.zero, () async {

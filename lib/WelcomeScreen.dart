@@ -97,7 +97,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40),
                 ),
-                onPressed: ()=>LoginPage(true),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage(true)));
+                },
                 child: Text("Zaloguj się",
                   style: TextStyle(
                     fontSize: 20,

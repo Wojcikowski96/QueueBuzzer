@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isLoading = true;
 
-  static const SERVER_IP = 'http://10.0.2.2:8080';
+  String SERVER_IP = 'http://10.0.2.2:8080';
   final storage = FlutterSecureStorage();
 
   Point point;
@@ -34,25 +34,31 @@ class _LoginPageState extends State<LoginPage> {
     // print('password:$password');
     // print('usrname:$username');
     // print('serverip:$SERVER_IP');
-    var res = await http.post(
-        "$SERVER_IP/auth",
-        body: jsonEncode(<String, String>{
-          "username": username,
-          "password": password
-        }),
-        headers: <String, String>{
-          "Content-Type": "application/json"
+    try {
+      var res = await http.post(
+          "$SERVER_IP/auth",
+          body: jsonEncode(<String, String>{
+            "username": username,
+            "password": password
+          }),
+          headers: <String, String>{
+            "Content-Type": "application/json"
+          }
+      );
+      var userType = jsonDecode(res.body)["userType"];
+      print(userType);
+      if (res.statusCode == 200) {
+        if ((widget.isConsumer == true && userType == "consumer") ||
+            (widget.isConsumer == false && userType == "PointOwner")) {
+          print("aaa");
+          return jsonDecode(res.body)["jwt"];
         }
-    );
-
-    var userType = jsonDecode(res.body)["userType"];
-    if (res.statusCode == 200) {
-      if ((widget.isConsumer == true && userType == "consumer") ||
-          (widget.isConsumer == false && userType == "pointOwner")) {
-        return jsonDecode(res.body)["jwt"];
       }
-      return null;
+    } on Exception catch(e) {
+      print(e.toString());
     }
+
+      return null;
   }
   Future<int> attemptSignUp(String username, String password) async {
     var res = await http.post(
@@ -93,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
   signIn(String id, email) async {
     var pointEmail = emailController.text;
     var password = passwordController.text;
+    print(widget.isConsumer);
     var jwt = await attemptLogIn(pointEmail, password);
     if(jwt != null) {
       storage.write(key: "jwt", value: jwt);

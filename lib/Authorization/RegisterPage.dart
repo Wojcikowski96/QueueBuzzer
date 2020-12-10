@@ -4,29 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'LoginPage.dart';
-class registerPage extends StatelessWidget {
+class registerPage extends StatefulWidget {
   bool isConsumer;
   registerPage(this.isConsumer);
-  TextEditingController emailTextEditController = new TextEditingController();
-  TextEditingController passwordTextEditController = new TextEditingController();
-  final GlobalKey<FormState> inputKey = GlobalKey<FormState>();
   static const SERVER_IP = 'http://10.0.2.2:8080';
+
+  @override
+  _registerPageState createState() => _registerPageState();
+}
+
+class _registerPageState extends State<registerPage> {
+  TextEditingController emailTextEditController = new TextEditingController();
+
+  TextEditingController passwordTextEditController = new TextEditingController();
+
+  final inputKey = GlobalKey<FormState>();
+
   postPointOwner(String email, String password) async {
     var res = await http.post(
-        "$SERVER_IP/point-owner",
-        body: jsonEncode(<String, String>{
-          "emial": email,
-          "password": password
-        }),
-        headers: <String, String>{
-          "Content-Type": "application/json"
-        }
-    );
-    return res.statusCode;
-  }
-  postConsumer(String email, String password) async {
-    var res = await http.post(
-        "$SERVER_IP/consumer",
+        "${registerPage.SERVER_IP}/point-owner",
         body: jsonEncode(<String, String>{
           "emial": email,
           "password": password
@@ -38,13 +34,28 @@ class registerPage extends StatelessWidget {
     return res.statusCode;
   }
 
+  postConsumer(String email, String password) async {
+    var res = await http.post(
+        "${registerPage.SERVER_IP}/consumer",
+        body: jsonEncode(<String, String>{
+          "emial": email,
+          "password": password
+        }),
+        headers: <String, String>{
+          "Content-Type": "application/json"
+        }
+    );
+    return res.statusCode;
+  }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-        body: SingleChildScrollView(
+        resizeToAvoidBottomInset: false,   //new line
+        body: Form(
+            key: inputKey,
             child: Container(
                 width: width,
                 child: Column(children: <Widget>[
@@ -81,7 +92,6 @@ class registerPage extends StatelessWidget {
                   Container(
                       margin: EdgeInsets.only(right: 10, left: 10),
                       child: TextFormField(
-                        key: inputKey,
                         validator: (input){
                           if(input.isEmpty){
                             return "Empty";
@@ -120,7 +130,6 @@ class registerPage extends StatelessWidget {
                   Container(
                       margin: EdgeInsets.only(right: 10, left: 10),
                       child: TextFormField(
-                        key: inputKey,
                         validator:(input){
                           if(input.isEmpty){
                             return "Empty";
@@ -158,13 +167,12 @@ class registerPage extends StatelessWidget {
                   Container(
                       margin: EdgeInsets.only(right: 10, left: 10),
                       child: TextFormField(
-                        key: inputKey,
                         validator: (input){
                           if(input.isEmpty){
                             return "Empty";
 
                           }else if(input != passwordTextEditController.text){
-                            return "Not Match";
+                            return "Passwords does not Match";
                           }
                           return null;
                         },
@@ -196,25 +204,42 @@ class registerPage extends StatelessWidget {
                   ),
 
                   SizedBox(height: 25,),
-                  SizedBox(
+                Builder(
+                  builder: (context) => SizedBox(
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
 
                       onPressed: (){
-                        if(inputKey.currentState.validate() == "Empty"){
-                          displayDialog(context,  "An Error Occurred", "Please fill up every text field");
-                        }else if(inputKey.currentState.validate() == "Not Match"){
-                          displayDialog(context,  "An Error Occurred", "The passwords do not match");
-                        }else{
-                          if(isConsumer){
+                        // Validate returns true if the form is valid, or false
+                        // otherwise.
+                        if (!inputKey.currentState.validate()) {
+                          // If the form is valid, display a Snackbar.
+                          Scaffold.of(context)
+                              .showSnackBar(SnackBar(content: Text('You enetered wrong values')));
+                          // Fluttertoast.showToast(
+                          //     msg: 'Zarejestrowano użytkownika',
+                          //     toastLength: Toast.LENGTH_SHORT,
+                          //     gravity: ToastGravity.CENTER,
+                          //     timeInSecForIos: 1,
+                          //     backgroundColor: Colors.green,
+                          //     textColor: Colors.white
+                          // );
+                        // if(emailInputKey.currentState.validate() == "Empty" ||
+                        //     passwordInputKey.currentState.validate() == "Empty" ||
+                        //     repeatedPasswordInputKey.currentState.validate() == "Empty") {
+                        //   displayDialog(context,  "An Error Occurred", "Please fill up every text field");
+                        // } else if(repeatedPasswordInputKey.currentState.validate() == "Not Match") {
+                        //   displayDialog(context,  "An Error Occurred", "The passwords do not match");
+                        } else {
+                          if(widget.isConsumer){
                             //consumerPostRequest
                             if(postConsumer(emailTextEditController.text, passwordTextEditController.text) == 200){
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginPage(isConsumer)
+                                      builder: (context) => LoginPage(widget.isConsumer)
                                   )
                               );
                             }else{
@@ -226,7 +251,7 @@ class registerPage extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginPage(isConsumer)
+                                      builder: (context) => LoginPage(widget.isConsumer)
                                   )
                               );
                             }else{
@@ -243,7 +268,7 @@ class registerPage extends StatelessWidget {
                     ),
                     width: 200,
                     height: 70,
-                  ),
+                  )),
                   SizedBox(height: 5,),
                   Text("Masz już konto?",
                     style: TextStyle(
@@ -270,6 +295,7 @@ class registerPage extends StatelessWidget {
 
                 ]))));
   }
+
   void displayDialog(BuildContext context, String title, String text) =>
       showDialog(
         context: context,
