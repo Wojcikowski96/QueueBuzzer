@@ -148,8 +148,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
             SizedBox(
               child: RaisedButton.icon(
                   color: Colors.deepOrange,
-                  icon: Icon(Icons.autorenew_outlined),
-                  label: Text("Status zamówienia"),
+                  icon: Icon(Icons.autorenew_outlined, color: Colors.white),
+                  label: Text(orderProperties[0], style: TextStyle(color: Colors.white)),
                   onPressed: () {
                     Navigator.push(
                         context,
