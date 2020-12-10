@@ -33,6 +33,7 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
 
   String pointName = "Nazwa restauracji";
   double totalPrice = 0.0;
+  int colorScaleQuant = 1000;
   Point point;
   Consumer consumer;
 
@@ -63,6 +64,7 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
     super.initState();
 
     totalPrice = consumer.totalPrice();
+
     Future.delayed(Duration.zero, () async {
       String tempPointName = (await storage.read(key: "pointName")).toString();
       setState(() {
@@ -190,7 +192,7 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
         itemBuilder: (BuildContext context, int index) {
           return Container(
             decoration: BoxDecoration(
-              color: Colors.amber[index*100%1000 + 100],
+              color: Colors.amber[100 + (index*100%900)],
               borderRadius: BorderRadius.circular(15.0),
             ),
             child: ListTile(
