@@ -22,4 +22,12 @@ class Consumer {
   removeFromBasket(ListsItem item) {
     basket.remove(item);
   }
+
+  double totalPrice() {
+    double totalPrice = 0.0;
+    basket.forEach((element) {
+      totalPrice += double.parse(element.price);
+    });
+    return totalPrice;
+  }
 }
