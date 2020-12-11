@@ -84,6 +84,10 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
 
         //gridChildren.removeAt(0);
         int heroIndex = 0;
+        tempListOrdersAccepted.clear();
+        tempListOrdersInProgress.clear();
+        tempListOrdersReady.clear();
+        tempListOrdersDone.clear();
         for (dynamic item in posts) {
           if (item.stateName.toString() == "ACCEPTED")
             {
@@ -425,13 +429,13 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                         String newStateOrder = '';
                         print(idOrder);
                         if (stateOrder == "ACCEPTED")
-                          newStateOrder = 'PROGRESS';
+                          newStateOrder = 'IN_PROGRESS';
                         else if (stateOrder == "IN_PROGRESS")
                           newStateOrder = 'READY';
                         else if (stateOrder == "READY")
                           newStateOrder ='DONE';
 
-                        lvlUpOrder(idOrder, newStateOrder);
+                        lvlUpOrder(idOrder, newStateOrder).then((value) => setState( () => getPointItems() ));
                         },
                       ),
 
