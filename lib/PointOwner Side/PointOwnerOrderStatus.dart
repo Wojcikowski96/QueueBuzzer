@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:PointOwner/Entities/ListsItem.dart';
+import 'package:PointOwner/Entities/Order.dart';
 import 'package:PointOwner/PointOwner%20Side/qrGenerate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,7 @@ class PointOwnerOrderStatus extends StatefulWidget {
 class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
   final storage = FlutterSecureStorage();
   Point point;
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
 
   factory _PointOwnerOrderStatusState.withPoint(Point p) {
     return _PointOwnerOrderStatusState().withPoint(p);
@@ -51,8 +54,18 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
     super.initState();
     Future.delayed(Duration.zero, () {
       getPointItems();
+      var future = Future(() {});
+      listOfObjectsOrdersAccepted.forEach((element) {
+        future = future.then((_) {
+          return Future.delayed(Duration(milliseconds: 100), () {
+            listKey.currentState.insertItem(listOfObjectsOrdersAccepted.indexOf(element),
+                duration: const Duration(milliseconds: 500));
+          });
+        });
+      });
     });
-  }
+    }
+
   String pointID = "2";
 
   List<Widget> listOrdersAccepted = new List(),
@@ -64,6 +77,11 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                tempListOrdersInProgress = new List(),
                tempListOrdersReady = new List(),
                tempListOrdersDone = new List();
+
+  List<ListsOrder> listOfObjectsOrdersAccepted = new List(),
+                  listOfObjectsOrdersInProgress = new List(),
+                  listOfObjectsOrdersReady = new List(),
+                  listOfObjectsOrdersDone = new List();
 
   getPointItems() async {
 
@@ -88,14 +106,22 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
         tempListOrdersInProgress.clear();
         tempListOrdersReady.clear();
         tempListOrdersDone.clear();
+        listOfObjectsOrdersReady.clear();
+        listOfObjectsOrdersDone.clear();
+        listOfObjectsOrdersInProgress.clear();
+        listOfObjectsOrdersAccepted.clear();
         for (dynamic item in posts) {
           if (item.stateName.toString() == "ACCEPTED")
             {
               print("Accepted");
-              tempListOrdersAccepted.add(Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(), heroIndex),
-              ));
+              // tempListOrdersAccepted.add(Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(), heroIndex),
+              // ));
+              ListsOrder lo = ListsOrder.construct(item.idOrder, item.nrOrder, item.stateName.toString());
+              listOfObjectsOrdersAccepted.add(lo);
+              listKey.currentState.insertItem(listOfObjectsOrdersAccepted.indexOf(lo),
+                  duration: const Duration(milliseconds: 500));
             }
           else if (item.stateName.toString() == "IN_PROGRESS")
             {
@@ -104,6 +130,9 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                 padding: const EdgeInsets.all(8.0),
                 child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(), heroIndex),
               ));
+              listOfObjectsOrdersInProgress.add(
+                  ListsOrder.construct(item.idOrder, item.nrOrder, item.stateName.toString())
+              );
             }
           else if (item.stateName.toString() == "READY")
           {
@@ -112,6 +141,9 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
               padding: const EdgeInsets.all(8.0),
               child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(),heroIndex),
             ));
+            listOfObjectsOrdersReady.add(
+                ListsOrder.construct(item.idOrder, item.nrOrder, item.stateName.toString())
+            );
           }
           else if (item.stateName.toString() == "DONE")
           {
@@ -120,6 +152,9 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
               padding: const EdgeInsets.all(8.0),
               child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(),heroIndex),
             ));
+            listOfObjectsOrdersDone.add(
+                ListsOrder.construct(item.idOrder, item.nrOrder, item.stateName.toString())
+            );
           }
           heroIndex++;
         }
@@ -242,8 +277,19 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                         child: new GridView.count(
                           crossAxisCount: 1,
                           childAspectRatio: (screenWidth / (itemHeight*0.4)),
-                          children: List.generate(listOrdersAccepted.length,
-                                  (index) => listOrdersAccepted[index]),
+                          children: [
+                            AnimatedList(
+                              key: listKey,
+                              initialItemCount: listOfObjectsOrdersAccepted.length,
+                              itemBuilder: (context, index, animation) {
+                                return slideIt(listOrdersAccepted, listOfObjectsOrdersAccepted, context, index, animation);
+                              },
+                            ),
+                          ],
+                          // crossAxisCount: 1,
+                          // childAspectRatio: (screenWidth / (itemHeight*0.4)),
+                          // children: List.generate(listOrdersAccepted.length,
+                          //         (index) => listOrdersAccepted[index]),
                         ),
                       ),
                     ]),
@@ -425,17 +471,27 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                         heroTag: "but$heroIndex",
                         backgroundColor: Colors.green,
                         child: Icon(Icons.arrow_upward_rounded),
-                        onPressed: () {print('ooo');
-                        String newStateOrder = '';
-                        print(idOrder);
-                        if (stateOrder == "ACCEPTED")
-                          newStateOrder = 'IN_PROGRESS';
-                        else if (stateOrder == "IN_PROGRESS")
-                          newStateOrder = 'READY';
-                        else if (stateOrder == "READY")
-                          newStateOrder ='DONE';
+                        onPressed: () {
+                          print('ooo');
+                          String newStateOrder = '';
+                          print(idOrder);
+                          if (stateOrder == "ACCEPTED") {
+                            int index = listOfObjectsOrdersAccepted.indexOf(
+                                ListsOrder.construct(idOrder, int.parse(nrOrder), stateOrder));
+                            listKey.currentState.removeItem(
+                                index,
+                                    (_, animation) =>
+                                        slideIt(listOrdersAccepted, listOfObjectsOrdersAccepted, context, index, animation),
+                                duration: const Duration(milliseconds: 500));
+                            newStateOrder = 'PROGRESS';
+                          }
 
-                        lvlUpOrder(idOrder, newStateOrder).then((value) => setState( () => getPointItems() ));
+                          else if (stateOrder == "IN_PROGRESS")
+                            newStateOrder = 'READY';
+                          else if (stateOrder == "READY")
+                            newStateOrder ='DONE';
+
+                        lvlUpOrder(idOrder, newStateOrder);
                         },
                       ),
 
@@ -444,5 +500,25 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                 ),
               ),
         ]));
+
+  }
+
+  Widget slideIt(List<Widget> list, List<ListsOrder> listOfObjects, BuildContext context, int index, animation) {
+    print(listOfObjects.length);
+    print("index:" + index.toString());
+    ListsOrder item = listOfObjects.elementAt(index);
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(-1, 0),
+        end: Offset(0, 0),
+      ).animate(animation),
+      child: Container(
+        height: (243.0*0.4),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(), index),
+        ),
+      ),
+    );
   }
 }
