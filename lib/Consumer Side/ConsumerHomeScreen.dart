@@ -600,7 +600,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     List<String> properties = new List();
     for (int i = 0; i<orders.length; i++){
       if (json[i]['queueNumber'] > 0) {
-        properties.add(json[i]['state']);
+        properties.add(json[i]['stateName']);
         properties.add(json[i]['queueNumber'].toString());
       }
     }
@@ -624,15 +624,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     }
   }
 
-
-
   Future<void> placeOrder() async {
     const SERVER_IP = 'http://10.0.2.2:8080';
-    // Map<String, String> paramMap = {
-    //   "name": "Name",
-    //   "price": "0.0",
-    //   "category": "Category"
-    // };
 
     var res = await http.post("$SERVER_IP/consumer-order",
         body: jsonEncode(<String, dynamic>{
@@ -641,7 +634,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           "productsIds": getProductIdsFromBasket(),
           "stateName": "ACCEPTED",
           "fireBaseToken": this.token,
-
         }),
         headers: <String, String>{"Content-Type": "application/json"}
         );

@@ -32,7 +32,7 @@ getOrderPropertiesFromJson(json) {
   List<String> properties = new List();
   for (int i = 0; i<orders.length; i++){
     if (json[i]['queueNumber'] > 0) {
-      properties.add(json[i]['state']);
+      properties.add(json[i]['stateName']);
       properties.add(json[i]['queueNumber'].toString());
     }
   }
@@ -199,7 +199,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
     // tutaj
   }
-  Container Taken(MaterialColor color){
+  Container Taken(Color color){
 
     return new Container(
       width: 150,
@@ -212,7 +212,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
 
     );
   }
-  Container InProgress(MaterialColor color){
+  Container InProgress(Color color){
     return new Container(
       width: 150,
       height: 150,
@@ -225,7 +225,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
     );
   }
 
-  Container ToPickup(MaterialColor color){
+  Container ToPickup(Color color){
     return new Container(
       width: 150,
       height: 150,

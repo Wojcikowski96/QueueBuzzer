@@ -75,6 +75,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
 
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
+
       if (jsonResponse != null) {
         Iterable iterable = json.decode(response.body);
         List<dynamic> posts = List<Map>.from(iterable)
@@ -84,32 +85,36 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
         //gridChildren.removeAt(0);
         int heroIndex = 0;
         for (dynamic item in posts) {
-          if (item.stateOrder.toString() == "ACCEPTED")
+          if (item.stateName.toString() == "ACCEPTED")
             {
+              print("Accepted");
               tempListOrdersAccepted.add(Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(), heroIndex),
+                child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(), heroIndex),
               ));
             }
-          else if (item.stateOrder.toString() == "IN_PROGRESS")
+          else if (item.stateName.toString() == "IN_PROGRESS")
             {
+              print("IN_PROGRESS");
               tempListOrdersInProgress.add(Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(), heroIndex),
+                child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(), heroIndex),
               ));
             }
-          else if (item.stateOrder.toString() == "READY")
+          else if (item.stateName.toString() == "READY")
           {
+            print("Ready");
             tempListOrdersReady.add(Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(),heroIndex),
+              child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(),heroIndex),
             ));
           }
-          else if (item.stateOrder.toString() == "DONE")
+          else if (item.stateName.toString() == "DONE")
           {
+            print("Done");
             tempListOrdersDone.add(Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(),heroIndex),
+              child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(),heroIndex),
             ));
           }
           heroIndex++;
