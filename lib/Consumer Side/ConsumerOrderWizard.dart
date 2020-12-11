@@ -5,8 +5,10 @@ import 'package:PointOwner/Consumer%20Side/ConsumerHomeScreen.dart';
 import 'package:PointOwner/Consumer%20Side/ConsumerOrderStatus.dart';
 import 'package:PointOwner/Entities/Consumer.dart';
 import 'package:PointOwner/Entities/Point.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class ConsumerOrderWizard extends StatefulWidget {
@@ -36,6 +38,9 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
   int colorScaleQuant = 1000;
   Point point;
   Consumer consumer;
+  String token;
+  var storageOut = FlutterSecureStorage();
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 
   _ConsumerOrderWizardState();
 
@@ -45,6 +50,10 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
 
   factory _ConsumerOrderWizardState.withPoint(Point p) {
     return _ConsumerOrderWizardState().setPoint(p);
+  }
+
+  Future<String> loadToken() async {
+    return await firebaseMessaging.getToken();
   }
 
   _ConsumerOrderWizardState setPointAndConsumer(Point p, Consumer c) {
@@ -69,6 +78,10 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
       String tempPointName = (await storage.read(key: "pointName")).toString();
       setState(() {
         pointName = tempPointName;
+      });
+      loadToken().then((value) {
+        this.token = value;
+        print(value.toString());
       });
       print('Init state');
     });
@@ -263,6 +276,7 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
           "pointId": point.pointID,
           "productsIds": getProductIdsFromBasket(),
           "stateName": "ACCEPTED",
+          "fireBaseToken": this.token,
         }),
         headers: <String, String>{"Content-Type": "application/json"}
     );
