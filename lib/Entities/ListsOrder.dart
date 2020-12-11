@@ -1,6 +1,5 @@
 class ListsOrder {
   String stateOrder;
-  String stateName;
   int idOrder;
   int nrOrder;
   ListsOrder();
@@ -12,7 +11,6 @@ class ListsOrder {
     p.idOrder = json['id'];
     p.nrOrder = json['queueNumber'];
     p.stateOrder = json['stateName'];
-    p.stateName = json['stateName'];
     return p;
   }
 
@@ -22,7 +20,6 @@ class ListsOrder {
     p.idOrder = json['id'];
     p.nrOrder = json['queueNumber'];
     p.stateOrder = json['stateName'];
-    p.stateName = json['stateName'];
     return p;
   }
 
