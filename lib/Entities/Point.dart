@@ -18,10 +18,14 @@ class Point {
   Point();
 
   Point.withIdAndName(this.pointID, this.pointsName, color, this.imgUrl) {
+    this.color = convertHtmlColorIntoInt(color);
+  }
+
+   static int convertHtmlColorIntoInt(String htmlColor) {
     final buffer = StringBuffer();
-    if (color.length == 6 || color.length == 7) buffer.write('ff');
-    buffer.write(color.replaceFirst('#', ''));
-    this.color = int.parse(buffer.toString(), radix: 16);
+    if (htmlColor.length == 6 || htmlColor.length == 7) buffer.write('ff');
+    buffer.write(htmlColor.replaceFirst('#', ''));
+    return int.parse(buffer.toString(), radix: 16);
   }
 
   Point.withId(this.pointID) {

@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../Entities/ListsOrder.dart';
 import '../Entities/Point.dart';
+import 'ConfigScreen.dart';
 import 'PointHomeScreen.dart';
 import 'PointMenu.dart';
 
@@ -89,36 +90,36 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
         tempListOrdersReady.clear();
         tempListOrdersDone.clear();
         for (dynamic item in posts) {
-          if (item.stateName.toString() == "ACCEPTED")
+          if (item.stateOrder.toString() == "ACCEPTED")
             {
               print("Accepted");
               tempListOrdersAccepted.add(Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(), heroIndex),
+                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(), heroIndex),
               ));
             }
-          else if (item.stateName.toString() == "IN_PROGRESS")
+          else if (item.stateOrder.toString() == "IN_PROGRESS")
             {
               print("IN_PROGRESS");
               tempListOrdersInProgress.add(Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(), heroIndex),
+                child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(), heroIndex),
               ));
             }
-          else if (item.stateName.toString() == "READY")
+          else if (item.stateOrder.toString() == "READY")
           {
             print("Ready");
             tempListOrdersReady.add(Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(),heroIndex),
+              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(),heroIndex),
             ));
           }
-          else if (item.stateName.toString() == "DONE")
+          else if (item.stateOrder.toString() == "DONE")
           {
             print("Done");
             tempListOrdersDone.add(Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Item(item.idOrder, item.nrOrder.toString(), item.stateName.toString(),heroIndex),
+              child: Item(item.idOrder, item.nrOrder.toString(), item.stateOrder.toString(),heroIndex),
             ));
           }
           heroIndex++;
@@ -205,6 +206,17 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => GenerateQr(point)));
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Customize point'),
+                    onTap: () {
+                      // Update the state of the app
+                      // ...
+                      // Then close the drawer
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ConfigScreen(point)));
                     },
                   ),
                 ],

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:PointOwner/PointOwner%20Side/ConfigScreen.dart';
 import 'package:PointOwner/PointOwner%20Side/qrGenerate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -164,6 +165,17 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => PointOwnerOrderStatus(point)));
+                },
+              ),
+              ListTile(
+                title: Text('Customize point'),
+                onTap: () {
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ConfigScreen(point)));
                 },
               ),
             ],
