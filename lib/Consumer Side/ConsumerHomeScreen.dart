@@ -559,6 +559,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
         for (dynamic item in posts) {
           categories.add(item.category.toString());
+          print(item.toString());
         }
 
         List<String> tempUniqueCategories = categories.toSet().toList();
@@ -589,36 +590,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
         setState(() {
           gridChildren = tempGridChildren;
           uniqueCategories = tempUniqueCategories;
-        });
-      }
-    }
-  }
-  getOrderPropertiesFromJson(json) {
-    List<dynamic> orders = List<Map>.from(json)
-        .map((Map model) => ListsItem.fromJson(model))
-        .toList();
-    List<String> properties = new List();
-    for (int i = 0; i<orders.length; i++){
-      if (json[i]['queueNumber'] > 0) {
-        properties.add(json[i]['stateName']);
-        properties.add(json[i]['queueNumber'].toString());
-      }
-    }
-    return properties;
-  }
-
-  getOrderProperties() async {
-    var jsonResponse = null;
-    String request = "http://10.0.2.2:8080/consumer-order";
-    var response = await http.get(request);
-    if (response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
-
-      if (jsonResponse != null) {
-        var decoded = json.decode(response.body);
-        setState(() {
-          orderProperties = getOrderPropertiesFromJson(decoded);
-          print("Order properties w getOrderProperties "+orderProperties.toString());
         });
       }
     }

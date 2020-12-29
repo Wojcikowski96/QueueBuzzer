@@ -14,7 +14,6 @@ import 'PointHomeScreen.dart';
 import 'PointOwnerOrderStatus.dart';
 
 class PointMenu extends StatefulWidget {
-
   Point point;
 
   PointMenu(Point p) {
@@ -37,23 +36,27 @@ class _PointMenuState extends State<PointMenu> {
     this.point = p;
     return this;
   }
+
   _PointMenuState();
 
   @override
   void initState() {
+    print("Point menu init state");
     super.initState();
     Future.delayed(Duration.zero, () {
       getPointItems();
     });
   }
 
-  int categoryNumber=0;
+  int categoryNumber = 0;
 
   String pointID = "4";
   List<String> uniqueCategories = ['placeholder'];
   List<Widget> gridChild = [];
 
-  List<List<Widget>> gridChildren = [[Container()]];
+  List<List<Widget>> gridChildren = [
+    [Container()]
+  ];
 
   getPointItems() async {
     //TODO:Skorzystac z metody Poit.getPointInfo()
@@ -70,7 +73,7 @@ class _PointMenuState extends State<PointMenu> {
       if (jsonResponse != null) {
         Iterable iterable = json.decode(response.body);
         List<dynamic> posts = List<Map>.from(iterable)
-            .map((Map model) => ListsItem.fromJson(model))
+            .map((Map model) => ListsItem.productFromJson(model))
             .toList();
 
         gridChildren.removeAt(0);
@@ -90,7 +93,8 @@ class _PointMenuState extends State<PointMenu> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    child: Item(item.name, item.price, item.category, item.img),
+                    child: Item(item.productID, item.name, item.price,
+                        item.category, item.img),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       color: Colors.white70,
@@ -106,7 +110,6 @@ class _PointMenuState extends State<PointMenu> {
         setState(() {
           gridChildren = tempGridChildren;
           uniqueCategories = tempUniqueCategories;
-
         });
         print(uniqueCategories);
       }
@@ -114,7 +117,10 @@ class _PointMenuState extends State<PointMenu> {
   }
 
   Image getImage(String imgUrl) {
-    return imgUrl == null ? Image.asset("pizza.jpg", height: 110, width: 110) : Image.network(imgUrl.replaceAll("localhost", "10.0.2.2"), height: 110, width: 110);
+    return imgUrl == null
+        ? Image.asset("pizza.jpg", height: 110, width: 110)
+        : Image.network(imgUrl.replaceAll("localhost", "10.0.2.2"),
+            height: 110, width: 110);
   }
 
   @override
@@ -146,7 +152,8 @@ class _PointMenuState extends State<PointMenu> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PointOwnerOrderStatus(this.point)));
+                        builder: (context) =>
+                            PointOwnerOrderStatus(this.point)));
               },
             ),
             ListTile(
@@ -173,8 +180,7 @@ class _PointMenuState extends State<PointMenu> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.push(
-                    context,
+                Navigator.push(context,
                     MaterialPageRoute(builder: (context) => GenerateQr(point)));
               },
             ),
@@ -185,7 +191,7 @@ class _PointMenuState extends State<PointMenu> {
           // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
           //
           // }),
-        backgroundColor: Color(this.point.color),
+          backgroundColor: Color(this.point.color),
           title: Text(point.pointsName),
           actions: <Widget>[
             IconButton(
@@ -199,8 +205,8 @@ class _PointMenuState extends State<PointMenu> {
         backgroundColor: Color(this.point.color),
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddProduct(point)));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddProduct(point)));
           // setState(() {
           //   // gridChild.add(Padding(
           //   //     padding: const EdgeInsets.all(8.0),
@@ -235,7 +241,7 @@ class _PointMenuState extends State<PointMenu> {
                   crossAxisCount: 1,
                   childAspectRatio: (screenWidth / itemHeight),
                   children: List.generate(gridChildren[index].length,
-                          (index2) => gridChildren[index][index2]),
+                      (index2) => gridChildren[index][index2]),
                 );
               },
             ),
@@ -245,7 +251,8 @@ class _PointMenuState extends State<PointMenu> {
     );
   }
 
-  Container Item(String productName, String price, String category, String imgUrl) {
+  Container Item(int productId, String productName, String price,
+      String category, String imgUrl) {
     return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -287,9 +294,7 @@ class _PointMenuState extends State<PointMenu> {
                 Expanded(
                     child: Column(
                   //crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    getImage(imgUrl)
-                  ],
+                  children: [getImage(imgUrl)],
                 ))
               ],
             ),
@@ -303,14 +308,18 @@ class _PointMenuState extends State<PointMenu> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   onPressed: () {
+                    Map<String, dynamic> paramMap = {
+                      "id": productId.toString(),
+                      "name": productName,
+                      "price": price.toString(),
+                      "category": category,
+                      "img": imgUrl,
+                      "point": point
+                    };
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => EditProduct({
-                                  "name": productName,
-                                  "price": price.toString(),
-                                  "category": category,
-                                })));
+                            builder: (context) => EditProduct(paramMap)));
                   },
                   child: Text("Edytuj"),
                   color: Colors.white12,
@@ -334,9 +343,10 @@ class _PointMenuState extends State<PointMenu> {
       ),
     );
   }
+
   getPageNum(int page) {
     setState(() {
-      categoryNumber=page;
+      categoryNumber = page;
     });
     print("Bieżąca strona");
     print(categoryNumber);

@@ -39,7 +39,7 @@ class ListsItem {
 
   @override
   String toString() {
-    return 'ListsItem{name: $name, price: $price, category: $category, avaliability: $avaliability, description: $description}';
+    return 'ListsItem{id: $productID, name: $name, price: $price, category: $category, avaliability: $avaliability, description: $description, image: $img}';
   }
 
   @override
