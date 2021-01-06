@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:PointOwner/Entities/Order.dart';
 import 'package:PointOwner/PointOwner%20Side/qrGenerate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class PointOwnerOrderStatus extends StatefulWidget {
 }
 
 class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
+  final String SERVER_IP = "http://10.0.2.2:8080";
   final storage = FlutterSecureStorage();
   Point point;
 
@@ -71,7 +73,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
     var jsonResponse = null;
     var pointID = (await storage.read(key: "pointID")).toString();
 
-    String request = "http://10.0.2.2:8080/point/" + pointID + "/orders";
+    String request = "$SERVER_IP/point/" + pointID + "/orders";
     var response = await http.get(request);
 
     if (response.statusCode == 200) {
@@ -134,7 +136,26 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
       }
     }
   }
+  Future<List<List<String>>> getOrder(String orderId) async{
+    var res = await http.get(
+        "$SERVER_IP/consumer-order/" + orderId
+    );
+    var jsonResponse = json.decode(res.body);
+    List <List<String>> productList= [[]];
+    int i = 0;
+    for(var product in jsonResponse["productList"]){
+      productList[i].add(product["id"].toString());
+      productList[i].add(product["name"]);
+      productList[i].add(product["price"].toString());
+      productList[i].add(product["category"]);
+      productList[i].add(product["description"]);
+      productList.add([]);
+      i++;
+    }
+    print(res.body);
+    return productList;
 
+  }
   Future<void> lvlUpOrder(int idOrder, String newStateOrder) async {
     const SERVER_IP = 'http://10.0.2.2:8080';
 
@@ -359,7 +380,94 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
       ),
     );
   }
+  void displayOrderInfo(BuildContext context, int idOrder) async{
+    List<List<String>> orderList = await getOrder(idOrder.toString());
+    print(orderList.length);
+    showDialog(
+      context: context,
+      builder: (context)=>Dialog(
+        child: Container(
+          decoration: BoxDecoration(
 
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(width: 6.0,color: Colors.lightBlue),
+            image: DecorationImage(
+              image: AssetImage("food.jpg"),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.5), BlendMode.lighten),
+            ),
+          ),
+          width:200,
+          height: 500,
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(200, 0, 0, 20),
+                    child: Container(
+
+                      decoration: BoxDecoration(
+                        color: Colors.deepOrange,
+                        borderRadius: BorderRadius.circular(20)
+                      ),
+                      child: InkWell(
+                        child: Icon(Icons.clear,color: Colors.white, size: 40,),
+
+                        onTap: (){
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(width:200,
+                      height:400,
+                      child:ListView.builder(scrollDirection: Axis.vertical,
+                  itemCount: orderList.length,
+                  itemBuilder: (context, index)=> Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    child: Container(
+
+                      width: 150,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(width: 3, color: Colors.deepOrange)
+              ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Order: " + orderList[index][0],
+                              style: TextStyle(fontSize: 26,fontWeight: FontWeight.w700),),
+                            SizedBox(height: 20,),
+                            Text("Name: " + orderList[index][1],
+                                style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                            SizedBox(height: 10,),
+                            Text("Price: " + orderList[index][2],
+                              style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                            SizedBox(height: 10,),
+                            Text("Category: " + orderList[index][3],
+                              style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                            SizedBox(height: 10,),
+                            Text("Description: " + orderList[index][4],
+                              style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),))
+                ],
+              )
+            ],
+          ),
+        ),
+      )
+
+    );
+  }
   Container Item(int idOrder, String nrOrder, String stateOrder, int heroIndex) {
     int stateColorId = 0;
 
@@ -419,15 +527,23 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                           color: const Color(0xFFBBDEFB),
                         ),
                         child: Center(
-                          child: Text(
-                            stateOrder,
-                            style: TextStyle(
-                              fontFamily: 'Arial',
-                              fontSize: 30,
-                              color: Color(stateColorId),
-                              height: 1,
+                          child: RaisedButton(
+                            color: const Color(0xFFBBDEFB),
+                            onPressed: (){
+
+
+                                displayOrderInfo(context,idOrder);
+                            },
+                            child: Text(
+                              stateOrder,
+                              style: TextStyle(
+                                fontFamily: 'Arial',
+                                fontSize: 30,
+                                color: Color(stateColorId),
+                                height: 1,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
