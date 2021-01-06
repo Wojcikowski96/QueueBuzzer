@@ -559,7 +559,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                         if (stateOrder == "ACCEPTED")
                           newStateOrder = 'IN_PROGRESS';
                         else if (stateOrder == "IN_PROGRESS")
-                          newStateOrder = 'READY';
+                          newStateOrder = displayDialogAndReturnState();
                         else if (stateOrder == "READY")
                           newStateOrder ='DONE';
 
@@ -572,5 +572,32 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                 ),
               ),
         ]));
+  }
+  String displayDialogAndReturnState(){
+    String state;
+      showDialog(context: context,builder: (context)=>Dialog(
+        child: Container(
+          width: 120,
+          child: Column(
+            children: [
+              Text("Are you sure you want to set state to ready and send notification to consumer?"),
+              SizedBox(height: 30),
+              Row(children: [
+                RaisedButton(
+              child:Text("Yes"),
+                    onPressed: (){
+                      state = "READY";
+                }),
+                RaisedButton(
+                    child:Text("No"),
+                    onPressed: (){
+                        state = "IN_PROGRESS";
+                })
+              ],)
+            ],
+          ),
+        ),
+      ));
+    return state;
   }
 }
