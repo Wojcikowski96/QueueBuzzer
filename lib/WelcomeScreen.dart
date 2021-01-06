@@ -1,5 +1,7 @@
-import 'dart:ui';
 
+import 'dart:ui';
+import 'dart:io';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -144,6 +146,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                   onPressed: () async {
                     await storage.write(key: "pointID", value: scanResult);
+                    String deviceId = "1";
+                    deviceId = deviceId.replaceAll(new RegExp(r'[^0-9]'),'');
+                    await storage.write(key: "deviceID", value: deviceId);
                     Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => ConsumerHomeScreen(Point.withId(int.parse(scanResult)))));
@@ -164,5 +169,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       )
     );
   }
-
+  Future<String> _getId() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) { // import 'dart:io'
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.identifierForVendor; // unique ID on iOS
+    } else {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      return androidDeviceInfo.androidId; // unique ID on Android
+    }
+  }
 }

@@ -12,6 +12,7 @@ import '../Entities/Consumer.dart';
 import '../Entities/ListsItem.dart';
 import '../Entities/Point.dart';
 import 'ConsumerOrderStatus.dart';
+import 'ConsumerStory.dart';
 
 class ConsumerHomeScreen extends StatefulWidget {
   Point point;
@@ -188,6 +189,18 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ConsumerOrderStatus(point)));
+                  }),
+            ),
+            SizedBox(
+              child: RaisedButton.icon(
+                  color: Color(this.point.color),
+                  icon: Icon(Icons.history, color: Colors.white),
+                  label: Text(orderProperties[0], style: TextStyle(color: Colors.white)),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ConsumerStory(point)));
                   }),
             )
           ]),
