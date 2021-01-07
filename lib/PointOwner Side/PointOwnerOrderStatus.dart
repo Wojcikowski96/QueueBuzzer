@@ -142,7 +142,11 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
     );
     var jsonResponse = json.decode(res.body);
     List <List<String>> productList= [[]];
-    int i = 0;
+    int i = 1;
+    productList[0].add(jsonResponse["startOfService"]);
+    productList[0].add(jsonResponse["endOfService"]);
+    productList.add([]);
+    print(productList);
     for(var product in jsonResponse["productList"]){
       productList[i].add(product["id"].toString());
       productList[i].add(product["name"]);
@@ -425,40 +429,72 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                       height:400,
                       child:ListView.builder(scrollDirection: Axis.vertical,
                   itemCount: orderList.length,
-                  itemBuilder: (context, index)=> Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: Container(
+                  itemBuilder: (context, index){
+                        if(index > 0){
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            child: Container(
 
-                      width: 150,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20.0),
-                border: Border.all(width: 3, color: Colors.deepOrange)
-              ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Order: " + orderList[index][0],
-                              style: TextStyle(fontSize: 26,fontWeight: FontWeight.w700),),
-                            SizedBox(height: 20,),
-                            Text("Name: " + orderList[index][1],
-                                style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
-                            SizedBox(height: 10,),
-                            Text("Price: " + orderList[index][2],
-                              style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
-                            SizedBox(height: 10,),
-                            Text("Category: " + orderList[index][3],
-                              style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
-                            SizedBox(height: 10,),
-                            Text("Description: " + orderList[index][4],
-                              style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),))
+                              width: 150,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  border: Border.all(width: 3, color: Colors.deepOrange)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Order: " + orderList[index+1][0],
+                                      style: TextStyle(fontSize: 26,fontWeight: FontWeight.w700),),
+                                    SizedBox(height: 20,),
+                                    Text("Name: " + orderList[index+1][1],
+                                      style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                    SizedBox(height: 10,),
+                                    Text("Price: " + orderList[index+1][2],
+                                      style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                    SizedBox(height: 10,),
+                                    Text("Category: " + orderList[index+1][3],
+                                      style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                    SizedBox(height: 10,),
+                                    Text("Description: " + orderList[index+1][4],
+                                      style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                          return Container(
+                            width: 150,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20.0),
+                                border: Border.all(width: 3, color: Colors.lightBlue)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text("Order info",
+                                      style: TextStyle(fontSize: 26,fontWeight: FontWeight.w700),),
+                                  ),
+                                  SizedBox(height: 20,),
+                                  Text("Ordered at: " + orderList[0][0].replaceFirst('T', ' ').substring(0,19),
+                                    style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                  SizedBox(height: 10,),
+                                  Text("Estimate finish: " + orderList[0][1].replaceFirst('T', ' ').substring(0,19),
+                                    style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                ],
+                              ),
+                            ),
+                          );
+
+                        }
+                      ))
                 ],
               )
             ],
@@ -530,8 +566,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                           child: RaisedButton(
                             color: const Color(0xFFBBDEFB),
                             onPressed: (){
-
-
                                 displayOrderInfo(context,idOrder);
                             },
                             child: Text(
