@@ -5,6 +5,7 @@ import 'package:PointOwner/Entities/ListsOrder.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,6 @@ var storage = FlutterSecureStorage();
 // Grid(TextEditingController pointID);
 
 class _ConsumerStoryState extends State<ConsumerStory> {
-  String pointName = "Nazwa restauracji";
   int categoryNumber = 0;
   double totalPrice = 0.0;
   List<String> orderProperties = [""];
@@ -98,11 +98,24 @@ class _ConsumerStoryState extends State<ConsumerStory> {
 
       for (var order in ordersParsed) {
         List<Widget> orderItems = new List();
-        for (int i = 2; i < order.length; i++) {
+        for (int i = 4; i < order.length; i++) {
           orderItems.add(basketItem(order[i][0], order[i][1]));
         }
+        String polishStateName = "";
+        String messageEndTime = "";
+        if(order[1] == "ACCEPTED"){
+          polishStateName = "ZAAKCEPTOWANO";
+        }else if(order[1] == "IN_PROGRESS"){
+          polishStateName = "W REALIZACJI";
+        }else if(order[1] == "READY"){
+          polishStateName = "DO ODBIORU";
+        }else if(order[1] == "DONE") {
+          polishStateName = "ZREALIZOWANE";
+          messageEndTime = "zakończono: " + order[3];
+        }
+        String messageStartTime = "przyjęto: " + order[2];
 
-        tempSingleOrderWidgets.add(singleOrderWidget(order[0], order[1], orderItems));
+        tempSingleOrderWidgets.add(singleOrderWidget(order[0], polishStateName, orderItems, messageStartTime, messageEndTime));
       }
 
       setState(() {
@@ -130,6 +143,8 @@ class _ConsumerStoryState extends State<ConsumerStory> {
         List<dynamic> singleOrder = new List();
         singleOrder.add(await getPointName(json[i]['pointId']));
         singleOrder.add(json[i]['stateName']);
+        singleOrder.add(reformatDate(json[i]['startOfService']));
+        singleOrder.add(reformatDate(json[i]['endOfService']));
         for (int j = 0; j < json[i]['productList'].length; j++) {
           List<dynamic> singleProduct = new List();
           singleProduct.add(json[i]['productList'][j]['name']);
@@ -169,7 +184,7 @@ class _ConsumerStoryState extends State<ConsumerStory> {
           //
           // }),
 
-          title: Text(pointName),
+
         ),
         body: Container(
             decoration: BoxDecoration(
@@ -193,7 +208,7 @@ class _ConsumerStoryState extends State<ConsumerStory> {
             ])));
   }
 
-  Padding singleOrderWidget(String pointName, String statusName, List<Widget> orderItems) {
+  Padding singleOrderWidget(String pointName, String statusName, List<Widget> orderItems, String messageStartTime, String messageEndTime) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -205,27 +220,40 @@ class _ConsumerStoryState extends State<ConsumerStory> {
         child: Center(
           child: Column(
             children: [
+              SizedBox(
+                height: 10,
+              ),
               Text(
-                pointName,
-                style: TextStyle(fontSize: 30),
+                "Nazwa punktu: "+pointName,
+                style: TextStyle(fontSize: 30,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold,),
+
               ),
               SizedBox(
                 height: 10,
               ),
               Text(
-                "Status zamówienia:",
-                style: TextStyle(fontSize: 30),
+                "Status zamówienia: "+statusName,
+                style: TextStyle(fontSize: 20,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold,),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                statusName,
-                style: TextStyle(fontSize: 25),
-              ),
+              SizedBox(height: 10,),
               Column(
                 children: List.generate(
                     orderItems.length, (index) => orderItems[index]),
+              ),
+              SizedBox(height: 5,),
+              Text(messageStartTime,
+                style: TextStyle(fontSize: 15, color: Colors.grey),
+              ),
+              SizedBox(height: 5,),
+              Text(messageEndTime,
+                style: TextStyle(fontSize: 15, color: Colors.grey),
+              ),
+              SizedBox(
+                height: 10,
               ),
             ],
           ),
@@ -300,6 +328,17 @@ class _ConsumerStoryState extends State<ConsumerStory> {
     var jsonMap =  jsonDecode(response.body) as Map<String, dynamic>;
     pointName = jsonMap["name"];
     return pointName;
+  }
 
+  String reformatDate(String backendDate){
+    if(backendDate !=null){
+      DateTime backendDateTime = DateTime.parse(backendDate);
+      final DateFormat formatter = DateFormat('yyyy-MM-dd H:m');
+      final String formatted = formatter.format(backendDateTime);
+      print("Sformatowana data z backu: " + formatted);
+      return formatted;
+    }else{
+      return "null";
+    }
   }
 }
