@@ -98,11 +98,11 @@ class _ConsumerStoryState extends State<ConsumerStory> {
 
       for (var order in ordersParsed) {
         List<Widget> orderItems = new List();
-        for (int i = 1; i < order.length; i++) {
+        for (int i = 2; i < order.length; i++) {
           orderItems.add(basketItem(order[i][0], order[i][1]));
         }
 
-        tempSingleOrderWidgets.add(singleOrderWidget(order[0], orderItems));
+        tempSingleOrderWidgets.add(singleOrderWidget(order[0], order[1], orderItems));
       }
 
       setState(() {
@@ -129,6 +129,7 @@ class _ConsumerStoryState extends State<ConsumerStory> {
       if (json[i]['consumerId'] == consumerID && json[i]['queueNumber'] > 0) {
         List<dynamic> singleOrder = new List();
         singleOrder.add(await getPointName(json[i]['pointId']));
+        singleOrder.add(json[i]['stateName']);
         for (int j = 0; j < json[i]['productList'].length; j++) {
           List<dynamic> singleProduct = new List();
           singleProduct.add(json[i]['productList'][j]['name']);
@@ -192,7 +193,7 @@ class _ConsumerStoryState extends State<ConsumerStory> {
             ])));
   }
 
-  Padding singleOrderWidget(String pointID, List<Widget> orderItems) {
+  Padding singleOrderWidget(String pointName, String statusName, List<Widget> orderItems) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -205,11 +206,22 @@ class _ConsumerStoryState extends State<ConsumerStory> {
           child: Column(
             children: [
               Text(
-                pointID,
+                pointName,
                 style: TextStyle(fontSize: 30),
               ),
               SizedBox(
                 height: 10,
+              ),
+              Text(
+                "Status zamówienia:",
+                style: TextStyle(fontSize: 30),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                statusName,
+                style: TextStyle(fontSize: 25),
               ),
               Column(
                 children: List.generate(
@@ -282,7 +294,6 @@ class _ConsumerStoryState extends State<ConsumerStory> {
   }
 
   Future<String> getPointName(int pointID) async {
-
     String pointName;
     String request = "http://10.0.2.2:8080/point/$pointID";
     var response = await http.get(request);
