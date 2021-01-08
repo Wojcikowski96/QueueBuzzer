@@ -267,6 +267,7 @@ class EditProduct extends StatelessWidget {
                       onPressed: () {
                         uploadFile();
                         patchProduct();
+
                         Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => PointMenu(point)));
