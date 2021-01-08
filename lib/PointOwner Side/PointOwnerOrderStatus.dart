@@ -142,20 +142,21 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
     );
     var jsonResponse = json.decode(res.body);
     List <List<String>> productList= [[]];
-    int i = 1;
+    int i = 0;
     productList[0].add(jsonResponse["startOfService"]);
     productList[0].add(jsonResponse["endOfService"]);
-    productList.add([]);
+
     print(productList);
     for(var product in jsonResponse["productList"]){
+      i++;
+      productList.add([]);
       productList[i].add(product["id"].toString());
       productList[i].add(product["name"]);
       productList[i].add(product["price"].toString());
       productList[i].add(product["category"]);
       productList[i].add(product["description"]);
-      productList.add([]);
-      i++;
     }
+
     print(res.body);
     return productList;
 
@@ -386,7 +387,9 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
   }
   void displayOrderInfo(BuildContext context, int idOrder) async{
     List<List<String>> orderList = await getOrder(idOrder.toString());
+
     print(orderList.length);
+    print(orderList);
     showDialog(
       context: context,
       builder: (context)=>Dialog(
@@ -446,26 +449,26 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Order: " + orderList[index+1][0],
+                                    Text("Order: " + orderList[index][0],
                                       style: TextStyle(fontSize: 26,fontWeight: FontWeight.w700),),
                                     SizedBox(height: 20,),
-                                    Text("Name: " + orderList[index+1][1],
+                                    Text("Name: " + orderList[index][1],
                                       style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
                                     SizedBox(height: 10,),
-                                    Text("Price: " + orderList[index+1][2],
+                                    Text("Price: " + orderList[index][2],
                                       style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
                                     SizedBox(height: 10,),
-                                    Text("Category: " + orderList[index+1][3],
+                                    Text("Category: " + orderList[index][3],
                                       style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
                                     SizedBox(height: 10,),
-                                    Text("Description: " + orderList[index+1][4],
+                                    Text("Description: " + orderList[index][4],
                                       style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),)
                                   ],
                                 ),
                               ),
                             ),
                           );
-                        }
+                        }else
                           return Container(
                             width: 150,
                             decoration: BoxDecoration(
