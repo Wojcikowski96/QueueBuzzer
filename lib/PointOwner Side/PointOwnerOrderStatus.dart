@@ -613,28 +613,44 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
   String displayDialogAndReturnState(){
     String state;
       showDialog(context: context,builder: (context)=>Dialog(
-        child: Container(
-          width: 120,
-          child: Column(
-            children: [
-              Text("Are you sure you want to set state to ready and send notification to consumer?"),
-              SizedBox(height: 30),
-              Row(children: [
-                RaisedButton(
-              child:Text("Yes"),
-                    onPressed: (){
-                      state = "READY";
-                }),
-                RaisedButton(
-                    child:Text("No"),
-                    onPressed: (){
-                        state = "IN_PROGRESS";
-                })
-              ],)
-            ],
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            height: 130,
+            width: 120,
+            child: Column(
+                children: [
+                  Center(
+                      child:
+                        Text("Are you sure you want to set state to ready and send notification to consumer?",
+                        textAlign: TextAlign.center,
+                      )
+                  ),
+                  SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(37.0, 0,0,0),
+                    child: Row(children: [
+                      RaisedButton(
+                    child:Text("Yes"),
+                          onPressed: (){
+                            state = "READY";
+                      }),
+                      RaisedButton(
+                          child:Text("No"),
+                          onPressed: (){
+                              state = "IN_PROGRESS";
+                      })
+                    ],),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
-      ));
+      );
     return state;
   }
 }
