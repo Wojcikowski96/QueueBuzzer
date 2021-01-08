@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import '../Entities/ListsItem.dart';
 import '../Entities/Point.dart';
 import 'AddProduct.dart';
+import 'ConfigScreen.dart';
 import 'EditProduct.dart';
 import 'PointHomeScreen.dart';
 import 'PointOwnerOrderStatus.dart';
@@ -182,6 +183,17 @@ class _PointMenuState extends State<PointMenu> {
                 // Then close the drawer
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => GenerateQr(point)));
+              },
+            ),
+            ListTile(
+              title: Text('Customize point'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ConfigScreen(point)));
               },
             ),
           ],

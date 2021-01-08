@@ -5,86 +5,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:flex_color_picker/flex_color_picker.dart';
 
-Color screenColor;
-
-class ConfigScreen extends StatefulWidget {
-  Point point;
-
-  @override
-  _ConfigScreenState createState() => _ConfigScreenState(point);
-
-  ConfigScreen(this.point);
-}
-
-class _ConfigScreenState extends State<ConfigScreen> {
-  Point point;
-  ThemeMode themeMode;
-
-  /*RegExp regExp = new RegExp(
-    r"^#[0-9a-f]{3}([0-9a-f]{3})?$",
-    caseSensitive: false,
-    multiLine: false,
-  );*/
-  _ConfigScreenState(this.point);
-
-  final _color = new TextEditingController();
-
-  Future<void> sendColorChange() async {
-    print("1por" + " " + screenColor.toString());
-    var jsonBody = jsonEncode(<String, dynamic>{
-      "colour": screenColor,//_color.text,
-    });
-     var response =  await http.patch('http://10.0.2.2:8080/point/${this.point.pointID}', headers: <String, String>{
-      "Content-Type": "application/json"
-    }, body: jsonBody);
-     if(response == 201) {
-       setState(() => this.point.color = Point.convertHtmlColorIntoInt(screenColor.toString()));
-     }
-  }
-
-  @override
-  void initState() {
-    themeMode = ThemeMode.light;
-
-    sendColorChange();
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {sendColorChange();
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'ColorPicker',
-      theme: ThemeData.from(colorScheme: const ColorScheme.highContrastLight())
-          .copyWith(scaffoldBackgroundColor: Colors.grey[50]),
-      darkTheme:
-      ThemeData.from(colorScheme: const ColorScheme.highContrastDark()),
-      themeMode: themeMode,
-      home: ColorPickerPage(
-        themeMode: (ThemeMode mode) {
-          setState(() {sendColorChange();
-            themeMode = mode;
-          });
-        },
-      ),
-    );
-  }
-}
-
 class ColorPickerPage extends StatefulWidget {
-  const ColorPickerPage({Key key, this.themeMode}) : super(key: key);
-  final ValueChanged<ThemeMode> themeMode;
+  Point point;
 
   @override
-  _ColorPickerPageState createState() => _ColorPickerPageState();
+  _ColorPickerPageState createState() => _ColorPickerPageState(point);
+
+  ColorPickerPage(this.point);
 }
 
 class _ColorPickerPageState extends State<ColorPickerPage> {
+  Point point;
+
   Color screenPickerColor;
   bool isDark;
+
+  _ColorPickerPageState(this.point);
+
+  final storage = FlutterSecureStorage();
 
   // Define some custom colors for the custom picker segment.
   // The 'guide' color values are from
@@ -135,7 +77,11 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  onPressed: (){screenColor = screenPickerColor;},
+                  onPressed: () {
+                    var hexColor = '#${screenPickerColor.value.toRadixString(16).padLeft(6, '0').toUpperCase()}';
+                    storage.write(key: "color", value: hexColor.toString());
+                    _ConfigScreenState(this.point).sendColorChange();
+                  },
                   child: Text("SAVE"),
                   color: screenPickerColor,
                   textColor: Colors.white,
@@ -181,7 +127,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
                 onChanged: (bool value) {
                   setState(() {
                     isDark = value;
-                    widget.themeMode(isDark ? ThemeMode.dark : ThemeMode.light);
+                    //widget.themeMode(isDark ? ThemeMode.dark : ThemeMode.light);
                   });
                 },
               )
@@ -192,3 +138,67 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
     );
   }
 }
+
+//////////////////////////////////////////////
+
+class ConfigScreen extends StatefulWidget {
+  Point point;
+
+  @override
+  _ConfigScreenState createState() => _ConfigScreenState(point);
+
+  ConfigScreen(this.point);
+}
+
+class _ConfigScreenState extends State<ConfigScreen> {
+  Point point;
+  ThemeMode themeMode;
+
+  final storage = FlutterSecureStorage();
+
+  _ConfigScreenState(this.point);
+
+   sendColorChange() async {
+    String colorEnd = await storage.read(key: "color");
+
+    print("1por" + " " + colorEnd);
+
+    var jsonBody = jsonEncode(<String, dynamic>{
+      "colour": colorEnd,
+    });
+     var response =  await http.patch('http://10.0.2.2:8080/point/${this.point.pointID}', headers: <String, String>{
+      "Content-Type": "application/json"
+    }, body: jsonBody);
+     if(response == 201) {
+       setState(() => this.point.color = Point.convertHtmlColorIntoInt(colorEnd));
+     }
+  }
+
+  @override
+  void initState() {
+    themeMode = ThemeMode.light;
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'ColorPicker',
+      theme: ThemeData.from(colorScheme: const ColorScheme.highContrastLight())
+          .copyWith(scaffoldBackgroundColor: Colors.grey[50]),
+      darkTheme:
+      ThemeData.from(colorScheme: const ColorScheme.highContrastDark()),
+      themeMode: themeMode,
+      home: ColorPickerPage(this.point
+        // themeMode: (ThemeMode mode) {
+        //   setState(() {
+        //     themeMode = mode;
+        //   });
+        // },
+      ),
+    );
+  }
+}
+
