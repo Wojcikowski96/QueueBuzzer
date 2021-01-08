@@ -488,9 +488,9 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                                   SizedBox(height: 20,),
                                   Text("Ordered at: " + orderList[0][0].replaceFirst('T', ' ').substring(0,19),
                                     style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
-                                  SizedBox(height: 10,),
-                                  Text("Estimate finish: " + orderList[0][1].replaceFirst('T', ' ').substring(0,19),
-                                    style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                  // SizedBox(height: 10,),
+                                  // Text("Estimate finish: " + orderList[0][1].replaceFirst('T', ' ').substring(0,19),
+                                  //   style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
                                 ],
                               ),
                             ),
@@ -642,6 +642,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                           child:Text("No"),
                           onPressed: (){
                               state = "IN_PROGRESS";
+                              Navigator.of(context).pop();
                       })
                     ],),
                   )
