@@ -144,15 +144,20 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
     var jsonResponse = json.decode(res.body);
     List <List<String>> productList= [[]];
     int i = 0;
+    productList[0].add(jsonResponse["startOfService"]);
+    productList[0].add(jsonResponse["endOfService"]);
+
+    print(productList);
     for(var product in jsonResponse["productList"]){
+      i++;
+      productList.add([]);
       productList[i].add(product["id"].toString());
       productList[i].add(product["name"]);
       productList[i].add(product["price"].toString());
       productList[i].add(product["category"]);
       productList[i].add(product["description"]);
-      productList.add([]);
-      i++;
     }
+
     print(res.body);
     return productList;
 
@@ -246,7 +251,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
             ),
             backgroundColor: Colors.white54,
             appBar: AppBar(
-              backgroundColor: QueueBuzzerButtonStyle.color,
               title: Text(point.pointsName),
               bottom: TabBar(
                 tabs: [
@@ -384,7 +388,9 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
   }
   void displayOrderInfo(BuildContext context, int idOrder) async{
     List<List<String>> orderList = await getOrder(idOrder.toString());
+
     print(orderList.length);
+    print(orderList);
     showDialog(
       context: context,
       builder: (context)=>Dialog(
@@ -427,40 +433,72 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                       height:400,
                       child:ListView.builder(scrollDirection: Axis.vertical,
                   itemCount: orderList.length,
-                  itemBuilder: (context, index)=> Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: Container(
+                  itemBuilder: (context, index){
+                        if(index > 0){
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            child: Container(
 
-                      width: 150,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20.0),
-                border: Border.all(width: 3, color: QueueBuzzerButtonStyle.color)
-              ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Order: " + orderList[index][0],
-                              style: TextStyle(fontSize: 26,fontWeight: FontWeight.w700),),
-                            SizedBox(height: 20,),
-                            Text("Name: " + orderList[index][1],
-                                style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
-                            SizedBox(height: 10,),
-                            Text("Price: " + orderList[index][2],
-                              style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
-                            SizedBox(height: 10,),
-                            Text("Category: " + orderList[index][3],
-                              style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
-                            SizedBox(height: 10,),
-                            Text("Description: " + orderList[index][4],
-                              style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),))
+                              width: 150,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  border: Border.all(width: 3, color: Colors.deepOrange)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Order: " + orderList[index][0],
+                                      style: TextStyle(fontSize: 26,fontWeight: FontWeight.w700),),
+                                    SizedBox(height: 20,),
+                                    Text("Name: " + orderList[index][1],
+                                      style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                    SizedBox(height: 10,),
+                                    Text("Price: " + orderList[index][2],
+                                      style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                    SizedBox(height: 10,),
+                                    Text("Category: " + orderList[index][3],
+                                      style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                    SizedBox(height: 10,),
+                                    Text("Description: " + orderList[index][4],
+                                      style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }else
+                          return Container(
+                            width: 150,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20.0),
+                                border: Border.all(width: 3, color: Colors.lightBlue)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text("Order info",
+                                      style: TextStyle(fontSize: 26,fontWeight: FontWeight.w700),),
+                                  ),
+                                  SizedBox(height: 20,),
+                                  Text("Ordered at: " + orderList[0][0].replaceFirst('T', ' ').substring(0,19),
+                                    style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                  // SizedBox(height: 10,),
+                                  // Text("Estimate finish: " + orderList[0][1].replaceFirst('T', ' ').substring(0,19),
+                                  //   style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500),),
+                                ],
+                              ),
+                            ),
+                          );
+
+                        }
+                      ))
                 ],
               )
             ],
@@ -532,8 +570,6 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                           child: RaisedButton(
                             color: const Color(0xFFBBDEFB),
                             onPressed: (){
-
-
                                 displayOrderInfo(context,idOrder);
                             },
                             child: Text(
@@ -578,25 +614,42 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
   String displayDialogAndReturnState(){
     String state;
       showDialog(context: context,builder: (context)=>Dialog(
-        child: Container(
-          width: 120,
-          child: Column(
-            children: [
-              Text("Are you sure you want to set state to ready and send notification to consumer?"),
-              SizedBox(height: 30),
-              Row(children: [
-                RaisedButton(
-              child:Text("Yes"),
-                    onPressed: (){
-                      state = "READY";
-                }),
-                RaisedButton(
-                    child:Text("No"),
-                    onPressed: (){
-                        state = "IN_PROGRESS";
-                })
-              ],)
-            ],
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            height: 130,
+            width: 120,
+            child: Column(
+                children: [
+                  Center(
+                      child:
+                        Text("Are you sure you want to set state to ready and send notification to consumer?",
+                        textAlign: TextAlign.center,
+                      )
+                  ),
+                  SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(37.0, 0,0,0),
+                    child: Row(children: [
+                      RaisedButton(
+                    child:Text("Yes"),
+                          onPressed: (){
+                            state = "READY";
+                      }),
+                      RaisedButton(
+                          child:Text("No"),
+                          onPressed: (){
+                              state = "IN_PROGRESS";
+                              Navigator.of(context).pop();
+                      })
+                    ],),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ));

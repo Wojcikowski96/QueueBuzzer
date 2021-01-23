@@ -36,6 +36,7 @@ class ConsumerOrderWizard extends StatefulWidget {
 class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
 
   String pointName = "Nazwa restauracji";
+  String deviceID;
   double totalPrice = 0.0;
   int colorScaleQuant = 1000;
   Point point;
@@ -270,11 +271,14 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
   }
 
   Future<void> placeOrder() async {
+    deviceID = (await storage.read(key: "deviceID"));
+    int consumerID = int.parse(deviceID);
     const SERVER_IP = 'http://10.0.2.2:8080';
-
+    print("Consumer ID w Wizardzie");
+    print(consumerID);
     var res = await http.post("$SERVER_IP/consumer-order",
         body: jsonEncode(<String, dynamic>{
-          "consumerId": 1,
+          "consumerId": consumerID,
           "pointId": point.pointID,
           "productsIds": getProductIdsFromBasket(),
           "stateName": "ACCEPTED",
