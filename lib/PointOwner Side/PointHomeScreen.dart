@@ -151,7 +151,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
                   // Update the state of the app
                   // ...
                   // Then close the drawer
-                  Navigator.pushReplacement(
+                  Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => GenerateQr(point)));
                 },
@@ -173,7 +173,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
                   // Update the state of the app
                   // ...
                   // Then close the drawer
-                  Navigator.pushReplacement(
+                  Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ConfigScreen(point)));
                 },

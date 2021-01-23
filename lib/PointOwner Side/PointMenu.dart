@@ -181,7 +181,7 @@ class _PointMenuState extends State<PointMenu> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pushReplacement(context,
+                Navigator.push(context,
                     MaterialPageRoute(builder: (context) => GenerateQr(point)));
               },
             ),
@@ -191,7 +191,7 @@ class _PointMenuState extends State<PointMenu> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pushReplacement(
+                Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ConfigScreen(point)));
               },

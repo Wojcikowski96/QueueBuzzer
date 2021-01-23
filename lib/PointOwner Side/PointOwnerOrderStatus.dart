@@ -230,7 +230,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                       // Update the state of the app
                       // ...
                       // Then close the drawer
-                      Navigator.pushReplacement(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => GenerateQr(point)));
                     },
@@ -241,7 +241,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                       // Update the state of the app
                       // ...
                       // Then close the drawer
-                      Navigator.pushReplacement(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => ConfigScreen(point)));
                     },

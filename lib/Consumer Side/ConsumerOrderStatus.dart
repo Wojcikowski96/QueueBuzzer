@@ -154,7 +154,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
             ListTile(
               title: Text('Generator QR'),
               onTap: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => GenerateQr(point)));
               },
