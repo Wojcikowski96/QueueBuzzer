@@ -25,7 +25,7 @@ class Point {
     final buffer = StringBuffer();
     if (htmlColor.length == 6 || htmlColor.length == 7) buffer.write('ff');
     buffer.write(htmlColor.replaceFirst('#', ''));
-    return int.parse(buffer.toString(), radix: 16);
+    return buffer.toString().isEmpty ?  0xFFFF5722 : int.parse(buffer.toString(), radix: 16);
   }
 
   Point.withId(this.pointID) {

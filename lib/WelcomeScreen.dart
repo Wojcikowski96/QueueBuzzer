@@ -1,4 +1,5 @@
-import 'dart:collection';
+
+import 'dart:convert';
 import 'dart:ui';
 import 'dart:io';
 import 'package:device_info/device_info.dart';
@@ -145,9 +146,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         context,
                         MaterialPageRoute(builder: (context) => ConsumerHomeScreen(Point.withId(int.parse(scanResult)))));
                   },
-                  child: Text("Kontynuuj",
-                    style: TextStyle(
-                      fontSize: 16,
                 child: SizedBox(
                   child: RaisedButton(
                     shape: RoundedRectangleBorder(
@@ -170,7 +168,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   height: QueueBuzzerButtonStyle.height,
                   width: QueueBuzzerButtonStyle.width,
                 ),
-                )
+                ))
             ]
           ),
         )

@@ -274,13 +274,13 @@ class EditProduct extends StatelessWidget {
                             MaterialPageRoute(builder: (context) => PointMenu(point)));
                       },
                       child: Text("Potwierdż"),
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      splashColor: Colors.white,
+                      color: Color(this.point.color),
+                      textColor: QueueBuzzerButtonStyle.textColor,
+                      padding: QueueBuzzerButtonStyle.padding,
+                      splashColor: QueueBuzzerButtonStyle.splashColor,
                     ),
-                    width: 200,
-                    height: 70,
+                    width: QueueBuzzerButtonStyle.width,
+                    height: QueueBuzzerButtonStyle.height,
                   ),
                 ]))));
   }
