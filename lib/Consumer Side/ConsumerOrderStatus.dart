@@ -128,7 +128,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => PointMenu(this.point)));
               },
@@ -154,7 +154,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
             ListTile(
               title: Text('Generator QR'),
               onTap: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => GenerateQr(point)));
               },
@@ -172,7 +172,7 @@ class _ConsumerOrderStatusState extends State<ConsumerOrderStatus> {
             icon: Icon(Icons.restaurant_menu),
             label: Text("Menu restauracji"),
               onPressed: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => ConsumerHomeScreen(point)));
                 }

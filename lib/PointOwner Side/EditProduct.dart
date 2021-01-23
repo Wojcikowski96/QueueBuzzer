@@ -1,16 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:PointOwner/Style/QueueBuzzerButtonStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
-import '../Consumer Side/ConsumerHomeScreen.dart';
 import '../Entities/Point.dart';
 import 'PointMenu.dart';
 
@@ -269,7 +267,7 @@ class EditProduct extends StatelessWidget {
                         uploadFile();
                         patchProduct();
 
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => PointMenu(point)));
                       },

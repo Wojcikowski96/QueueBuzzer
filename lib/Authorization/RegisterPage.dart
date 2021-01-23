@@ -237,7 +237,7 @@ class _registerPageState extends State<registerPage> {
                           if(widget.isConsumer){
                             //consumerPostRequest
                             if(postConsumer(emailTextEditController.text, passwordTextEditController.text) == 200){
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => LoginPage(widget.isConsumer)
@@ -249,7 +249,7 @@ class _registerPageState extends State<registerPage> {
                           }else{
                             //pointOwnerPostRequest
                             if(postPointOwner(emailTextEditController.text, passwordTextEditController.text) == 200){
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => LoginPage(widget.isConsumer)

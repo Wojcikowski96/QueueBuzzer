@@ -259,7 +259,7 @@ class _AddProductPageState extends State<AddProduct> {
                           if (await submitProduct() != null) {
                             displayDialog(context, "An Error Occurred", "No account was found matching that pointEmail");
                           } else {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PointMenu(this.point)

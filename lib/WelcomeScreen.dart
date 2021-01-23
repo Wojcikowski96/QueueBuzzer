@@ -142,7 +142,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     await storage.write(key: "deviceID", value: deviceId);
                     String pointName = await getPointName(scanResult);
                     await storage.write(key: "pointName", value: pointName);
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => ConsumerHomeScreen(Point.withId(int.parse(scanResult)))));
                   },
@@ -153,7 +153,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                     onPressed: () async {
                       await storage.write(key: "pointID", value: scanResult);
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => ConsumerHomeScreen(Point.withId(int.parse(scanResult)))));
                     },

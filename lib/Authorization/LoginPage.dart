@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
           ));
       if (response == 200) {
         if(widget.isConsumer){
-          Navigator.push(
+          Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) =>ConsumerHomeScreen(point)
@@ -118,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
           );
 
         }else{
-          Navigator.push(
+          Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) =>PointOwnerOrderStatus(point)

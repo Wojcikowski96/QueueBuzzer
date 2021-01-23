@@ -103,7 +103,7 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
                     icon: Icon(Icons.autorenew_outlined, color: Colors.white),
                     label: Text("Powrót do menu"),
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => ConsumerHomeScreen(point)));
