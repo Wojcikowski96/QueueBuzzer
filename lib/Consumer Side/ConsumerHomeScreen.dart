@@ -356,6 +356,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 width: 100,
                 height: 30,
               ),
+              SizedBox(width: 20,),
               SizedBox(
                 child: RaisedButton(
                   shape: RoundedRectangleBorder(

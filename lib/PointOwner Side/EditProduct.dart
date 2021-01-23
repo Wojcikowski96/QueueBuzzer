@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:PointOwner/Style/QueueBuzzerButtonStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -150,14 +151,14 @@ class EditProduct extends StatelessWidget {
                             fillColor: Colors.grey.withOpacity(0.7),
                             // hintText: "Nazwa produktu",
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent, width: 2)),
+                                    color: QueueBuzzerButtonStyle.color, width: 2)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 ))),
                       )),
                   SizedBox(
@@ -182,12 +183,12 @@ class EditProduct extends StatelessWidget {
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent, width: 2)),
+                                    color: QueueBuzzerButtonStyle.color, width: 2)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 ))),
                       )),
                   SizedBox(
@@ -212,12 +213,12 @@ class EditProduct extends StatelessWidget {
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent, width: 2)),
+                                    color: QueueBuzzerButtonStyle.color, width: 2)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 ))),
                       )),
                   SizedBox(
@@ -245,12 +246,12 @@ class EditProduct extends StatelessWidget {
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent, width: 2)),
+                                    color: QueueBuzzerButtonStyle.color, width: 2)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 ))),
                         onTap: () {
                           getImage();
@@ -262,7 +263,7 @@ class EditProduct extends StatelessWidget {
                   SizedBox(
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: QueueBuzzerButtonStyle.border,
                       ),
                       onPressed: () {
                         uploadFile();

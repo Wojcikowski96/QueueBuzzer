@@ -8,7 +8,7 @@ class Point {
   int pointID;
   String deviceID;
   String pointsName;
-  int color = 0xFFFF5722;
+  int color = 0xFFF4511E;
   String imgUrl = null;
   List<ListsItem> pointsProducts;
   List<ListsItem> queue;

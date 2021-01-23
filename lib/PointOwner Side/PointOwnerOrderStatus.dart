@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:PointOwner/Entities/Order.dart';
 import 'package:PointOwner/PointOwner%20Side/qrGenerate.dart';
+import 'package:PointOwner/Style/QueueBuzzerButtonStyle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -186,7 +187,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                   DrawerHeader(
                     child: Text('Drawer Header'),
                     decoration: BoxDecoration(
-                      color: Colors.deepOrange,
+                      color: QueueBuzzerButtonStyle.color,
                     ),
                   ),
                   ListTile(
@@ -245,6 +246,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
             ),
             backgroundColor: Colors.white54,
             appBar: AppBar(
+              backgroundColor: QueueBuzzerButtonStyle.color,
               title: Text(point.pointsName),
               bottom: TabBar(
                 tabs: [
@@ -390,7 +392,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
           decoration: BoxDecoration(
 
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(width: 6.0,color: Colors.lightBlue),
+            border: Border.all(width: 6.0,color: QueueBuzzerButtonStyle.color),
             image: DecorationImage(
               image: AssetImage("food.jpg"),
               fit: BoxFit.cover,
@@ -409,7 +411,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                     child: Container(
 
                       decoration: BoxDecoration(
-                        color: Colors.deepOrange,
+                        color: QueueBuzzerButtonStyle.color,
                         borderRadius: BorderRadius.circular(20)
                       ),
                       child: InkWell(
@@ -433,7 +435,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20.0),
-                border: Border.all(width: 3, color: Colors.deepOrange)
+                border: Border.all(width: 3, color: QueueBuzzerButtonStyle.color)
               ),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),

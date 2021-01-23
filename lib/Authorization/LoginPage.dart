@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:PointOwner/Consumer%20Side/ConsumerHomeScreen.dart';
 import 'package:PointOwner/PointOwner%20Side/PointOwnerOrderStatus.dart';
+import 'package:PointOwner/Style/QueueBuzzerButtonStyle.dart';
 
 import '../Entities/Point.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../PointOwner Side/PointHomeScreen.dart';
 import 'package:http/http.dart' as http;
 import 'RegisterPage.dart';
 
@@ -34,9 +34,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = new TextEditingController();
 
   Future<String> attemptLogIn(String username, String password) async {
-    // print('password:$password');
-    // print('usrname:$username');
-    // print('serverip:$SERVER_IP');
     try {
       var res = await http.post(
           "$SERVER_IP/auth",
@@ -238,9 +235,8 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: QueueBuzzerButtonStyle.border,
                       ),
-                      //emailController.text == "" || passwordController.text == "" ? null :
                       onPressed: () {
                         if (!(emailController.text == "" || passwordController.text == "")) {
                           print('onPressed started');
@@ -255,42 +251,49 @@ class _LoginPageState extends State<LoginPage> {
                         }
 
                       },
-                      child: Text("Zaloguj"),
-                      color: Colors.deepOrange,
-                      textColor: Colors.white,
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      splashColor: Colors.white,
+                      child: Text("Zaloguj",
+                        style: QueueBuzzerButtonStyle.textStyle,
+                      ),
+                      color: QueueBuzzerButtonStyle.color,
+                      textColor: QueueBuzzerButtonStyle.textColor,
+                      padding: QueueBuzzerButtonStyle.padding,
+                      splashColor: QueueBuzzerButtonStyle.splashColor,
                     ),
-                    width: 200,
-                    height: 70,
+                    width: QueueBuzzerButtonStyle.width,
+                    height: QueueBuzzerButtonStyle.height,
                   ),
-                  SizedBox(height: 5,),
+                  QueueBuzzerButtonStyle.span,
                   Text("Nie masz u nas konta?",
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: Colors.grey,
                     ),
 
                   ),
+                  QueueBuzzerButtonStyle.span,
+                  SizedBox(child:
                   RaisedButton(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: QueueBuzzerButtonStyle.border,
                     ),
                     onPressed: (){
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => registerPage(widget.isConsumer)),
+                        context,
+                        MaterialPageRoute(builder: (context) => registerPage(widget.isConsumer)),
                       );
                     },
-                    child: Text("Zarejestruj"),
-                    color: Colors.deepOrange,
-                    textColor: Colors.white,
-                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                    splashColor: Colors.white,
-
+                      child: Text("Zarejestruj",
+                        style: QueueBuzzerButtonStyle.textStyle,
+                      ),
+                      color: QueueBuzzerButtonStyle.color,
+                      textColor: QueueBuzzerButtonStyle.textColor,
+                      padding: QueueBuzzerButtonStyle.padding,
+                      splashColor: QueueBuzzerButtonStyle.splashColor,
+                    ),
+                    height: QueueBuzzerButtonStyle.height,
+                    width: QueueBuzzerButtonStyle.width,
                   ),
-
                 ]))));
   }
 

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:qrscan/qrscan.dart' as scanner;
 import 'Authorization/LoginPage.dart';
 import 'Consumer Side/ConsumerHomeScreen.dart';
 import 'Entities/Point.dart';
+import 'Style/QueueBuzzerButtonStyle.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -20,7 +22,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   String scanResult = "";
   bool btnVisible = false;
 
-  //function that launches the scanner
   Future scanQR() async {
     String cameraScanResult = await scanner.scan();
     setState(() {
@@ -34,16 +35,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(icon: Icon(Icons.menu), onPressed: (){
-        //
-        // }),
           title: Text(""),
           actions: <Widget>[
             SizedBox(
               child: RaisedButton.icon(
-                  color: Colors.deepOrange,
+                  color: QueueBuzzerButtonStyle.color,
                   icon: Icon(Icons.fastfood),
-                  // child: Center(child: Text("Zaloguj sie jako punkt")),
                   label: Text("Zaloguj sie jako punkt"),
                 onPressed: () {
                     Scaffold.of(context).showSnackBar(new SnackBar(
@@ -63,7 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         child: Center(
           child: Column(children: <Widget>[
             SizedBox(
-              height: 10,
+              height: 65,
             ),
             Image.asset(
               "restaurant.png",
@@ -80,8 +77,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 color: Color.fromRGBO(27, 27, 27, 1),
               ),
             ),
-            scanResult == '' ? Text('') : Text(scanResult),
-            /**/
             SizedBox(
               height: 5,
             ),
@@ -91,11 +86,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     fontWeight: FontWeight.w500,
                     color: Colors.grey)),
 
-            SizedBox(height: 130,),
+            SizedBox(height: 100),
             SizedBox(
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40),
+                  borderRadius: QueueBuzzerButtonStyle.border,
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -103,61 +98,60 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     MaterialPageRoute(builder: (context) => LoginPage(true)));
                 },
                 child: Text("Zaloguj się",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
+                  style: QueueBuzzerButtonStyle.textStyle,
                 ),
-                color: Colors.deepOrange,
-                textColor: Colors.black,
-                padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                splashColor: Colors.white,
+                color: QueueBuzzerButtonStyle.color,
+                textColor: QueueBuzzerButtonStyle.textColor,
+                padding: QueueBuzzerButtonStyle.padding,
+                splashColor: QueueBuzzerButtonStyle.splashColor,
               ),
-              width: 150,
-              height: 40,
+              width: QueueBuzzerButtonStyle.width,
+              height: QueueBuzzerButtonStyle.height,
             ),
-            SizedBox(height: 20,),
+            QueueBuzzerButtonStyle.span,
             SizedBox(
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40),
+                  borderRadius: QueueBuzzerButtonStyle.border,
                 ),
                 onPressed: scanQR,
                 child: Text("Skanuj",
-                  style: TextStyle(
-                    fontSize: 35,
-                  ),
+                  style: QueueBuzzerButtonStyle.textStyle,
                 ),
-                color: Colors.deepOrange,
-                textColor: Colors.black,
-                padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                splashColor: Colors.white,
+                color: QueueBuzzerButtonStyle.color,
+                textColor: QueueBuzzerButtonStyle.textColor,
+                padding: QueueBuzzerButtonStyle.padding,
+                splashColor: QueueBuzzerButtonStyle.splashColor,
               ),
-              width: 250,
-              height: 70,
+              width: QueueBuzzerButtonStyle.width,
+              height: QueueBuzzerButtonStyle.height,
             ),
-
+            QueueBuzzerButtonStyle.span,
             Visibility(
                 visible: btnVisible,
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                  onPressed: () async {
-                    await storage.write(key: "pointID", value: scanResult);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ConsumerHomeScreen(Point.withId(int.parse(scanResult)))));
-                  },
-                  child: Text("Kontynuj",
-                    style: TextStyle(
-                      fontSize: 16,
+                child: SizedBox(
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: QueueBuzzerButtonStyle.border,
                     ),
+                    onPressed: () async {
+                      await storage.write(key: "pointID", value: scanResult);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ConsumerHomeScreen(Point.withId(int.parse(scanResult)))));
+                    },
+                    child: Text("Kontynuj",
+                      style: QueueBuzzerButtonStyle.textStyle,
+                    ),
+                    color: QueueBuzzerButtonStyle.color,
+                    textColor: QueueBuzzerButtonStyle.textColor,
+                    padding: QueueBuzzerButtonStyle.padding,
+                    splashColor: QueueBuzzerButtonStyle.splashColor,
                   ),
-                  color: Colors.deepOrange,
-                  textColor: Colors.black,
-                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                  splashColor: Colors.white,
-                )),
+                  height: QueueBuzzerButtonStyle.height,
+                  width: QueueBuzzerButtonStyle.width,
+                ),
+                )
             ]
           ),
         )
