@@ -1,15 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:PointOwner/Style/QueueBuzzerButtonStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
-import '../Consumer Side/ConsumerHomeScreen.dart';
 import '../Entities/Point.dart';
 import 'PointMenu.dart';
 
@@ -150,14 +149,14 @@ class EditProduct extends StatelessWidget {
                             fillColor: Colors.grey.withOpacity(0.7),
                             // hintText: "Nazwa produktu",
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent, width: 2)),
+                                    color: QueueBuzzerButtonStyle.color, width: 2)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 ))),
                       )),
                   SizedBox(
@@ -182,12 +181,12 @@ class EditProduct extends StatelessWidget {
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent, width: 2)),
+                                    color: QueueBuzzerButtonStyle.color, width: 2)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 ))),
                       )),
                   SizedBox(
@@ -212,12 +211,12 @@ class EditProduct extends StatelessWidget {
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent, width: 2)),
+                                    color: QueueBuzzerButtonStyle.color, width: 2)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 ))),
                       )),
                   SizedBox(
@@ -245,12 +244,12 @@ class EditProduct extends StatelessWidget {
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent, width: 2)),
+                                    color: QueueBuzzerButtonStyle.color, width: 2)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 ))),
                         onTap: () {
                           getImage();
@@ -262,24 +261,24 @@ class EditProduct extends StatelessWidget {
                   SizedBox(
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: QueueBuzzerButtonStyle.border,
                       ),
                       onPressed: () {
                         uploadFile();
                         patchProduct();
 
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => PointMenu(point)));
                       },
                       child: Text("Potwierdż"),
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      splashColor: Colors.white,
+                      color: Color(this.point.color),
+                      textColor: QueueBuzzerButtonStyle.textColor,
+                      padding: QueueBuzzerButtonStyle.padding,
+                      splashColor: QueueBuzzerButtonStyle.splashColor,
                     ),
-                    width: 200,
-                    height: 70,
+                    width: QueueBuzzerButtonStyle.width,
+                    height: QueueBuzzerButtonStyle.height,
                   ),
                 ]))));
   }

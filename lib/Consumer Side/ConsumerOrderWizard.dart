@@ -5,11 +5,13 @@ import 'package:PointOwner/Consumer%20Side/ConsumerHomeScreen.dart';
 import 'package:PointOwner/Consumer%20Side/ConsumerOrderStatus.dart';
 import 'package:PointOwner/Entities/Consumer.dart';
 import 'package:PointOwner/Entities/Point.dart';
+import 'package:PointOwner/Style/QueueBuzzerButtonStyle.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:qr_flutter/qr_flutter.dart';
 
 class ConsumerOrderWizard extends StatefulWidget {
 
@@ -97,11 +99,11 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
             actions: <Widget>[
               SizedBox(
                 child: RaisedButton.icon(
-                    color: Colors.deepOrange,
+                    color: QueueBuzzerButtonStyle.color,
                     icon: Icon(Icons.autorenew_outlined, color: Colors.white),
                     label: Text("Powrót do menu"),
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => ConsumerHomeScreen(point)));
@@ -135,8 +137,8 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
                 child: Text(
                   'Twoje zamówienie:',
                   style: TextStyle(
-                    fontSize: 40,
-                    color: Colors.black,
+                    fontSize: QueueBuzzerButtonStyle.height,
+                    color: QueueBuzzerButtonStyle.textColor,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.bold,
                   ),
@@ -254,7 +256,7 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
           ),
           RaisedButton(
               child: Text('Zamów'),
-              color: Colors.deepOrange,
+              color: QueueBuzzerButtonStyle.color,
               onPressed: () {
                 placeOrder();
                 Navigator.push(

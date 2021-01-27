@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:PointOwner/Style/QueueBuzzerButtonStyle.dart';
 import 'package:PointOwner/WelcomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -208,7 +209,7 @@ class _registerPageState extends State<registerPage> {
                   builder: (context) => SizedBox(
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: QueueBuzzerButtonStyle.border,
                       ),
 
                       onPressed: (){
@@ -236,7 +237,7 @@ class _registerPageState extends State<registerPage> {
                           if(widget.isConsumer){
                             //consumerPostRequest
                             if(postConsumer(emailTextEditController.text, passwordTextEditController.text) == 200){
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => LoginPage(widget.isConsumer)
@@ -248,7 +249,7 @@ class _registerPageState extends State<registerPage> {
                           }else{
                             //pointOwnerPostRequest
                             if(postPointOwner(emailTextEditController.text, passwordTextEditController.text) == 200){
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => LoginPage(widget.isConsumer)
@@ -260,39 +261,43 @@ class _registerPageState extends State<registerPage> {
                           }
                         }
                       },
-                      child: Text("Zarejestruj"),
-                      color: Colors.blueAccent,
-                      textColor: Colors.white,
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      splashColor: Colors.white,
+                      child: Text("Zarejestruj", style: QueueBuzzerButtonStyle.textStyle,),
+                      color: QueueBuzzerButtonStyle.color,
+                      textColor: QueueBuzzerButtonStyle.textColor,
+                      padding: QueueBuzzerButtonStyle.padding,
+                      splashColor: QueueBuzzerButtonStyle.splashColor,
                     ),
-                    width: 200,
-                    height: 70,
-                  )),
-                  SizedBox(height: 5,),
+                    width: QueueBuzzerButtonStyle.width,
+                    height: QueueBuzzerButtonStyle.height,
+                  ),
+                ),
+                  QueueBuzzerButtonStyle.span,
                   Text("Masz już konto?",
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: Colors.grey,
                     ),
 
                   ),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                  QueueBuzzerButtonStyle.span,
+                  SizedBox(
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: QueueBuzzerButtonStyle.border,
+                      ),
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                      child: Text("Zaloguj", style: QueueBuzzerButtonStyle.textStyle,),
+                      color: QueueBuzzerButtonStyle.color,
+                      textColor: QueueBuzzerButtonStyle.textColor,
+                      padding: QueueBuzzerButtonStyle.padding,
+                      splashColor: QueueBuzzerButtonStyle.splashColor,
                     ),
-                    onPressed: (){
-                      Navigator.pop(context);
-                    },
-                    child: Text("Zaloguj"),
-                    color: Colors.deepOrange,
-                    textColor: Colors.white,
-                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                    splashColor: Colors.white,
-
+                    width: QueueBuzzerButtonStyle.width,
+                    height: QueueBuzzerButtonStyle.height,
                   ),
-
                 ]))));
   }
 

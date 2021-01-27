@@ -150,7 +150,7 @@ class _PointMenuState extends State<PointMenu> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
@@ -217,7 +217,7 @@ class _PointMenuState extends State<PointMenu> {
         backgroundColor: Color(this.point.color),
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.push(context,
+          Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => AddProduct(point)));
           // setState(() {
           //   // gridChild.add(Padding(

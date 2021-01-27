@@ -122,7 +122,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
                   // Update the state of the app
                   // ...
                   // Then close the drawer
-                  Navigator.push(
+                  Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => PointMenu(point)));
                 },
@@ -162,7 +162,7 @@ class _PointHomeScreenState extends State<PointHomeScreen> {
                   // Update the state of the app
                   // ...
                   // Then close the drawer
-                  Navigator.push(
+                  Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => PointOwnerOrderStatus(point)));
                 },

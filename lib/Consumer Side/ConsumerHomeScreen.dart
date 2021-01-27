@@ -185,7 +185,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                   icon: Icon(Icons.autorenew_outlined, color: Colors.white),
                   label: Text(orderProperties[0], style: TextStyle(color: Colors.white)),
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ConsumerOrderStatus(point)));
@@ -197,7 +197,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                   icon: Icon(Icons.history, color: Colors.white),
                   label: Text(orderProperties[0], style: TextStyle(color: Colors.white)),
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ConsumerStory(point)));
@@ -369,6 +369,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 width: 100,
                 height: 30,
               ),
+              SizedBox(width: 20,),
               SizedBox(
                 child: RaisedButton(
                   shape: RoundedRectangleBorder(

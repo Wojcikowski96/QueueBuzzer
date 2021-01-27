@@ -1,5 +1,7 @@
+import 'dart:collection';
 import 'dart:convert';
 
+import 'package:PointOwner/Style/QueueBuzzerButtonStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -106,7 +108,7 @@ class _AddProductPageState extends State<AddProduct> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 26,
-                      color: Color.fromRGBO(27, 27, 27, 1),
+                      color: QueueBuzzerButtonStyle.textColor,
                     ),
                   ),
                   SizedBox(
@@ -133,17 +135,17 @@ class _AddProductPageState extends State<AddProduct> {
                             fillColor: Colors.grey.withOpacity(0.7),
                             hintText: "Nazwa produktu",
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent,
+                                    color: QueueBuzzerButtonStyle.color,
                                     width: 2
                                 )
                             ),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 )
                             )
                         ),
@@ -164,17 +166,17 @@ class _AddProductPageState extends State<AddProduct> {
                             fillColor: Colors.grey.withOpacity(0.7),
                             hintText: "Kategoria",
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent,
+                                    color: QueueBuzzerButtonStyle.color,
                                     width: 2
                                 )
                             ),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 )
                             )
                         ),
@@ -198,17 +200,17 @@ class _AddProductPageState extends State<AddProduct> {
                             fillColor: Colors.grey.withOpacity(0.7),
                             hintText: "Opis produktu",
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent,
+                                    color: QueueBuzzerButtonStyle.textColor,
                                     width: 2
                                 )
                             ),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.textColor,
                                 )
                             )
                         ),
@@ -229,17 +231,17 @@ class _AddProductPageState extends State<AddProduct> {
                             fillColor: Colors.grey.withOpacity(0.7),
                             hintText: "Cena",
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
-                                    color: Colors.blueAccent,
+                                    color: QueueBuzzerButtonStyle.color,
                                     width: 2
                                 )
                             ),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: QueueBuzzerButtonStyle.border,
                                 borderSide: BorderSide(
                                   width: 2,
-                                  color: Colors.blueAccent,
+                                  color: QueueBuzzerButtonStyle.color,
                                 )
                             )
                         ),
@@ -250,14 +252,14 @@ class _AddProductPageState extends State<AddProduct> {
                   SizedBox(
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: QueueBuzzerButtonStyle.border,
                       ),
 
                       onPressed: () async {
                           if (await submitProduct() != null) {
                             displayDialog(context, "An Error Occurred", "No account was found matching that pointEmail");
                           } else {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PointMenu(this.point)
