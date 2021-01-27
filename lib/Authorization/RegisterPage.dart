@@ -21,7 +21,7 @@ class _registerPageState extends State<registerPage> {
 
   final inputKey = GlobalKey<FormState>();
 
-  postPointOwner(String email, String password) async {
+  Future<int>postPointOwner(String email, String password) async {
     var res = await http.post(
         "${registerPage.SERVER_IP}/point-owner",
         body: jsonEncode(<String, String>{
@@ -35,7 +35,7 @@ class _registerPageState extends State<registerPage> {
     return res.statusCode;
   }
 
-  postConsumer(String email, String password) async {
+  Future<int> postConsumer(String email, String password) async {
     var res = await http.post(
         "${registerPage.SERVER_IP}/consumer",
         body: jsonEncode(<String, String>{
@@ -212,7 +212,7 @@ class _registerPageState extends State<registerPage> {
                         borderRadius: QueueBuzzerButtonStyle.border,
                       ),
 
-                      onPressed: (){
+                      onPressed: () async{
                         // Validate returns true if the form is valid, or false
                         // otherwise.
                         if (!inputKey.currentState.validate()) {
@@ -236,7 +236,7 @@ class _registerPageState extends State<registerPage> {
                         } else {
                           if(widget.isConsumer){
                             //consumerPostRequest
-                            if(postConsumer(emailTextEditController.text, passwordTextEditController.text) == 200){
+                            if( await postConsumer(emailTextEditController.text, passwordTextEditController.text) == 201){
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -248,7 +248,7 @@ class _registerPageState extends State<registerPage> {
                             }
                           }else{
                             //pointOwnerPostRequest
-                            if(postPointOwner(emailTextEditController.text, passwordTextEditController.text) == 200){
+                            if(await postPointOwner(emailTextEditController.text, passwordTextEditController.text) == 201){
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(

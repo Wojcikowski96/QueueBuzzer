@@ -646,6 +646,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                             state = "READY";
                             Navigator.of(context).pop();
                       }),
+                      SizedBox(width: 20,),
                       RaisedButton(
                           child:Text("No"),
                           onPressed: (){
