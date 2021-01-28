@@ -592,17 +592,22 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                         heroTag: "but$heroIndex",
                         backgroundColor: Colors.green,
                         child: Icon(Icons.arrow_upward_rounded),
-                        onPressed: () {print('ooo');
-                        String newStateOrder = '';
-                        print(idOrder);
-                        if (stateOrder == "ACCEPTED")
-                          newStateOrder = 'IN_PROGRESS';
-                        else if (stateOrder == "IN_PROGRESS")
-                          newStateOrder = displayDialogAndReturnState();
-                        else if (stateOrder == "READY")
-                          newStateOrder ='DONE';
+                        onPressed: () async {
+                          print('ooo');
+                          String newStateOrder = '';
+                          print(idOrder);
+                          if (stateOrder == "ACCEPTED") {
+                            newStateOrder = 'IN_PROGRESS';
+                            lvlUpOrder(idOrder, newStateOrder).then((value) => setState( () => getPointItems() ));
+                          } else if (stateOrder == "IN_PROGRESS") {
+                            newStateOrder =
+                                await displayDialogAndReturnState(idOrder);
+                          } else if (stateOrder == "READY") {
+                            newStateOrder = 'DONE';
+                            lvlUpOrder(idOrder, newStateOrder).then((value) => setState( () => getPointItems() ));
+                          }
 
-                        lvlUpOrder(idOrder, newStateOrder).then((value) => setState( () => getPointItems() ));
+                          // lvlUpOrder(idOrder, newStateOrder).then((value) => setState( () => getPointItems() ));
                         },
                       ),
 
@@ -612,9 +617,9 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
               ),
         ]));
   }
-  String displayDialogAndReturnState(){
+  Future<String> displayDialogAndReturnState(int idOrder) async {
     String state;
-      showDialog(context: context,builder: (context)=>Dialog(
+      await showDialog(context: context,builder: (context)=>Dialog(
         child: Padding(
           padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
           child: Container(
@@ -639,7 +644,9 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
                     child:Text("Yes"),
                           onPressed: (){
                             state = "READY";
+                            Navigator.of(context).pop();
                       }),
+                      SizedBox(width: 20,),
                       RaisedButton(
                           child:Text("No"),
                           onPressed: (){
@@ -654,6 +661,7 @@ class _PointOwnerOrderStatusState extends State<PointOwnerOrderStatus> {
           ),
         ),
       );
+    await lvlUpOrder(idOrder, state).then((value) => setState( () => getPointItems() ));
     return state;
   }
 }
