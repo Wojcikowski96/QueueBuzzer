@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
     var jwt = await attemptLogIn(pointEmail, password);
     if(jwt != null) {
       storage.write(key: "jwt", value: jwt);
-      int response = await getPointByMail(pointEmail);
+      int response = await getPointByMail(widget.isConsumer ? 'covid19@gmail.com' : pointEmail);
       point.jwt = jwt;
       point.payload = json.decode(
           ascii.decode(
