@@ -197,7 +197,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                   icon: Icon(Icons.history, color: Colors.white),
                   label: Text(orderProperties[0], style: TextStyle(color: Colors.white)),
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ConsumerStory(point)));

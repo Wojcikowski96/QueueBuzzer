@@ -129,8 +129,7 @@ class _ConsumerStoryState extends State<ConsumerStory> {
   }
 
   getOrderPropertiesFromJson(json) async {
-    String deviceID = (await storage.read(key: "deviceID"));
-    int consumerID = int.parse(deviceID);
+    int consumerID = 1;
 
     List<dynamic> orders = List<Map>.from(json)
         .map((Map model) => ListsOrder.fromJson(model))

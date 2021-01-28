@@ -11,15 +11,14 @@ import 'package:http/http.dart' as http;
 import 'RegisterPage.dart';
 
 
-class LoginPage extends StatefulWidget {
-  bool isConsumer;
+class LoginPagePointOwner extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
-  LoginPage(this.isConsumer);
+  _LoginPagePointOwnerState createState() => _LoginPagePointOwnerState();
+  LoginPagePointOwner();
 
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPagePointOwnerState extends State<LoginPagePointOwner> {
 
   bool _isLoading = true;
 
@@ -48,10 +47,9 @@ class _LoginPageState extends State<LoginPage> {
       var userType = jsonDecode(res.body)["userType"];
       print(userType);
       if (res.statusCode == 200) {
-        if ((widget.isConsumer == true && userType == "Consumer") ||
-            (widget.isConsumer == false && userType == "PointOwner")) {
+
           return jsonDecode(res.body)["jwt"];
-        }
+
       }
     } on Exception catch(e) {
       print(e.toString());
@@ -75,10 +73,12 @@ class _LoginPageState extends State<LoginPage> {
     var res = await http.get(
         "$SERVER_IP/point-owner/" + pointEmail
     );
+
+
     if(res.statusCode != 200) {
       displayDialog(context, "An Error Occurred", "No account was found matching that pointEmail");
-      print(res.body);
     } else {
+      print(res.body);
       var jsonResponse = json.decode(res.body);
       var jsonPointEncoded = json.encode(jsonResponse["point"]);
       var jsonPoint = json.decode(jsonPointEncoded);
@@ -88,7 +88,6 @@ class _LoginPageState extends State<LoginPage> {
         storage.write(key: "pointID", value: jsonPoint["id"].toString());
         point = new Point.withIdAndName(jsonPoint["id"], jsonPoint["name"], jsonPoint['colour'], jsonPoint['logoImg']);
       }
-      print(jsonPoint["name"]);
       print(jsonPointEncoded);
       print(res.body);
     }
@@ -98,7 +97,6 @@ class _LoginPageState extends State<LoginPage> {
   signIn(String id, email) async {
     var pointEmail = emailController.text;
     var password = passwordController.text;
-    print(widget.isConsumer);
     var jwt = await attemptLogIn(pointEmail, password);
     if(jwt != null) {
       storage.write(key: "jwt", value: jwt);
@@ -109,15 +107,7 @@ class _LoginPageState extends State<LoginPage> {
               base64.decode(base64.normalize(jwt.split(".")[1]))
           ));
       if (response == 200) {
-        if(widget.isConsumer){
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>ConsumerHomeScreen(point)
-              )
-          );
 
-        }else{
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -126,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
 
-      }
+
     } else {
       displayDialog(context, "An Error Occurred", "No account was found matching that Email and password");
     }
@@ -280,7 +270,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => registerPage(widget.isConsumer)),
+                        MaterialPageRoute(builder: (context) => registerPage(false)),
                       );
                     },
                       child: Text("Zarejestruj",

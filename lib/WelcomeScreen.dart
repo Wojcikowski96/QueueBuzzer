@@ -2,12 +2,13 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'dart:io';
+import 'package:PointOwner/Authorization/LoginPageConsumer.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:http/http.dart' as http;
-import 'Authorization/LoginPage.dart';
+import 'Authorization/LoginPagePointOwner.dart';
 import 'Consumer Side/ConsumerHomeScreen.dart';
 import 'Entities/Point.dart';
 import 'Style/QueueBuzzerButtonStyle.dart';
@@ -50,7 +51,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ));
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage(false)));
+                      MaterialPageRoute(builder: (context) => LoginPagePointOwner()));
               }
               ),
               )
@@ -97,7 +98,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage(true)));
+                    MaterialPageRoute(builder: (context) => LoginPageConsumer()));
                 },
                 child: Text("Zaloguj się",
                   style: QueueBuzzerButtonStyle.textStyle,

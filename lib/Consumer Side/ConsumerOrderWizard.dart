@@ -258,6 +258,7 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
               child: Text('Zamów'),
               color: QueueBuzzerButtonStyle.color,
               onPressed: () {
+                print("--------------------Przed Place Order -----------------------");
                 placeOrder();
                 Navigator.push(
                     context,
@@ -271,8 +272,8 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
   }
 
   Future<void> placeOrder() async {
-    deviceID = (await storage.read(key: "deviceID"));
-    int consumerID = int.parse(deviceID);
+
+    int consumerID = 1;
     const SERVER_IP = 'http://10.0.2.2:8080';
     print("Consumer ID w Wizardzie");
     print(consumerID);
@@ -286,6 +287,10 @@ class _ConsumerOrderWizardState extends State<ConsumerOrderWizard> {
         }),
         headers: <String, String>{"Content-Type": "application/json"}
     );
+    print("----------------------------Place Order -------------------------------");
+    print(res.body);
+    print(consumerID);
+
   }
 
   List<int> getProductIdsFromBasket() {
